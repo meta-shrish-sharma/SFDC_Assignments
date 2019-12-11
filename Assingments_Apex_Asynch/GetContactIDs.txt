@@ -1,0 +1,30 @@
+public class GetContactIDs
+{
+  public static void countContacts(id ContactId)
+  {
+      id AcctID = [select accountid from contact where id = :ContactId][0].accountid;
+      List<account> reletedAccount= [select id,ContactIDs__c from account where id = :AcctID limit 1];
+      String AccountContID = reletedAccount[0].ContactIDs__c;
+      List<contact> accountContacts = [select id from contact where accountid = :AcctID];
+      for(contact Cntct: accountContacts)
+      {
+          
+          if(AccountContID == null)
+          {
+             AccountContID =  Cntct.Id; 
+              continue;
+          }
+          if(!AccountContID.contains(Cntct.Id))
+          {
+              AccountContID = AccountContID + ',' + Cntct.Id;
+          } 
+
+      }
+      Account act = new Account(id = AcctID);
+      act.ContactIDs__c = AccountContID;
+      update act;
+      System.debug( 'FetchedContactID : ' + act.id);
+      System.debug( 'ContactID : ' + AccountContID);
+      System.debug( 'AcctID : ' + AcctID);
+  }
+}

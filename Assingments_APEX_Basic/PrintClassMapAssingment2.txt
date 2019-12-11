@@ -1,0 +1,17 @@
+public class PrintClassMap {
+    
+    public static Void ListClassStudent()
+    {
+        Map<class__c,List<student__c>> ClassStudentMap = new Map<class__c,List<student__c>>();
+    	List<class__c> Class_Name_List = [SELECT Name from class__c];
+        for(class__c Class_name : Class_Name_List)
+        {
+            List<student__c> Current_Class_ID = [SELECT Name from student__c where class__r.Name = :Class_name.name];
+            ClassStudentMap.put(Class_name,Current_Class_ID);
+            System.debug(Class_name.name);
+        }
+    }
+
+}
+
+//PrintClassMap.ListClassStudent();

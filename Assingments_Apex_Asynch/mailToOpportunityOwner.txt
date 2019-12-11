@@ -1,0 +1,36 @@
+global class mailToOpportunityOwner implements Schedulable{
+
+    global void execute(SchedulableContext ctx) 
+    {
+     	List<opportunity> Opper = [select lastmodifieddate,Owner.Email from opportunity];
+        for(opportunity oprtn: Opper)
+        {
+            Date startDate = DATE.today();
+            Datetime dT = oprtn.lastmodifieddate;
+            Date lastmodifieddate_Date = date.newinstance(dT.year(), dT.month(), dT.day());
+            Integer numberDaysDue = lastmodifieddate_Date.daysBetween(startDate);
+            System.debug( 'Days Diffrence : ' + numberDaysDue);
+            if(numberDaysDue > 30)
+            {
+                messaging.SingleEmailMessage email1=new messaging.SingleEmailMessage();
+                string[]toAdd=new string[]{oprtn.Owner.Email};
+                string []ccAdd=new string[]{oprtn.Owner.Email};
+                email1.setToAddresses(toAdd);
+                email1.setCcAddresses(ccAdd);
+                email1.setSubject('Opportunity Not Updated');
+                email1.setPlainTextBody('Your Opportunity not updated since last 1 month');
+                email1.setSenderDisplayName('Admin');
+                messaging.Email[] emails = new messaging.Email[]{email1};
+                messaging.sendEmail(emails);
+                System.debug( 'Email Sended to  : ' + oprtn.Owner.Email);
+            
+            }
+          
+        }
+    }
+}
+/*
+mailToOpportunityOwner MTO = new mailToOpportunityOwner();
+String sch = '20 30 8 12 12 ?';
+String jobID = system.schedule('Merge Job', sch, MTO);
+*/

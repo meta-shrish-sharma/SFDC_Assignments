@@ -1,0 +1,16 @@
+public class PrintStudentsAssingment1 
+{
+    public static List<Student__c> GetAllStudents(String ClassID)
+    {
+    	List<Student__c> Stn_Lst = [SELECT Name from Student__c where class__c = :ClassID];
+        return Stn_Lst;
+    }
+}
+
+/*
+for(Student__c stdnt : PrintStudentsAssingment1.GetAllStudents('a062w000000I46iAAC'))
+{
+    System.debug(stdnt.Name);
+    
+}
+*/
