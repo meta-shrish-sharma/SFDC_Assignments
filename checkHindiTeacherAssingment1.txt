@@ -1,0 +1,13 @@
+public class checkHindiTeacher 
+{
+    public static void chechHindiTeacher(List<Teach__c> Teach_Hindi)
+ 	{
+            for(Teach__c tch: Teach_Hindi)
+            {
+                if(tch.Subject__c == 'Hindi')
+                {
+                    tch.addError('Hindi teacher insertion not allowed');
+                }
+            }
+    }
+}

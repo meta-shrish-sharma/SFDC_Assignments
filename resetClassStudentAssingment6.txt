@@ -1,0 +1,12 @@
+trigger resetClassStudent on Class__c (after update) 
+{
+    List<student__c> deleteStudent = new List<student__c>();
+	for(Class__c classUpdate: trigger.new)
+    {
+        if(classUpdate.Custom_Status__c == 'Reset')
+        {
+            deleteStudent.addAll([SELECT id,name from student__c where Class__c = :classUpdate.Id]);
+        }
+    }
+    delete deleteStudent;
+}
