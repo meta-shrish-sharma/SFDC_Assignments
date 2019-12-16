@@ -155,12 +155,12 @@
     <fields>
         <fullName>Age__c</fullName>
         <externalId>false</externalId>
-        <formula>YEAR(TODAY()) - YEAR(DOB__c)</formula>
+        <formula>FLOOR((TODAY() - DOB__c)/365) + (MOD((TODAY() - (DOB__c)),365)/30)/12</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Age</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>2</scale>
+        <scale>1</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -187,9 +187,28 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Lastname__c</fullName>
+        <fullName>Email__c</fullName>
         <externalId>false</externalId>
-        <label>Lastname</label>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FirstName__c</fullName>
+        <externalId>false</externalId>
+        <label>FirstName</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LastName__c</fullName>
+        <externalId>false</externalId>
+        <label>LastName</label>
         <length>10</length>
         <required>true</required>
         <trackTrending>false</trackTrending>
@@ -197,18 +216,17 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>email__c</fullName>
+        <fullName>Married__c</fullName>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>email</label>
-        <required>true</required>
+        <label>Married</label>
         <trackTrending>false</trackTrending>
-        <type>Email</type>
-        <unique>false</unique>
+        <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>married__c</fullName>
+        <fullName>Sex__c</fullName>
         <externalId>false</externalId>
-        <label>married</label>
+        <label>Sex</label>
         <length>1</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -216,19 +234,9 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>sex__c</fullName>
+        <fullName>Spouse_name__c</fullName>
         <externalId>false</externalId>
-        <label>sex</label>
-        <length>1</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>spous_name__c</fullName>
-        <externalId>false</externalId>
-        <label>spouse name</label>
+        <label>Spouse name</label>
         <length>20</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -238,33 +246,31 @@
     <label>Student</label>
     <listViews>
         <fullName>All</fullName>
-        <columns>NAME</columns>
+        <columns>FirstName__c</columns>
         <columns>Age__c</columns>
         <columns>Class__c</columns>
         <columns>DOB__c</columns>
         <columns>CREATEDBY_USER</columns>
-        <columns>sex__c</columns>
+        <columns>Sex__c</columns>
+        <columns>Married__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
     <listViews>
-        <fullName>Male_Students</fullName>
-        <columns>NAME</columns>
-        <columns>Age__c</columns>
+        <fullName>Male_Student</fullName>
         <columns>Class__c</columns>
-        <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>email__c</columns>
-        <columns>UPDATEDBY_USER</columns>
+        <columns>Age__c</columns>
         <columns>DOB__c</columns>
-        <columns>sex__c</columns>
+        <columns>Email__c</columns>
+        <columns>FirstName__c</columns>
+        <columns>Sex__c</columns>
         <filterScope>Mine</filterScope>
         <filters>
-            <field>sex__c</field>
+            <field>Sex__c</field>
             <operation>equals</operation>
             <value>M</value>
         </filters>
-        <label>Male_Students</label>
+        <label>Male Student</label>
     </listViews>
     <nameField>
         <label>First Name</label>

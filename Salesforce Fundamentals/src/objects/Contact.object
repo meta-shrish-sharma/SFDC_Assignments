@@ -505,11 +505,6 @@
         <columns>CORE.USERS.ALIAS</columns>
         <columns>CONTACT.DEPARTMENT</columns>
         <filterScope>Everything</filterScope>
-        <filters>
-            <field>CONTACT.FIRST_NAME</field>
-            <operation>equals</operation>
-            <value>Indar</value>
-        </filters>
         <label>All Teachers</label>
     </listViews>
     <listViews>
