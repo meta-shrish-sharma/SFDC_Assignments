@@ -1,16 +1,16 @@
-1. select Name,DOB__c,sex__c from student__c WHERE Name LIKE 'S%'
-2. SELECT Name, class__r.Name, DOB__c, sex__c FROM student__c WHERE Class__r.Name LIKE 'X%'
-3. SELECT Name, class__r.Name FROM student__c
-4. SELECT name,class__r.name,class__r.NumberOfStudent__c FROM student__c
-5. SELECT Name,(SELECT name FROM students__r) FROM class__c WHERE name LIKE 'X%'
-6. SELECT Name FROM contact WHERE name LIKE 'S%'
-7. SELECT name,LastModifiedDate  FROM lead where LastModifiedDate > LAST_MONTH
-8. SELECT Name,(SELECT name FROM students__r WHERE Name LIKE 'S%') FROM class__c
-9. SELECT Teacher__r.name FROM teach__c WHERE subject__c in ('Hindi','English') GROUP BY Teacher__r.name HAVING COUNT(subject__c) > 1
-10.SELECT name,class__r.name FROM student__c WHERE class__c IN (SELECT class__c FROM teach__c WHERE subject__c IN ('Hindi','English'))
-11.SELECT class__r.name,COUNT(name) FROM student__c GROUP BY class__r.name ORDER BY COUNT(name)
-12.SELECT COUNT(name),Calendar_Month(DOB__c) FROM student__c GROUP BY Calendar_Month(DOB__c)
+1. SELECT FirstName__c, DOB__c, sex__c FROM student__c WHERE LastName__c LIKE 'S%'
+2. SELECT Name, Class__r.Name, DOB__c, Sex__c FROM Student__c  WHERE Class__r.Name LIKE 'X%'
+3. SELECT Name, Class__r.Name FROM Student__c
+4. SELECT Name, Class__r.Name, Class__r.NumberOfStudents__c FROM Student__c
+5. SELECT Name, (SELECT FirstName__c FROM Students__r) FROM Class__c WHERE Name LIKE 'X%'
+6. SELECT Name FROM Contact WHERE Name LIKE 'S%'
+7. SELECT Name, LastModifiedDate  FROM Lead WHERE LastModifiedDate > LAST_MONTH
+8. SELECT Name, (SELECT FirstName__c FROM Students__r WHERE Name LIKE 'S%') FROM Class__c
+9. SELECT Teacher__r.Name, COUNT(Subject__c) FROM Teach__c WHERE Subject__c in ('Hindi', 'English') GROUP BY Teacher__r.Name HAVING COUNT(Subject__c) > 1
+10.SELECT Name, Class__r.Name FROM Student__c WHERE Class__c IN (SELECT Class__c FROM Teach__c WHERE Subject__c IN ('Hindi','English'))
+11.SELECT Class__r.Name, COUNT(Name) FROM Student__c GROUP BY Class__r.Name ORDER BY COUNT(Name)
+12.SELECT COUNT(Name),Calendar_Month(DOB__c) FROM Student__c GROUP BY Calendar_Month(DOB__c)
 
 
-1. FIND {Indar} IN Name Fields RETURNING Contact(name,email), Student__c(name,DOB__c)
-2. FIND {Indar} IN Name Fields RETURNING Contact(name,email,Department WHERE Department = 'Sales' ), Student__c(name,DOB__c)
+1. FIND {Indar} IN Name FIELDS RETURNING Contact(Name,Email), Student__c(Name,DOB__c)
+2. FIND {Indar} IN Name FIELDS RETURNING Contact(Name,Email,Department WHERE Department = 'Sales' ), Student__c(Name,DOB__c)
