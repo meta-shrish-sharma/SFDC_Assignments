@@ -2,7 +2,7 @@ public class PrintStudentsAssingment1
 {
     public static List<Student__c> GetAllStudents(String ClassID)
     {
-    	List<Student__c> Stn_Lst = [SELECT Name from Student__c where class__c = :ClassID];
+    	List<Student__c> Stn_Lst = [SELECT Name FROM Student__c WHERE Class__c = :ClassID];
         return Stn_Lst;
     }
 }
