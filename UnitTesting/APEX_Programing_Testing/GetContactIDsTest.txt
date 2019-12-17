@@ -1,0 +1,30 @@
+@isTest (SeeAllData=true)
+public class GetContactIDsTest 
+{
+     @isTest static void testIDsInsertion() 
+     {
+         boolean IDinserted = true;
+         system.debug(''+IDinserted);
+         ID contactID = '0032w0000029NPEAA2';
+         Test.startTest();
+         GetContactIDs.countContacts(contactID);
+         Test.stopTest();
+         id AcctID = [select accountid from contact where id = :ContactId][0].accountid;
+         system.debug(''+IDinserted);
+          List<account> reletedAccount= [select id,ContactIDs__c from account where id = :AcctID limit 1];
+          String AccountContID = reletedAccount[0].ContactIDs__c;
+          List<contact> accountContacts = [select id from contact where accountid = :AcctID];
+          for(contact Cntct: accountContacts)
+          {
+              //If any of the ID is not available then test got failed
+              if(!AccountContID.contains(Cntct.Id))
+              {
+                  IDinserted = false;
+              } 
+    
+          }
+         system.assert(IDinserted);
+         
+     }
+	
+}

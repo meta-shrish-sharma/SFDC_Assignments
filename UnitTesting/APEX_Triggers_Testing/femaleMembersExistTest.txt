@@ -1,0 +1,20 @@
+@isTest(SeeAllData=true)
+public class femaleMembersExistTest {
+
+   @isTest static void TestFemaleMemberDeletion() 
+    {
+        ID classID;
+        List<AggregateResult> classList = [select class__c from student__c where sex__c = 'F' group by class__c having count(id) > 1];
+       // ID classID = [select class__c from student__c where sex__c = 'F' group by class__c having count(id) > 1][0].id;
+       for(AggregateResult ar: classList)
+        {
+            classID = (ID)ar.get('Class__c');
+        }
+        system.debug(classID+'');
+   		class__c classWithFemale= new class__c(id = classID);
+        Test.startTest();
+        delete classWithFemale;
+        Test.stopTest();
+        
+    }
+}

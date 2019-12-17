@@ -1,0 +1,29 @@
+@isTest(SeeAllData=true)
+public class CheckHindiTeacherTest
+{
+	//To test that a record of hindi teacher can be inserted or not
+ 	@isTest static void TestInsertHindiTeacher() 
+    {
+        Teach__c newTeach = new Teach__c();
+        newteach.name = 'newHindiTeacher';
+        newteach.Class__c = 'a062w000000I472AAC';
+        newteach.Teacher__c = '0032w000002A7wLAAS';
+        newteach.Subject__c = 'Hindi';
+        Database.SaveResult result;
+        String DMLResult;
+        Test.startTest();
+        try
+        {
+        result = Database.insert(newTeach); 
+        }
+        catch(Exception e)
+        {
+            //system.debug(e.getMessage());
+            DMLResult = e.getMessage();
+        }
+        Test.stopTest();
+        
+        system.assert(DMLResult.contains('Hindi teacher insertion not allowed'));
+    }
+    
+}

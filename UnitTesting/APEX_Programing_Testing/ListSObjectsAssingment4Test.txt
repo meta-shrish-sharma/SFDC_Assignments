@@ -1,0 +1,30 @@
+@isTest
+public class ListSObjectsAssingment4Test {
+
+    @isTest static void testListObjects() {
+        Boolean allListObject = true;
+        Test.startTest();
+        List<string> SObjectList = ListSObjects.ListObjects();
+        Test.stopTest();
+        for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values())
+        {
+           String name = objTyp.getDescribe().getName();
+           // Exclude all the unwanted Sobjects e.g. History, Share etc..
+        
+            if((!name.containsignorecase('history') && !name.containsignorecase('tag')&&
+            !name.containsignorecase('share') && !name.containsignorecase('feed') 
+             && !name.containsignorecase('Event'))|| name.right(3) ==  '__c')
+            {      
+              if(!SobjectList.contains(name))
+              {
+                  allListObject = false;
+              }
+              
+            }
+    
+        }
+           
+		System.assert(allListObject);        
+    }
+    
+}
