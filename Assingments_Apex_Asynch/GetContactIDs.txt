@@ -1,30 +1,32 @@
 public class GetContactIDs
 {
-  public static void countContacts(id ContactId)
+  public static void CountContacts(id contactId)
   {
-      id AcctID = [select accountid from contact where id = :ContactId][0].accountid;
-      List<account> reletedAccount= [select id,ContactIDs__c from account where id = :AcctID limit 1];
-      String AccountContID = reletedAccount[0].ContactIDs__c;
-      List<contact> accountContacts = [select id from contact where accountid = :AcctID];
-      for(contact Cntct: accountContacts)
+      ID accountId = [SELECT Accountid FROM Contact WHERE id = :contactId][0].Accountid;
+      List<Account> reletedAccount= [SELECT id, ContactIDs__c FROM account WHERE id = :accountId LIMIT 1];
+      String accountContID = reletedAccount[0].ContactIDs__c;
+      List<Contact> accountContacts = [SELECT id FROM Contact WHERE AccountId = :accountId];
+      for(Contact contactAccount: accountContacts)
       {
           
-          if(AccountContID == null)
+          if(accountContID == null)
           {
-             AccountContID =  Cntct.Id; 
+             accountContID =  contactAccount.Id; 
               continue;
           }
-          if(!AccountContID.contains(Cntct.Id))
+          if(!accountContID.contains(contactAccount.Id))
           {
-              AccountContID = AccountContID + ',' + Cntct.Id;
+              accountContID = accountContID + ',' + contactAccount.Id;
           } 
 
       }
-      Account act = new Account(id = AcctID);
-      act.ContactIDs__c = AccountContID;
-      update act;
-      System.debug( 'FetchedContactID : ' + act.id);
-      System.debug( 'ContactID : ' + AccountContID);
-      System.debug( 'AcctID : ' + AcctID);
+      Account updatedAccount = new Account(id = accountId);
+      updatedAccount.ContactIDs__c = AccountContID;
+      update updatedAccount;
+      System.debug( 'FetchedContactID : ' + updatedAccount.id);
+      System.debug( 'ContactIDs : ' + AccountContID);
+      System.debug( 'AcctID : ' + accountId);
   }
 }
+
+//GetContactIDs.countContacts('0032w0000029NPEAA2');

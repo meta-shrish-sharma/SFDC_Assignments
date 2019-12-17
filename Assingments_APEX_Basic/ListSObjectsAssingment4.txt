@@ -2,7 +2,7 @@ public class ListSObjects {
 
     public static List<string> ListObjects()
     {
-    List<string> SObjectList = new List<string>();
+    List<string> sObjectList = new List<string>();
     
     for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values())
     {
@@ -13,12 +13,12 @@ public class ListSObjects {
         !name.containsignorecase('share') && !name.containsignorecase('feed') 
          && !name.containsignorecase('Event'))|| name.right(3) ==  '__c')
      	{      
-          SobjectList.add(name);
+          sobjectList.add(name);
           System.debug( 'Name : ' + name);
   		}
 
 	}
-        return SObjectList;
+        return sObjectList;
     }
 }
 

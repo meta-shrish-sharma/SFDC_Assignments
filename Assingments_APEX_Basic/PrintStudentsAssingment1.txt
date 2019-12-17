@@ -8,9 +8,9 @@ public class PrintStudentsAssingment1
 }
 
 /*
-for(Student__c stdnt : PrintStudentsAssingment1.GetAllStudents('a062w000000I46iAAC'))
+for(Student__c studentInClass : PrintStudentsAssingment1.GetAllStudents('a062w000000I46nAAC'))
 {
-    System.debug(stdnt.Name);
+    System.debug(studentInClass.Name);
     
 }
 */
