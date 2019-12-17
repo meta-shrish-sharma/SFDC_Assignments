@@ -1,16 +1,16 @@
 1. SELECT FirstName__c, DOB__c, sex__c FROM student__c WHERE LastName__c LIKE 'S%'
 2. SELECT Name, Class__r.Name, DOB__c, Sex__c FROM Student__c  WHERE Class__r.Name LIKE 'X%'
 3. SELECT Name, Class__r.Name FROM Student__c
-4. SELECT Name, Class__r.Name, Class__r.NumberOfStudents__c FROM Student__c
-5. SELECT Name, (SELECT FirstName__c FROM Students__r) FROM Class__c WHERE Name LIKE 'X%'
-6. SELECT Name FROM Contact WHERE Name LIKE 'S%'
-7. SELECT Name, LastModifiedDate  FROM Lead WHERE LastModifiedDate > LAST_MONTH
-8. SELECT Name, (SELECT FirstName__c FROM Students__r WHERE Name LIKE 'S%') FROM Class__c
+4. SELECT Name, (SELECT Student__c.Name FROM Students__r) FROM Class__c
+5. SELECT Name, Class__r.Name, Class__r.ClassTeacher__c, DOB__c, Sex__c FROM Student__c WHERE Class__c IN (SELECT Id FROM Class__c WHERE ClassTeacher__r.Name LIKE 'S%')
+6. SELECT Name, DOB__c FROM Student__c WHERE Calendar_Year(DOB__c) > 2000 
+7. SELECT Name, LastModifiedDate  FROM Lead WHERE LastModifiedDate = THIS_MONTH
+8. SELECT Name, (SELECT Student__c.Name FROM Students__r WHERE Student__c.Name LIKE 'S%') FROM Class__c 
 9. SELECT Teacher__r.Name, COUNT(Subject__c) FROM Teach__c WHERE Subject__c in ('Hindi', 'English') GROUP BY Teacher__r.Name HAVING COUNT(Subject__c) > 1
-10.SELECT Name, Class__r.Name FROM Student__c WHERE Class__c IN (SELECT Class__c FROM Teach__c WHERE Subject__c IN ('Hindi','English'))
+10.SELECT Name, Class__r.Name FROM Student__c WHERE Class__c IN (SELECT Class__c FROM Teach__c WHERE Subject__c IN ('Hindi', 'English'))
 11.SELECT Class__r.Name, COUNT(Name) FROM Student__c GROUP BY Class__r.Name ORDER BY COUNT(Name)
-12.SELECT COUNT(Name),Calendar_Month(DOB__c) FROM Student__c GROUP BY Calendar_Month(DOB__c)
+12.SELECT COUNT(Name), Calendar_Month(DOB__c) FROM Student__c GROUP BY Calendar_Month(DOB__c) ORDER BY Calendar_Month(DOB__c)
 
 
-1. FIND {Indar} IN Name FIELDS RETURNING Contact(Name,Email), Student__c(Name,DOB__c)
-2. FIND {Indar} IN Name FIELDS RETURNING Contact(Name,Email,Department WHERE Department = 'Sales' ), Student__c(Name,DOB__c)
+1. FIND {Indar} IN Name FIELDS RETURNING Contact(Name, Email), Student__c(Name, DOB__c)
+2. FIND {Indar} IN Name Fields RETURNING Student__c(Name, DOB__c WHERE Sex__c = 'M'), Contact(Name, Email) 
