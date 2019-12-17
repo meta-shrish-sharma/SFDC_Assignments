@@ -2,11 +2,11 @@ public class PrintClassMap {
     
     public static Void ListClassStudent()
     {
-        Map<class__c, List<student__c>> ClassStudentMap = new Map<class__c, List<student__c>>();
-    	List<class__c> classNameList = [SELECT Name FROM Class__c];
-        for(class__c className : classNameList)
+        Map<Class__c, List<Student__c>> ClassStudentMap = new Map<Class__c, List<Student__c>>();
+    	List<Class__c> classNameList = [SELECT Name FROM Class__c];
+        for(Class__c className : classNameList)
         {
-            List<student__c> currentClassId = [SELECT Name FROM Student__c WHERE class__r.Name = :className.Name];
+            List<student__c> currentClassId = [SELECT Name FROM Student__c WHERE Class__r.Name = :className.Name];
             ClassStudentMap.put(className, currentClassId);
             System.debug(className.Name);
         }
