@@ -1,8 +1,8 @@
-public class checkHindiTeacher 
+public class CheckHindiTeacher 
 {
-    public static void chechHindiTeacher(List<Teach__c> Teach_Hindi)
+    public static void ChechHindiTeacher(List<Teach__c> teachHindi)
  	{
-            for(Teach__c tch: Teach_Hindi)
+            for(Teach__c tch: teachHindi)
             {
                 if(tch.Subject__c == 'Hindi')
                 {
