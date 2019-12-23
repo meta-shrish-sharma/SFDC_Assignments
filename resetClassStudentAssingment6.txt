@@ -1,4 +1,4 @@
-trigger resetClassStudent on Class__c (after update) 
+trigger ResetClassStudent on Class__c (after update) 
 {
     List<student__c> deleteStudent = new List<student__c>();
 	for(Class__c classUpdate: trigger.new)
