@@ -1,4 +1,4 @@
-trigger femaleMembersExist on Class__c (before delete) 
+trigger FemaleMembersExist on Class__c (before delete) 
 {
 	List<AggregateResult> classList = [select class__r.name from student__c where sex__c = 'F' group by class__r.name having count(id) > 1];
    	List<string> classListString = new List<string>();
