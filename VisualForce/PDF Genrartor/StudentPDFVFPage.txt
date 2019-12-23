@@ -1,0 +1,14 @@
+<apex:page Controller="StudentPDFVFPageController" showHeader="false" showChat="false" sidebar="false">
+    <apex:form >
+   <apex:pageBlock title="Student List">   
+    <apex:pageBlockTable value="{! Students }" var="stdn">
+            <apex:column value="{! stdn.name }"/>
+            <apex:column value="{! stdn.DOB__c }"/>
+            <apex:column value="{! stdn.Sex__c }"/>
+            
+     </apex:pageBlockTable>
+    </apex:pageBlock>   
+         <apex:commandButton action="{!returnSavePDF}" title="Save" value="Save PDF" />
+           
+        </apex:form>
+</apex:page>

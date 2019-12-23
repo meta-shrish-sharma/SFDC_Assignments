@@ -1,0 +1,3 @@
+<apex:page standardController="Contact" extensions="InlinePageController">
+    <p style="background-color:powderblue;text-align:center;" >{!teacherType} Teacher</p>
+</apex:page>

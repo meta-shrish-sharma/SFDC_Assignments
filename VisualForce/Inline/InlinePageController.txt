@@ -1,0 +1,16 @@
+public class InlinePageController {
+    Public string teacherType{get;set;}
+    Public ID TeachID;
+    
+    Public InlinePageController(ApexPages.StandardController controller)
+    {
+        if(ApexPages.currentPage().getParameters().get('id') != null)
+        {
+            TeachID = ApexPages.currentPage().getParameters().get('id');
+            teacherType = [SELECT Teacher_Type__c FROM contact WHERE id = :TeachID][0].Teacher_Type__c;
+            
+        }
+   
+    }
+
+}

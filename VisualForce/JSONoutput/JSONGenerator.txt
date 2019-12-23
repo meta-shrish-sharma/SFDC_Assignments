@@ -1,0 +1,19 @@
+public with sharing class JSONGenerator {
+  
+    public String jsonStr {get; set;}
+    
+    // constructor outer class
+    public JSONGenerator(){
+        jsonStr = prepareJSON();
+    }
+    
+    private String prepareJSON() {
+        List<Class__c> ClassList = new  List<Class__c>();
+        ClassList = [SELECT Name, Fee__c, MaxSize__c, MyCount__c FROM class__c];
+        // Serialize the list of BillingStatement objects.
+        jsonStr = JSON.serialize(ClassList);
+		// return the JSON string
+		return jsonStr;
+       
+    }
+}

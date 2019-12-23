@@ -1,0 +1,91 @@
+public class FetchClassEditDelete
+{
+
+Boolean testval = false;
+public List<Class__c> classDetails;
+public string className{get;set;}
+public string board{get;set;}
+public Decimal fee{get;set;}
+public Decimal myCount{get;set;}
+public ID editID{get;set;}
+public pagereference showSection1() {
+setHideshow(true);
+return null; }
+    
+public FetchClassEditDelete()
+{
+     classDetails = [SELECT Name, Board__c, Fee__c, MyCount__c from Class__c];
+   
+}
+
+public pagereference ShowSection2()
+{
+setHideshow(false);
+return null;
+}
+public List<Class__c> getClassDetails()
+{
+	return classDetails;
+    
+}
+public Pagereference deleteRow(){
+        System.debug('Deleting Account');
+        String SelectedRowId=ApexPages.CurrentPage().getParameters().get('rowid');
+        System.debug(SelectedRowId);
+        Class__c tobeDeleted = null;
+        for(Class__c a : classDetails)
+        if (a.Id == SelectedRowId) {
+            tobeDeleted = a;
+            break;
+        } 
+        if (tobeDeleted != null) {
+           Delete tobeDeleted;
+            }
+    	pagereference pg= new PageReference('/apex/ShowHidePage');
+    	pg.setRedirect(True);
+        return pg;
+
+}
+public Void editRow(){
+     System.debug('Editing Account');
+        String SelectededitRowId=ApexPages.CurrentPage().getParameters().get('erowid');
+        editID = SelectededitRowId;
+    	System.debug(SelectededitRowId);
+        for(Class__c a : classDetails)
+        if (a.Id == SelectededitRowId) {
+         	className = a.Name;
+            board = a.Board__c;
+            fee = a.Fee__c;
+            myCount = a.MyCount__c;
+            break;
+        } 
+    setHideshow(true);
+       
+        
+    
+}
+public Pagereference updateClass(){
+        System.debug('Updating Account');
+        String SelectededitRowId=ApexPages.CurrentPage().getParameters().get('erowid');
+    	class__c updClass = [SELECT Name, Board__c, Fee__c, MyCount__c from Class__c WHERE id  = :editID];    
+    	updClass.Name = className;
+   		updClass.Board__c = board;	
+        updClass.Fee__c = fee;	
+        updClass.MyCount__c = myCount;	
+    	update updClass;
+    	pagereference pg= new PageReference('/apex/ShowHidePage');
+    	pg.setRedirect(True);
+    	return pg;
+
+
+}
+
+public Boolean getHideshow()
+{
+return this.testval;
+}
+public void setHideshow(boolean s)
+{
+this.testval = s;
+}
+}
