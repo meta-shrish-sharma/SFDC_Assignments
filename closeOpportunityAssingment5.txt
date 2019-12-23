@@ -1,4 +1,4 @@
-trigger closeOpportunity on Opportunity (before update) 
+trigger CloseOpportunity on Opportunity (before update) 
 {
     for(Opportunity opr: trigger.new)
     {
