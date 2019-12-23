@@ -1,0 +1,19 @@
+@isTest
+public class MailToOpportunityOwnerTest {
+    
+    static testmethod void TestMail() 
+     {
+        Test.startTest();
+        Datetime dt = Datetime.now().addMinutes(1);
+        String CRON_EXP = '0 '+ dt.minute() + ' * ' + dt.day() + ' ' + dt.month() + ' ? ' + dt.year();
+        mailToOpportunityOwner MTO = new mailToOpportunityOwner();
+        String jobID = system.schedule('Merge Job', CRON_EXP, MTO);  
+        Test.stopTest();
+        Integer invocations = Limits.getEmailInvocations();
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
+        System.assertEquals(0, ct.TimesTriggered);
+        System.assertEquals(dt.date(), ct.NextFireTime.date());
+        
+    }
+
+}

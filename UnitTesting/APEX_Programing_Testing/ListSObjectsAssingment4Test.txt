@@ -1,7 +1,7 @@
 @isTest
 public class ListSObjectsAssingment4Test {
 
-    @isTest static void testListObjects() {
+    @isTest static void TestListObjects() {
         Boolean allListObject = true;
         Test.startTest();
         List<string> SObjectList = ListSObjects.ListObjects();

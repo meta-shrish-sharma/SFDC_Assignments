@@ -11,7 +11,7 @@ public class GetWorkingDaysTest
 {
     
     //Test two dates without any weekand in between
-     @isTest static void testWithoutWeekandDates() {
+     @isTest static void TestWithoutWeekandDates() {
          Integer workingDays;
          Test.startTest();
        	 workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/16/2019'),Date.parse('12/20/2019'));

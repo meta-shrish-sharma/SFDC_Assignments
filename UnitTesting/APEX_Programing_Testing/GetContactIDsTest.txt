@@ -1,7 +1,7 @@
 @isTest (SeeAllData=true)
 public class GetContactIDsTest 
 {
-     @isTest static void testIDsInsertion() 
+     @isTest static void TestIDsInsertion() 
      {
          boolean IDinserted = true;
          system.debug(''+IDinserted);

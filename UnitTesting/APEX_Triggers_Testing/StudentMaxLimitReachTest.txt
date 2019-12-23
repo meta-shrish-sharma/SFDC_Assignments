@@ -1,0 +1,25 @@
+@isTest(SeeAllData=true)
+public class StudentMaxLimitReachTest
+{
+	@isTest static void TestStudentInsertionFail() 
+    {
+        Student__c st = new Student__c();
+        st.Name = 'Rahul';
+        st.LastName__c = 'Sharma';
+        st.class__c = 'a062w000000I46nAAC';
+        Test.startTest();
+        insert st;    
+        Test.stopTest();
+    }
+    @isTest static void TestStudentInsertionPass() 
+    {
+        Student__c st = new Student__c();
+        st.Name = 'Rahul';
+        st.LastName__c = 'Sharma';
+        st.class__c = 'a062w000000I46dAAC';
+        Test.startTest();
+        insert st;    
+        Test.stopTest();
+    }
+    
+}

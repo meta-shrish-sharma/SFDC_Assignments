@@ -1,7 +1,7 @@
 @isTest
 public class PrintStudentsAssingment1Test {
 
-     @isTest static void testStudentList() {
+     @isTest static void TestStudentList() {
        
        List<Student__c> testStudentList = [SELECT Name from Student__c where class__c = 'a062w000000I46iAAC'];
        integer testStudentListCount = testStudentList.size();
