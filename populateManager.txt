@@ -1,4 +1,4 @@
-trigger populateManager on Loan__c (before insert) 
+trigger PopulateManager on Loan__c (before insert) 
 {
 	for( Loan__c insLoans: trigger.new)
     {
