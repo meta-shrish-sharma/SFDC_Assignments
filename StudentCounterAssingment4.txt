@@ -1,0 +1,33 @@
+trigger StudentCounter on Student__c (before insert) {
+
+    Map<ID,Integer> studentUpdate = new Map<ID,Integer>();
+    for(Student__c st: trigger.new )
+    {
+        if(studentUpdate.get(st.class__c) == null)
+        {
+            studentUpdate.put(st.class__c, 1);
+        }
+        else
+        {
+            Integer incrementStudent = studentUpdate.get(st.class__c) + 1;
+            studentUpdate.put(st.class__c, incrementStudent);
+        }
+    }
+    List<class__c> classList = [select ID,name,mycount__c from class__c];
+    for(class__c currClass: classList)
+    {
+        if(studentUpdate.get(currClass.Id) != null)
+        {
+            if(currClass.MyCount__c == null)
+            {
+                currClass.MyCount__c = studentUpdate.get(currClass.Id);
+            }
+            else
+            {
+            currClass.MyCount__c = currClass.MyCount__c + studentUpdate.get(currClass.Id);
+            }
+
+        }
+    }
+    update classList;
+}

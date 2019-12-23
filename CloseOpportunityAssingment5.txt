@@ -1,0 +1,12 @@
+trigger CloseOpportunity on Opportunity (before update) 
+{
+    for(Opportunity opr: trigger.new)
+    {
+        if(opr.StageName == 'Closed Won' || opr.StageName == 'Closed Lost')
+        {
+            opr.CloseDate = system.today();
+            
+        }
+    }
+   
+}
