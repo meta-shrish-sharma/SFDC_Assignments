@@ -1,4 +1,4 @@
-trigger contactTriggerNotHindi1 on Contact (before insert,before update) 
+trigger ContactTriggerNotHindi1 on Contact (before insert,before update) 
 {
 
    List<contact> updatedContact = trigger.new;
