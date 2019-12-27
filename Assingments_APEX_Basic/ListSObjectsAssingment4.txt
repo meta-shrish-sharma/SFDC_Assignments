@@ -1,23 +1,19 @@
 public class ListSObjects {
-
-    public static List<string> listObjects()
-    {
-    List<string> sObjectList = new List<string>();
     
-    for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values())
+    public static List<String> listObjects()
     {
-       String name = objTyp.getDescribe().getName();
-       // Exclude all the unwanted Sobjects e.g. History, Share etc..
-    
-     	if((!name.containsignorecase('history') && !name.containsignorecase('tag')&&
-        !name.containsignorecase('share') && !name.containsignorecase('feed') 
-         && !name.containsignorecase('Event'))|| name.right(3) ==  '__c')
-     	{      
-          sobjectList.add(name);
-          System.debug( 'Name : ' + name);
-  		}
-
-	}
+        List<String> sObjectList = new List<string>();
+        
+        for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values())
+        {
+            String name = objTyp.getDescribe().getName();
+            // Exclude all the unwanted Sobjects e.g. History, Share etc..
+            
+            sobjectList.add(name);
+            System.debug( 'Name : ' + name);
+            
+            
+        }
         return sObjectList;
     }
 }
