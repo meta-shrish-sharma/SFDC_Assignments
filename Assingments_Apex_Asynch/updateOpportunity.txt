@@ -1,0 +1,36 @@
+public class updateOppertunity {
+    
+    public static void updateOppertunityList(List<Opportunity> oprtnList)
+    {
+        String errorMsz;
+        Boolean hasError = false; 
+        errorMsz = 'BillToContact Field cannot be null for these ID';
+        for(Opportunity oprtnty: oprtnList)
+        {
+            if(Oprtnty.BillToContact__c == null) 
+            {
+                hasError = true;
+                errorMsz = errorMsz + Oprtnty.id;
+                Oprtnty.addError('BillToContact Field cannot be null for these ID' );
+                return;
+            }
+            if(Oprtnty.Manager__c == null)
+            {
+                Oprtnty.Manager__c = [SELECT accountid FROM Contact WHERE id = :Oprtnty.BillToContact__c][0].AccountId;
+                
+                
+            }
+        }
+        
+    } 
+}
+
+/*
+
+trigger OppurtunityTrigger on Opportunity (before update) 
+{
+
+updateOppertunity.updateOppertunityList(trigger:new);
+
+}
+*/

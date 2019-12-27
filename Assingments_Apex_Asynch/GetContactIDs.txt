@@ -1,32 +1,33 @@
 public class GetContactIDs
 {
-  public static void CountContacts(id contactId)
-  {
-      ID accountId = [SELECT Accountid FROM Contact WHERE id = :contactId][0].Accountid;
-      List<Account> reletedAccount= [SELECT id, ContactIDs__c FROM account WHERE id = :accountId LIMIT 1];
-      String accountContID = reletedAccount[0].ContactIDs__c;
-      List<Contact> accountContacts = [SELECT id FROM Contact WHERE AccountId = :accountId];
-      for(Contact contactAccount: accountContacts)
-      {
-          
-          if(accountContID == null)
-          {
-             accountContID =  contactAccount.Id; 
-              continue;
-          }
-          if(!accountContID.contains(contactAccount.Id))
-          {
-              accountContID = accountContID + ',' + contactAccount.Id;
-          } 
-
-      }
-      Account updatedAccount = new Account(id = accountId);
-      updatedAccount.ContactIDs__c = AccountContID;
-      update updatedAccount;
-      System.debug( 'FetchedContactID : ' + updatedAccount.id);
-      System.debug( 'ContactIDs : ' + AccountContID);
-      System.debug( 'AcctID : ' + accountId);
-  }
+    public static void CountContacts(Id contactId)
+    {
+        Account updatedAccount = [Select ContactIDs__c, (Select Id FROM Contacts) FROM Account WHERE Id IN (SELECT Accountid  FROM Contact WHERE Id = '0032w0000029NPEAA2')];
+        String accountContID;
+        for(Contact contactAccount: updatedAccount.Contacts)
+        {
+            
+            if(accountContID == null)
+            {
+                accountContID =  contactAccount.Id; 
+                
+            }
+            if(!accountContID.contains(contactAccount.Id))
+            {
+                accountContID = accountContID + ',' + contactAccount.Id;
+            } 
+            
+        }
+        if(updatedAccount.ContactIDs__c != accountContID)
+        {
+            updatedAccount.ContactIDs__c = accountContID;
+            update updatedAccount;
+        }
+        
+    }
 }
 
-//GetContactIDs.countContacts('0032w0000029NPEAA2');
+/*
+GetContactIDs.CountContacts('0012w00000399cuAAA'); 
+
+*/
