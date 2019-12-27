@@ -1,14 +1,14 @@
-public class PrintStudentsAssingment1 
+public class PrintStudentsAssingment 
 {
-    public static List<Student__c> getAllStudents(String ClassID)
+    public static List<Student__c> getAllStudents(String ClassId)
     {
-    	List<Student__c> Stn_Lst = [SELECT Name from Student__c where class__c = :ClassID];
-        return Stn_Lst;
+    	List<Student__c> stnLst = [SELECT Name FROM Student__c WHERE Class__c = :ClassId];
+        return stnLst;
     }
 }
 
 /*
-for(Student__c studentInClass : PrintStudentsAssingment1.getAllStudents('a062w000000I46nAAC'))
+for(Student__c studentInClass : PrintStudentsAssingment.getAllStudents('a062w000000I46nAAC'))
 {
     System.debug(studentInClass.Name);
     
