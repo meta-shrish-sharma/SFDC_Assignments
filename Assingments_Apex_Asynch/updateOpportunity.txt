@@ -1,24 +1,18 @@
-public class updateOppertunity {
+public class UpdateOppertunity {
     
     public static void updateOppertunityList(List<Opportunity> oprtnList)
     {
-        String errorMsz;
-        Boolean hasError = false; 
-        errorMsz = 'BillToContact Field cannot be null for these ID';
+       	List<ID> cntId = new List<ID>();
+        for (Opportunity oprtnty: oprtnList)
+        {
+            cntId.add(oprtnty.BillToContact__c);
+        }
+        Map<id,Contact> idCntMap = new Map<id,Contact>([SELECT accountid FROM Contact WHERE Id IN :cntId]);
         for(Opportunity oprtnty: oprtnList)
         {
-            if(Oprtnty.BillToContact__c == null) 
+            if(Oprtnty.Manager__c == null && Oprtnty.BillToContact__c != null)
             {
-                hasError = true;
-                errorMsz = errorMsz + Oprtnty.id;
-                Oprtnty.addError('BillToContact Field cannot be null for these ID' );
-                return;
-            }
-            if(Oprtnty.Manager__c == null)
-            {
-                Oprtnty.Manager__c = [SELECT accountid FROM Contact WHERE id = :Oprtnty.BillToContact__c][0].AccountId;
-                
-                
+                Oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).accountid;
             }
         }
         
@@ -29,8 +23,9 @@ public class updateOppertunity {
 
 trigger OppurtunityTrigger on Opportunity (before update) 
 {
-
-updateOppertunity.updateOppertunityList(trigger:new);
-
+if(trigger.isbefore && trigger.isupdate)
+{
+updateOppertunity.updateOppertunityList(trigger.new);
+}
 }
 */
