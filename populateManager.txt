@@ -1,10 +1,10 @@
 trigger PopulateManager on Loan__c (before insert) 
 {
-	for( Loan__c insLoans: trigger.new)
+    for( Loan__c insLoans: trigger.new)
     {
         if(insLoans.manager__c == null)
         {
-            insLoans.manager__c = [select name,user__r.name from citymanager__c where name = :insLoans.city__c][0].user__r.name;
+            insLoans.manager__c = [SELECT Name, User__r.Name FROM Citymanager__c WHERE Name = :insLoans.City__c][0].User__r.Name;
         }
     }
     
