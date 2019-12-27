@@ -16,14 +16,17 @@ public class GetWorkingDays
     public static Integer getWorkingDays(Date startDate, Date endDate) 
     {
         
-        if(workingDaysInWeek == 0 || startDate == null || endDate == null) {
+        if((startDate > endDate) || startDate == null || endDate == null) {
             return 0;
         } else {
+            startDate = startDate + 1;
+            endDate = endDate - 1;
             Integer difference = startDate.daysBetween(endDate);
-            if(difference == 0) {
-                return isWorkingDay[getDayOfWeek(startDate)] ? 1 : 0;
+            if(difference <= 0) {
+                return 0;
             } 
             else {
+                
                 Integer wholeWeeks = Math.floor(difference / 7).intValue();
                 Integer workingDays = wholeWeeks * workingDaysInWeek;
                 Integer dayOfWeek = getDayOfWeek(endDate);
