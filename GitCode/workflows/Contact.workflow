@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
-        <fullName>sendEmailOnBirthday</fullName>
-        <description>sendEmailOnBirthday</description>
+        <fullName>SendEmailOnBirthday</fullName>
+        <description>SendEmailOnBirthday</description>
         <protected>false</protected>
         <recipients>
             <field>Email</field>
@@ -12,16 +12,15 @@
         <template>contact/birthdayNotification</template>
     </alerts>
     <rules>
-        <fullName>birthdayNotification</fullName>
+        <fullName>BirthdayNotification</fullName>
         <actions>
-            <name>sendEmailOnBirthday</name>
+            <name>SendEmailOnBirthday</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>Contact.Email</field>
             <operation>notEqual</operation>
-            <value></value>
         </criteriaItems>
         <criteriaItems>
             <field>Contact.Birthdate</field>

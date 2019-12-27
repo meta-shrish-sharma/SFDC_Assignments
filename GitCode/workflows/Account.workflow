@@ -5,8 +5,7 @@
         <description>EmailSendingForUnauthoriseUpdate</description>
         <protected>false</protected>
         <recipients>
-            <recipient>shrish.sharma@metacube.com</recipient>
-            <type>user</type>
+            <type>accountOwner</type>
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>Account/AccountUpdate</template>
