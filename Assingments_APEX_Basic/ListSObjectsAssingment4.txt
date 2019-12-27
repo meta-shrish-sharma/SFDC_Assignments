@@ -1,6 +1,6 @@
 public class ListSObjects {
 
-    public static List<string> ListObjects()
+    public static List<string> listObjects()
     {
     List<string> sObjectList = new List<string>();
     
