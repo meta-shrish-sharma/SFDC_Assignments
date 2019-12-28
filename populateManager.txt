@@ -1,10 +1,24 @@
 trigger PopulateManager on Loan__c (before insert) 
 {
-    for( Loan__c insLoans: trigger.new)
+    List<String> citysInserted = new List<String>();
+    for( Loan__c insLoans: trigger.new) //Select only those citys which are inserted just now
     {
-        if(insLoans.manager__c == null)
+        citysInserted.add(insLoans.City__c);
+    }
+    Map<String, String> cityManagerMap = new Map<String, String>();
+    for (Citymanager__c ctyManager : [SELECT Name, User__r.Name FROM Citymanager__c WHERE Name IN :citysInserted])
+    {
+        cityManagerMap.put(ctyManager.Name, ctyManager.User__r.Name);
+    }
+    
+    if(cityManagerMap.size() > 0)// populate only if managers exists
+    {
+        for( Loan__c insLoans: trigger.new)
         {
-            insLoans.manager__c = [SELECT Name, User__r.Name FROM Citymanager__c WHERE Name = :insLoans.City__c][0].User__r.Name;
+            if(insLoans.manager__c == null)
+            {
+                insLoans.manager__c = cityManagerMap.get(insLoans.City__c);
+            }
         }
     }
     
