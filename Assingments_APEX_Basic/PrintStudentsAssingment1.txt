@@ -1,8 +1,8 @@
 public class PrintStudentsAssingment 
 {
-    public static List<Student__c> getAllStudents(String ClassId)
+    public static List<Student__c> getAllStudents(String classId)
     {
-    	List<Student__c> stnLst = [SELECT Name FROM Student__c WHERE Class__c = :ClassId];
+    	List<Student__c> stnLst = [SELECT Name FROM Student__c WHERE Class__c = :classId];
         return stnLst;
     }
 }
