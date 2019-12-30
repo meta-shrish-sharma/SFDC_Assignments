@@ -8,9 +8,7 @@ public class ListSObjects {
         {
             String name = objTyp.getDescribe().getName();
             sobjectList.add(name);
-            System.debug( 'Name : ' + name);
-            
-            
+            System.debug( 'Name : ' + name);                        
         }
         return sObjectList;
     }
