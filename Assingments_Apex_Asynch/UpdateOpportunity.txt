@@ -10,9 +10,9 @@ public class UpdateOpportunity {
         Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
         for(Opportunity oprtnty: oprtnList)
         {
-            if(Oprtnty.Manager__c == null && Oprtnty.BillToContact__c != null)
+            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null)
             {
-                Oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).accountid;
+                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
             }
         }
         
