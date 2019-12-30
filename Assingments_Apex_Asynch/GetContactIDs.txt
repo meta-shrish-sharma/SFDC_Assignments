@@ -18,11 +18,11 @@ public class GetContactIDs
             {
                 if(accountContID == null)
                 {
-                    accountContID =  contactAccount.Id; //First ID should be inserted without appending comma behind so that final String looks like Id1,Id2,Id3
+                    accountContID =  contactAccount.Id; //First ID should be inserted without appending comma behind 
                 }
                 if(!accountContID.contains(contactAccount.Id))
                 {
-                    accountContID = accountContID + ',' + contactAccount.Id;//After first Id insertion comma will inserted before every ID as a separator
+                    accountContID = accountContID + ',' + contactAccount.Id;//After first Id insertion comma will inserted before every ID as a separator so that final String looks like Id1,Id2,Id3
                 }   
             }
             updatedAccount.ContactIDs__c = accountContID;
