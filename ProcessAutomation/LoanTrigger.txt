@@ -1,0 +1,29 @@
+/*
+     In before update triggers the ID's of records are not yet created at the time of record fetch, Hence Trigger.new cannot be passes
+     in where condition of query. We can only fetch the strings that we have provides as input hence the approche to do this assignment
+     is:-
+     First fetch all the city's provided as input in list
+     Fetch Managers of those city's and create the Map
+     Store All Manager Id's in recently inserted Loan's.
+*/
+trigger LoanTrigger on Loan__c (before insert) 
+{
+    List<Id> citysInserted = new List<Id>();
+    for( Loan__c insLoans: Trigger.new) //Select only those citys which are inserted just now
+    {
+        citysInserted.add(insLoans.City__c);
+    }
+    Map<Id, Id> cityManagerMap = new Map<Id, Id>();
+    List<City_Manager__c> getManagers = [SELECT Id, Manager__c FROM City_Manager__c WHERE Id IN :citysInserted];
+    for (City_Manager__c ctyManager : getManagers)
+    {
+        cityManagerMap.put(ctyManager.Id, ctyManager.Manager__c);
+    }
+    for( Loan__c insLoans: Trigger.new)
+    {
+        if(insLoans.Manager__c == null)
+        {
+            insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
+        }
+    }
+}
