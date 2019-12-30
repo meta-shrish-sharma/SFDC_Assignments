@@ -1,4 +1,4 @@
-trigger PopulateManager on Loan__c (before insert) 
+trigger LoanTrigger on Loan__c (before insert) 
 {
     List<String> citysInserted = new List<String>();
     for( Loan__c insLoans: trigger.new) //Select only those citys which are inserted just now
@@ -10,11 +10,14 @@ trigger PopulateManager on Loan__c (before insert)
     {
         cityManagerMap.put(ctyManager.Name, ctyManager.User__r.Name);
     }
-    for( Loan__c insLoans: trigger.new)
+    if(cityManagerMap != null)
     {
-        if(insLoans.Manager__c == null)
+        for( Loan__c insLoans: trigger.new)
         {
-            insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
+            if(insLoans.Manager__c == null)
+            {
+                insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
+            }
         }
     }
 }
