@@ -1,4 +1,4 @@
-global class mailToOpportunityOwner implements Schedulable
+global class MailToOpportunityOwner implements Schedulable
 {
     global void execute(SchedulableContext ctx) 
     {
