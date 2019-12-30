@@ -14,7 +14,7 @@ public class GetContactIDs
         if(updatedAccount.ContactIDs__c == null)
         {
             String accountContID;
-            for(Contact contactAccount: updatedAccount.Contacts) // Id null then create an string of IDs
+            for(Contact contactAccount: updatedAccount.Contacts) // If ContactIDs null then create an string of IDs
             {
                 if(accountContID == null)
                 {
