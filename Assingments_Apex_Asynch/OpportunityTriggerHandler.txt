@@ -1,5 +1,5 @@
-public class OpportunityTriggerHandler {
-    
+public class OpportunityTriggerHandler 
+{
     public static void updateOpportunityList(List<Opportunity> oprtnList)
     {
         List<Id> cntId = new List<Id>();
