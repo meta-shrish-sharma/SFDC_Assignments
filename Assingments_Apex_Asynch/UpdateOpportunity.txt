@@ -2,17 +2,20 @@ public class UpdateOpportunity {
     
     public static void updateOpportunityList(List<Opportunity> oprtnList)
     {
-       	List<Id> cntId = new List<Id>();
+        List<Id> cntId = new List<Id>();
         for (Opportunity oprtnty: oprtnList)
         {
             cntId.add(oprtnty.BillToContact__c);
         }
         Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
-        for(Opportunity oprtnty: oprtnList)
+        if(idCntMap != null)// Proceed only when there are values in Map
         {
-            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null)
+            for(Opportunity oprtnty: oprtnList)
             {
-                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
+                if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null)
+                {
+                    oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
+                }
             }
         }
         
