@@ -1,30 +1,11 @@
-public class UpdateOpportunity {
-    
-    public static void updateOpportunityList(List<Opportunity> oprtnList)
+trigger LoanTrigger on Loan__c (before insert) 
+{
+    Map<id, Loan__c> updatedLoanList = new Map<id, Loan__c>([SELECT Name, Manager__c, City__r.Name, City__r.Manager__c FROM Loan__c WHERE Id IN :trigger.new]);
+    for( Loan__c insLoans: trigger.new)
     {
-        List<Id> cntId = new List<Id>();
-        for (Opportunity oprtnty: oprtnList)
+        if(insLoans.Manager__c == null && updatedLoanList.get(insLoans.Id) != null)
         {
-            cntId.add(oprtnty.BillToContact__c);
+            insLoans.Manager__c = updatedLoanList.get(insLoans.Id).City__r.Manager__c;
         }
-        Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
-        for(Opportunity oprtnty: oprtnList)
-        {
-            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null && idCntMap.get(Oprtnty.BillToContact__c) != null)
-            {
-                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
-            }
-        }
-    } 
+    }
 }
-
-/*
-
-trigger OpportunityTrigger on Opportunity (before update) 
-{
-if(trigger.isbefore && trigger.isupdate)
-{
-UpdateOpportunity.updateOppertunityList(trigger.new);
-}
-}
-*/
