@@ -187,7 +187,7 @@
     <fields>
         <fullName>Loan_Approval__c</fullName>
         <externalId>false</externalId>
-        <label>Loan_Approval</label>
+        <label>Loan Approval</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
