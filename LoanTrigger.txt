@@ -1,23 +1,30 @@
-trigger LoanTrigger on Loan__c (before insert) 
-{
-    List<String> citysInserted = new List<String>();
-    for( Loan__c insLoans: trigger.new) //Select only those citys which are inserted just now
+public class UpdateOpportunity {
+    
+    public static void updateOpportunityList(List<Opportunity> oprtnList)
     {
-        citysInserted.add(insLoans.City__c);
-    }
-    Map<String, String> cityManagerMap = new Map<String, String>();
-    for (Citymanager__c ctyManager : [SELECT Name, User__r.Name FROM Citymanager__c WHERE Name IN :citysInserted])
-    {
-        cityManagerMap.put(ctyManager.Name, ctyManager.User__r.Name);
-    }
-    if(cityManagerMap != null)
-    {
-        for( Loan__c insLoans: trigger.new)
+        List<Id> cntId = new List<Id>();
+        for (Opportunity oprtnty: oprtnList)
         {
-            if(insLoans.Manager__c == null)
+            cntId.add(oprtnty.BillToContact__c);
+        }
+        Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
+        for(Opportunity oprtnty: oprtnList)
+        {
+            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null && idCntMap.get(Oprtnty.BillToContact__c) != null)
             {
-                insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
+                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
             }
         }
-    }
+    } 
 }
+
+/*
+
+trigger OpportunityTrigger on Opportunity (before update) 
+{
+if(trigger.isbefore && trigger.isupdate)
+{
+UpdateOpportunity.updateOppertunityList(trigger.new);
+}
+}
+*/
