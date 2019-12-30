@@ -1,18 +1,18 @@
-public class UpdateOppertunity {
+public class UpdateOpportunity {
     
     public static void updateOpportunityList(List<Opportunity> oprtnList)
     {
-       	List<ID> cntId = new List<ID>();
+       	List<Id> cntId = new List<Id>();
         for (Opportunity oprtnty: oprtnList)
         {
             cntId.add(oprtnty.BillToContact__c);
         }
-        Map<id,Contact> idCntMap = new Map<id,Contact>([SELECT AccountId FROM Contact WHERE Id IN :cntId]);
+        Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
         for(Opportunity oprtnty: oprtnList)
         {
             if(Oprtnty.Manager__c == null && Oprtnty.BillToContact__c != null)
             {
-                Oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).AccountId;
+                Oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).accountid;
             }
         }
         
@@ -21,11 +21,11 @@ public class UpdateOppertunity {
 
 /*
 
-trigger OppurtunityTrigger on Opportunity (before update) 
+trigger OpportunityTrigger on Opportunity (before update) 
 {
 if(trigger.isbefore && trigger.isupdate)
 {
-updateOpportunity.updateOppertunityList(trigger.new);
+UpdateOpportunity.updateOppertunityList(trigger.new);
 }
 }
 */
