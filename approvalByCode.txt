@@ -1,9 +1,0 @@
-Approval process can be executed via code also, below are the steps:-
-1. Create an instace of the approval process that we have created in our org.
-            Approval.ProcessSubmitRequest approvalRequest = new Approval.ProcessSubmitRequest();
-2. A comment can be provided on calling approval request(optional)
-            req.setComments('Offer Submitted for approval');
-3. The id of the object should be passed on which the approval process is going to execute.
-            req.setObjectId(offer.Id);
-4. Sumit the record for approval.
-            Approval.ProcessResult approvalResult = Approval.process(approvalRequest);
