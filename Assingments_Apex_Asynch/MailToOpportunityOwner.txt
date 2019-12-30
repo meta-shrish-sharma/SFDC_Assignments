@@ -13,7 +13,6 @@ global class MailToOpportunityOwner implements Schedulable
             email1.setSenderDisplayName('Admin');
             messaging.SingleEmailMessage[] emails = new messaging.SingleEmailMessage[]{email1};
             messaging.sendEmail(emails);
-            System.debug( 'Email Sended to  : ' + oprtnty.Owner.Email);
         }
     }
 }
