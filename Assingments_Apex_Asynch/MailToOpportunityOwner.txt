@@ -18,7 +18,7 @@ global class MailToOpportunityOwner implements Schedulable
     }
 }
 /*
-mailToOpportunityOwner MTO = new mailToOpportunityOwner();
+MailToOpportunityOwner MTO = new MailToOpportunityOwner();
 String sch = '20 30 8 12 12 ?';
 String jobID = system.schedule('Merge Job', sch, MTO);
 */
