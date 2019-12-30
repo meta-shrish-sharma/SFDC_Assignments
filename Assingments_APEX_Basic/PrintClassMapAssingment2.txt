@@ -1,6 +1,6 @@
 public class PrintClassMap 
 {   
-    public static Map<Class__c, Set<Student__c>> ListClassStudent()
+    public static Map<Class__c, Set<Student__c>> listClassStudent()
     {
         Map<Class__c, Set<Student__c>> classStudentMap = new Map<Class__c, Set<Student__c>>();
         List<Class__c> classNameList = [SELECT Name, (SELECT Id, Name FROM Students__r) FROM Class__c];
@@ -16,7 +16,7 @@ public class PrintClassMap
 
 
 /*
-Map<Class__c, Set<Student__c>> ClassStudentMap = PrintClassMap.ListClassStudent();
+Map<Class__c, Set<Student__c>> ClassStudentMap = PrintClassMap.listClassStudent();
 for(Class__c cls : ClassStudentMap.keySet())
 {
     system.debug(cls.Name+'   '+ ClassStudentMap.get(cls));
