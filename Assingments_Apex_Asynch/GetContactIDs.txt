@@ -3,20 +3,28 @@ public class GetContactIDs
     public static void populateContactIDs(Id contactId)
     {
         Account updatedAccount = [SELECT ContactIDs__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
-        String accountContID;
-        for(Contact contactAccount: updatedAccount.Contacts)
+        if(updatedAccount.ContactIDs__c != null)
         {
-            if(accountContID == null)
+            if(!updatedAccount.ContactIDs__c.contains(contactId))// If ContactIDs not null then check that ID already Exist or not
             {
-                accountContID =  contactAccount.Id; 
+                updatedAccount.ContactIDs__c = updatedAccount.ContactIDs__c + ','+ contactId; //If exist then update with comma separator
             }
-            if(!accountContID.contains(contactAccount.Id))
-            {
-                accountContID = accountContID + ',' + contactAccount.Id;
-            }   
+            update updatedAccount;
         }
-        if(updatedAccount.ContactIDs__c != accountContID)
+        if(updatedAccount.ContactIDs__c == null)
         {
+            String accountContID;
+            for(Contact contactAccount: updatedAccount.Contacts) // Id null then create an string of IDs
+            {
+                if(accountContID == null)
+                {
+                    accountContID =  contactAccount.Id; //First ID should be inserted without appending comma behind so that final String looks like Id1,Id2,Id3
+                }
+                if(!accountContID.contains(contactAccount.Id))
+                {
+                    accountContID = accountContID + ',' + contactAccount.Id;//After first Id insertion comma will inserted before every ID as a separator
+                }   
+            }
             updatedAccount.ContactIDs__c = accountContID;
             update updatedAccount;
         }
@@ -25,5 +33,4 @@ public class GetContactIDs
 
 /*
 GetContactIDs.populateContactIDs('0032w0000029NPFAA2'); 
-
 */
