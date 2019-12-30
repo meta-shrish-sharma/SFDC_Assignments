@@ -1,21 +1,19 @@
-global class mailToOpportunityOwner implements Schedulable{
-    
+global class mailToOpportunityOwner implements Schedulable
+{
     global void execute(SchedulableContext ctx) 
     {
         List<opportunity> opportunityList = [SELECT lastmodifieddate, Owner.Email FROM Opportunity WHERE lastmodifieddate < LAST_N_DAYS:30];
         for(opportunity oprtnty: opportunityList)
         {
-            
             messaging.SingleEmailMessage email1=new messaging.SingleEmailMessage();
             string[]toAdd=new string[]{oprtnty.Owner.Email};
-                email1.setToAddresses(toAdd);
+            email1.setToAddresses(toAdd);
             email1.setSubject('Opportunity Not Updated');
             email1.setPlainTextBody('Your Opportunity not updated since last 1 month');
             email1.setSenderDisplayName('Admin');
             messaging.SingleEmailMessage[] emails = new messaging.SingleEmailMessage[]{email1};
-                messaging.sendEmail(emails);
+            messaging.sendEmail(emails);
             System.debug( 'Email Sended to  : ' + oprtnty.Owner.Email);
-            
         }
     }
 }
