@@ -1,4 +1,4 @@
-public class UpdateOpportunity {
+public class OpportunityTriggerHandler {
     
     public static void updateOpportunityList(List<Opportunity> oprtnList)
     {
@@ -24,7 +24,7 @@ trigger OpportunityTrigger on Opportunity (before update)
 {
 if(trigger.isbefore && trigger.isupdate)
 {
-UpdateOpportunity.updateOppertunityList(trigger.new);
+OpportunityTriggerHandler.updateOppertunityList(trigger.new);
 }
 }
 */
