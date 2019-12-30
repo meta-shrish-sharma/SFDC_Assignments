@@ -1,33 +1,29 @@
 public class GetContactIDs
 {
-    public static void CountContacts(Id contactId)
+    public static void populateContactIDs(Id contactId)
     {
-        Account updatedAccount = [Select ContactIDs__c, (Select Id FROM Contacts) FROM Account WHERE Id IN (SELECT Accountid  FROM Contact WHERE Id = '0032w0000029NPEAA2')];
+        Account updatedAccount = [SELECT ContactIDs__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
         String accountContID;
         for(Contact contactAccount: updatedAccount.Contacts)
         {
-            
             if(accountContID == null)
             {
                 accountContID =  contactAccount.Id; 
-                
             }
             if(!accountContID.contains(contactAccount.Id))
             {
                 accountContID = accountContID + ',' + contactAccount.Id;
-            } 
-            
+            }   
         }
         if(updatedAccount.ContactIDs__c != accountContID)
         {
             updatedAccount.ContactIDs__c = accountContID;
             update updatedAccount;
         }
-        
     }
 }
 
 /*
-GetContactIDs.CountContacts('0012w00000399cuAAA'); 
+GetContactIDs.populateContactIDs('0032w0000029NPFAA2'); 
 
 */
