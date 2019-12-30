@@ -10,15 +10,11 @@ trigger PopulateManager on Loan__c (before insert)
     {
         cityManagerMap.put(ctyManager.Name, ctyManager.User__r.Name);
     }
-    
-    
     for( Loan__c insLoans: trigger.new)
     {
-        if(insLoans.manager__c == null)
+        if(insLoans.Manager__c == null)
         {
-            insLoans.manager__c = cityManagerMap.get(insLoans.City__c);
+            insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
         }
     }
-    
-    
 }
