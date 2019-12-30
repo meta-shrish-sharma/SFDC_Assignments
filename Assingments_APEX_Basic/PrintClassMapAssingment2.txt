@@ -1,9 +1,9 @@
-public class PrintClassMap {
-    
+public class PrintClassMap 
+{   
     public static Map<Class__c, Set<Student__c>> ListClassStudent()
     {
         Map<Class__c, Set<Student__c>> classStudentMap = new Map<Class__c, Set<Student__c>>();
-        List<Class__c> classNameList = [SELECT Name, (SELECT Id, Name FROM students__r) FROM Class__c];
+        List<Class__c> classNameList = [SELECT Name, (SELECT Id, Name FROM Students__r) FROM Class__c];
         for(Class__c className : classNameList)
         {
             SET<Student__c> studentIdSet = new  SET<Student__c>();
@@ -12,7 +12,6 @@ public class PrintClassMap {
         }
         return classStudentMap;
     }
-   
 }
 
 
