@@ -8,17 +8,13 @@ public class UpdateOpportunity {
             cntId.add(oprtnty.BillToContact__c);
         }
         Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
-        if(idCntMap != null)// Proceed only when there are values in Map
+        for(Opportunity oprtnty: oprtnList)
         {
-            for(Opportunity oprtnty: oprtnList)
+            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null && idCntMap.get(Oprtnty.BillToContact__c) != null)
             {
-                if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null)
-                {
-                    oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
-                }
+                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
             }
         }
-        
     } 
 }
 
