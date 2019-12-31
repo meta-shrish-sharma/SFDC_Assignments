@@ -11,13 +11,20 @@
         <senderType>CurrentUser</senderType>
         <template>contact/Birthday_Notification</template>
     </alerts>
+    <alerts>
+        <fullName>Send_Mail_On_Birthday</fullName>
+        <description>Send Mail On Birthday</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Email</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>contact/Birthday_Notification</template>
+    </alerts>
     <rules>
         <fullName>Birthday Notification</fullName>
-        <actions>
-            <name>SendEmailOnBirthday</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Contact.Email</field>
             <operation>notEqual</operation>
@@ -28,6 +35,10 @@
         </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
         <workflowTimeTriggers>
+            <actions>
+                <name>Send_Mail_On_Birthday</name>
+                <type>Alert</type>
+            </actions>
             <offsetFromField>Contact.Birthdate</offsetFromField>
             <timeLength>-2</timeLength>
             <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
