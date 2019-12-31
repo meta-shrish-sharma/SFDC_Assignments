@@ -21,7 +21,7 @@ trigger LoanTrigger on Loan__c (before insert)
     }
     for( Loan__c insLoans: Trigger.new)
     {
-        if(insLoans.Manager__c == null)
+        if(insLoans.Manager__c == null && cityManagerMap.get(insLoans.City__c) != null)
         {
             insLoans.Manager__c = cityManagerMap.get(insLoans.City__c);
         }
