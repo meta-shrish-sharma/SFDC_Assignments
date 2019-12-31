@@ -1,0 +1,10 @@
+trigger TeachTrigger on Teach__c (before insert) 
+{
+    for(Teach__c tch: Trigger.new)
+    {
+        if(tch.Subject__c == 'Hindi')
+        {
+            tch.addError('Hindi teacher insertion not allowed');
+        }
+    }
+}

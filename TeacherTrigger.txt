@@ -1,0 +1,15 @@
+trigger TeacherTrigger on Contact (before insert,before update) 
+{
+    if(trigger.isUpdate && trigger.isBefore)
+    {
+        List<contact> updatedContact = Trigger.new;
+        Map<Id, contact> updatedHindiTeacher = new Map<Id, contact>([SELECT Id FROM Contact WHERE Id IN (SELECT Teacher__c FROM Teach__c WHERE Subject__c = 'Hindi') AND Id IN :Trigger.new]);
+        for(contact tchUpdated: Trigger.new)
+        {
+            if(updatedHindiTeacher.get(tchUpdated.Id) != null)
+            {
+                tchUpdated.addError('Hindi teacher updation is not allowed');
+            }
+        }
+    }
+}

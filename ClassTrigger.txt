@@ -1,0 +1,26 @@
+//In delete triggers data can be access using Trigger.old 
+trigger ClassTrigger on Class__c (before delete, after update) 
+{
+    if(trigger.isDelete && trigger.isBefore)
+    {
+        List<AggregateResult> classList = [SELECT Class__r.Name FROM Student__c WHERE Sex__c = 'F' AND Class__c IN :Trigger.old GROUP BY Class__r.Name HAVING COUNT(Id) > 1];
+        List<String> classListString = new List<String>();
+        List<Id> deleteClass = new List<Id>();
+        for(AggregateResult ar: classList)
+        {
+            classListString.add((String)ar.get('Name'));
+        }
+        for(Class__c currClass:Trigger.old)
+        {
+            if(classListString.contains(currClass.Name))
+            {
+                currClass.addError('Cannot delete this class, This class has more then two female members');
+            }
+        }
+    }
+    if(trigger.isUpdate && trigger.isAfter)
+    {
+        List<student__c> deleteStudent = [SELECT Id, Name FROM Student__c WHERE Class__c IN :Trigger.new AND Class__r.Custom_Status__c = 'Reset'];
+        delete deleteStudent;
+    }
+}
