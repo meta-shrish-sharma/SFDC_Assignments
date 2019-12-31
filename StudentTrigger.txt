@@ -17,12 +17,12 @@ trigger StudentTrigger on Student__c (before insert, before update)
         //Select only those students whose records 
         for(AggregateResult agr: classList)
         {
-            classCount.put((ID)agr.get('class__c'), (Integer)agr.get('expr0'));
+            classCount.put((Id)agr.get('class__c'), (Integer)agr.get('expr0'));
         }
-        List<Class__c> classMaxCount = [SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId];
+        List<Class__c> classMaxCount = [SELECT Id, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId];
         for(Class__c classLimit: classMaxCount)
         {
-            classMaxCountMap.put((ID)classLimit.Id, (Integer)classLimit.Maxsize__c);
+            classMaxCountMap.put((Id)classLimit.Id, (Integer)classLimit.Maxsize__c);
             classIdMap.put(classLimit.Id, classLimit);
         }
         List<Student__c> updatedStudent = Trigger.new;
@@ -87,7 +87,7 @@ trigger StudentTrigger on Student__c (before insert, before update)
                 updatedClassCount.put(stdnt.Class__c, -1);   
             }
         }// List created for updated removed students
-        List<Class__c> updateClass = [SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :updatedClassId];
+        List<Class__c> updateClass = [SELECT Id, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :updatedClassId];
         for(Class__c cls: updateClass)
         {
             if(updatedClassCount.get(cls.Id) != null)
