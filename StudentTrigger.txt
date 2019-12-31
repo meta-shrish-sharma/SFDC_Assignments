@@ -15,9 +15,9 @@ trigger StudentTrigger on Student__c (before insert, before update)
         //get total students of classes in which students are inserted
         List<AggregateResult> classList = [SELECT COUNT(Id), Class__c FROM Student__c WHERE Class__c IN :classId GROUP BY Class__c];
         //Select only those students whose records 
-        for(AggregateResult Agr: classList)
+        for(AggregateResult agr: classList)
         {
-            classCount.put((ID)Agr.get('class__c'), (Integer)Agr.get('expr0'));
+            classCount.put((ID)agr.get('class__c'), (Integer)agr.get('expr0'));
         }
         List<Class__c> classMaxCount = [SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId];
         for(Class__c classLimit: classMaxCount)
@@ -28,7 +28,7 @@ trigger StudentTrigger on Student__c (before insert, before update)
         List<Student__c> updatedStudent = Trigger.new;
         for(Student__c st: updatedStudent)//Update students
         {
-            if(classCount.get(st.Class__c) >= classMaxCountMap.get(st.Class__c) )
+            if(classCount.get(st.Class__c) >= classMaxCountMap.get(st.Class__c))
             {
                 st.addError('Cannot insert more then '+classMaxCountMap.get(st.Class__c) +  ' student');
             }
@@ -36,11 +36,11 @@ trigger StudentTrigger on Student__c (before insert, before update)
             {
                 if(insertedClassCount.get(st.Class__c) != null)
                 {
-                    insertedClassCount.put(st.Class__c,(insertedClassCount.get(st.Class__c) + 1));
+                    insertedClassCount.put(st.Class__c, (insertedClassCount.get(st.Class__c) + 1));
                 }
                 else
                 {
-                    insertedClassCount.put(st.Class__c,1);   
+                    insertedClassCount.put(st.Class__c, 1);   
                 }
             }
         }//students Updated
@@ -65,11 +65,11 @@ trigger StudentTrigger on Student__c (before insert, before update)
             }
             if(updatedClassCount.get(stdnt.Class__c) != null)
             {
-                updatedClassCount.put(stdnt.Class__c,(updatedClassCount.get(stdnt.Class__c) + 1));
+                updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) + 1));
             }
             else
             {
-                updatedClassCount.put(stdnt.Class__c,1);   
+                updatedClassCount.put(stdnt.Class__c, 1);   
             }
         }// List created for updated inserted students
         for(Student__c stdnt: Trigger.old)//Remove students from newly inserted class
@@ -80,14 +80,14 @@ trigger StudentTrigger on Student__c (before insert, before update)
             }
             if(updatedClassCount.get(stdnt.Class__c) != null)
             {
-                updatedClassCount.put(stdnt.Class__c,(updatedClassCount.get(stdnt.Class__c) - 1));
+                updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) - 1));
             }
             else
             {
-                updatedClassCount.put(stdnt.Class__c,-1);   
+                updatedClassCount.put(stdnt.Class__c, -1);   
             }
         }// List created for updated removed students
-        List<Class__C> updateClass = [SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :updatedClassId];
+        List<Class__c> updateClass = [SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :updatedClassId];
         for(Class__c cls: updateClass)
         {
             if(updatedClassCount.get(cls.Id) != null)
