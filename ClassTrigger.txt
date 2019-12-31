@@ -5,7 +5,6 @@ trigger ClassTrigger on Class__c (before delete, after update)
     {
         List<AggregateResult> classList = [SELECT Class__r.Name FROM Student__c WHERE Sex__c = 'F' AND Class__c IN :Trigger.old GROUP BY Class__r.Name HAVING COUNT(Id) > 1];
         List<String> classListString = new List<String>();
-        List<Id> deleteClass = new List<Id>();
         for(AggregateResult ar: classList)
         {
             classListString.add((String)ar.get('Name'));
