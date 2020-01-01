@@ -3,15 +3,14 @@ trigger StudentTrigger on Student__c (before insert, before update)
     if(trigger.isInsert && trigger.isBefore)
     {
         Map<Id, Integer> classCount = new Map<Id, Integer>();//count avialable students of every class
-        Map<Id, Integer> classMaxCountMap = new Map<Id, Integer>();//Max limit of every class
-        Map<Id, Class__c> classIdMap = new Map<Id, Class__c>();
         Map<Id, Integer> insertedClassCount = new Map<Id, Integer>();//Track total no of inserted students
-        List<Id> classId = new List<Id>();
+        List<Id> classId = new List<Id>();//List of class Id's just inserted 
         //Fetch all those classes whose records are updated
         for(Student__c st: Trigger.new)
         {
             classId.add(st.Class__c);
         }
+        Map<Id, Class__c> insertedClass = new Map<Id, Class__c>([SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId]);
         //get total students of classes in which students are inserted
         List<AggregateResult> classList = [SELECT COUNT(Id), Class__c FROM Student__c WHERE Class__c IN :classId GROUP BY Class__c];
         //Select only those students whose records 
@@ -19,19 +18,16 @@ trigger StudentTrigger on Student__c (before insert, before update)
         {
             classCount.put((Id)agr.get('class__c'), (Integer)agr.get('expr0'));
         }
-        List<Class__c> classMaxCount = [SELECT Id, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId];
-        for(Class__c classLimit: classMaxCount)
+        for(Student__c st: Trigger.new)//Update students
         {
-            classMaxCountMap.put((Id)classLimit.Id, (Integer)classLimit.Maxsize__c);
-            classIdMap.put(classLimit.Id, classLimit);
-        }
-        List<Student__c> updatedStudent = Trigger.new;
-        for(Student__c st: updatedStudent)//Update students
-        {
-            if(classCount.get(st.Class__c) >= classMaxCountMap.get(st.Class__c))
+            //First verify that both values exist in map or not
+            Boolean countExistInMap = (classCount.get(st.Class__c)!= null) && (insertedClass.get(st.Class__c).MaxSize__c != null);
+            //This code block will not allow to insert if max limit reached
+            if((classCount.get(st.Class__c) >= insertedClass.get(st.Class__c).MaxSize__c) && countExistInMap)
             {
-                st.addError('Cannot insert more then '+classMaxCountMap.get(st.Class__c) +  ' student');
+                st.addError('Cannot insert more then '+insertedClass.get(st.Class__c).MaxSize__c +  ' student');
             }
+            //This code block sync the value of Mycount with the insert of students
             else
             {
                 if(insertedClassCount.get(st.Class__c) != null)
@@ -44,14 +40,15 @@ trigger StudentTrigger on Student__c (before insert, before update)
                 }
             }
         }//students Updated
-        for(Class__c cls: classMaxCount)
+        //Update the number of inserted students in every class
+        for(Id cls: insertedClass.keySet())
         {
-            if(insertedClassCount.get(cls.Id) != null)
+            if(insertedClassCount.get(cls) != null)
             {
-                cls.MyCount__c = cls.MyCount__c + insertedClassCount.get(cls.Id);
+                insertedClass.get(cls).MyCount__c = insertedClass.get(cls).MyCount__c + insertedClassCount.get(cls);
             }
         }
-        update classMaxCount; // update the class with the count of newly inserted students
+        update insertedClass.values(); // update the class with the count of newly inserted students
     }
     if(trigger.isUpdate && trigger.isBefore)
     {
