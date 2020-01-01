@@ -1,30 +1,56 @@
-@isTest (SeeAllData=true)
+@isTest
 public class GetContactIDsTest 
 {
-     @isTest static void TestIDsInsertion() 
-     {
-         boolean IDinserted = true;
-         system.debug(''+IDinserted);
-         ID contactID = '0032w0000029NPEAA2';
-         Test.startTest();
-         GetContactIDs.countContacts(contactID);
-         Test.stopTest();
-         id AcctID = [select accountid from contact where id = :ContactId][0].accountid;
-         system.debug(''+IDinserted);
-          List<account> reletedAccount= [select id,ContactIDs__c from account where id = :AcctID limit 1];
-          String AccountContID = reletedAccount[0].ContactIDs__c;
-          List<contact> accountContacts = [select id from contact where accountid = :AcctID];
-          for(contact Cntct: accountContacts)
-          {
-              //If any of the ID is not available then test got failed
-              if(!AccountContID.contains(Cntct.Id))
-              {
-                  IDinserted = false;
-              } 
+    @testSetup static void setup() 
+    {
+        //Testing for Null GetContactID
+        Account accnt = new Account(Name = 'TestAccount');
+        insert accnt;
+        List<Contact> cntct = new List<Contact>();
+        for(integer i = 0; i< 2;i++)
+        {
+            cntct.add(new Contact(Lastname = 'TestConatct'+i, AccountId = accnt.Id));
+        }
+        insert cntct;
+        //Testing for Not Null GetContactID
+        Account accntNotNull = new Account(Name = 'TestNotNull');
+        insert accntNotNull;
+        List<Contact> cntctNotNull = new List<Contact>();
+        for(integer i = 0; i< 2;i++)
+        {
+            cntctNotNull.add(new Contact(Lastname = 'TestNotNull'+i, AccountId = accntNotNull.Id));
+        }
+        insert cntctNotNull;
+        accntNotNull.ContactIDs__c = cntctNotNull[0].Id;//Update value of 1 Id
+        update accntNotNull;
+    }
+    @isTest static void testIDsInsertion_whenGetContactIdNull_getSucessRespond() 
+    {
+        boolean IDinserted = true;//This varible is used to verify that 
+        ID contactID = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct0'].id;
+        Test.startTest();
+        GetContactIDs.populateContactIDs(contactID);
+        Test.stopTest();
+        Account updatedAccount = [SELECT ContactIDs__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
+       	String AccountContID = updatedAccount.ContactIDs__c;
+        for(Contact contactAccount: updatedAccount.Contacts) // If ContactIDs null then create an string of IDs
+        {
+            if(!AccountContID.contains(contactAccount.Id))
+            {
+                IDinserted = false;
+            }
+        }
+        system.assert(IDinserted);
+    }
+    @isTest static void testIDsInsertion_whenGetContactIdNotNull_getSucessRespond() 
+    {
+        ID contactID = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull1'].id;
+        Test.startTest();
+        GetContactIDs.populateContactIDs(contactID);
+        Test.stopTest();
+        Account updatedAccount = [SELECT ContactIDs__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
+       	String AccountContID = updatedAccount.ContactIDs__c;
+        system.assert(AccountContID.contains(contactID));
+    }
     
-          }
-         system.assert(IDinserted);
-         
-     }
-	
 }

@@ -1,7 +1,8 @@
 @isTest
-public class MailToOpportunityOwnerTest {
-    
-    static testmethod void TestMail() 
+public class mailToOpportunityOwnerTest 
+{
+	@isTest    
+    static void testMailCronExp_getSucessRespond() 
      {
         Test.startTest();
         Datetime dt = Datetime.now().addMinutes(1);
@@ -13,7 +14,5 @@ public class MailToOpportunityOwnerTest {
         CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
         System.assertEquals(0, ct.TimesTriggered);
         System.assertEquals(dt.date(), ct.NextFireTime.date());
-        
     }
-
 }
