@@ -1,4 +1,4 @@
-trigger TeacherTrigger on Contact (before insert,before update) 
+trigger TeacherTrigger on Contact (before update) 
 {
     if(trigger.isUpdate && trigger.isBefore)
     {
