@@ -1,0 +1,346 @@
+global class ShoppingCartController {
+    public String searchProduct { get; set; }// this value is taken from searchBox
+    public List<Product2> prdList { get; set; } //List of aa the products needs to be displayed in all pageBlockTable
+    public List<Purchaseorder__c> ordrList { get; set; }
+    Public Integer noOfProducts{get; set;}// Total no of products available
+    Public Integer noOfOrders{get; set;}// Total no of orders available
+    Public Integer productPagesize{get;set;}//For pagination of page table
+    Public Integer orderPagesize{get;set;}//For pagination of order table
+    public String searchQuery;
+    public List<CartWrapperCls> selectedProducts{get;set;} //Products needs to be added to cart
+    public List<Product2WrapperCls> prdListTable {get;set;}
+    public Boolean showProdList = false;
+    public Boolean showCartList = false;
+    public Boolean renderOrderDetails{get;set;}
+    public Boolean checkoutDisable{get;set;}//used to enable checkout button
+    public string prdError {get;set;}
+    public Integer randomOrderNumber{get;set;}//to create a random number for order details
+    public Decimal orderTotal{get;set;} //total amount of all products
+    // ***** Variables for pagination of Products
+    private integer totalRecs = 0;       
+    private integer index = 0;  
+    private integer blockSize = 10;  
+    // *******
+    public ShoppingCartController()
+    {
+        selectedProducts = new List<CartWrapperCls>();
+        getAllProducts();
+        checkoutDisable = true;
+        renderOrderDetails = false;
+        randomOrderNumber = Integer.valueof((Math.random() * 1000000));
+        totalRecs = [select count() from Product2];  
+    }
+    //************This section is for Purchase History detail***********
+    
+    public List<Purchaseorder__c> getAllOrders()
+    {
+        List<Purchaseorder__c> ordListTable = new List<Purchaseorder__c>();
+        for(Purchaseorder__c order : (List<Purchaseorder__c>)setOrder.getRecords()) // Data should be fetched from setCon to form the data in pages
+            ordListTable.add(order);
+        return ordListTable;
+        
+    }
+    public ApexPages.StandardSetController setOrder {
+        get{
+            if(setOrder == null){
+                string ordSearchQuery = 'SELECT id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c';        
+                ordrList = Database.query(ordSearchQuery);
+                setOrder = new ApexPages.StandardSetController(ordrList);
+                orderPagesize = 10;
+                setOrder.setPageSize(orderPagesize);
+                noOfOrders = setOrder.getResultSize();
+                
+            }
+            return setOrder;
+        }set;
+    }
+    
+    //************This section is for Product detail***********
+    public pageReference showProducts() //to refresh the page block after taking input for search box
+    {
+        setHideshow(true);  
+        System.debug(showProdList+'');
+        return null;
+    }
+    public Boolean getHideshow()
+    {
+        return this.showProdList;
+    }
+    public void setHideshow(boolean s)
+    {
+        this.showProdList = s;
+    }
+    public List<Product2WrapperCls> getAllProducts()
+    {
+        prdListTable = new List<Product2WrapperCls>();
+        //This map is used to exclude the number of products already added in cart
+        Map<Id, Integer> cartMap = new Map<Id, Integer>();
+        if(selectedProducts.size() > 0)
+        {
+            for(CartWrapperCls cartProdCount : selectedProducts)
+            {
+                cartMap.put(cartProdCount.cProduct.id, cartProdCount.prdCount);
+            }
+        }
+        if(searchProduct == null)
+        {
+            System.debug('This is not in serch  condition');
+            searchquery = 'SELECT id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 ORDER BY Name LIMIT :blockSize OFFSET '+index;
+        }
+        else //if serching is not yet applied it will take all the products by default
+        {
+            System.debug('This is in serch  condition');
+            searchquery='SELECT id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%'+searchProduct+'%\' ORDER BY Name LIMIT :blockSize OFFSET '+index;
+        }
+        prdList = Database.query(searchquery);
+        totalRecs = prdList.size(); // Updation required after search operation
+        for(Product2 a : prdList)
+        {	
+            if((selectedProducts.size() > 0) && (cartMap.get(a.Id) > 0))
+            {
+                a.QuantityAvilable__c = a.QuantityAvilable__c - cartMap.get(a.Id);
+            }
+            prdListTable.add(new Product2WrapperCls(a));
+        }
+        return prdListTable;
+        
+    }
+    public void beginning() {  
+        
+        index = 0;  
+        getAllProducts();   
+    }  
+    
+    public void previous() {  
+        
+        index = index - blockSize;  
+        getAllProducts();
+    }  
+    
+    public void next() {  
+        
+        index = index + blockSize;  
+        getAllProducts();
+    }  
+    
+    public void end() {  
+        
+        index = totalrecs - math.mod(totalRecs,blockSize);  
+        getAllProducts();
+    }          
+    
+    public boolean getprev() {  
+        if(index == 0)  
+            return true;  
+        else  
+            return false;  
+        
+    }    
+    
+    public boolean getnxt() {  
+        
+        if((index + blockSize) > totalRecs)  
+            return true;  
+        else  
+            return false;  
+        
+    }   
+    public pageReference refresh() //to refresh the page block after taking input for search box
+    {
+        getAllProducts();
+        return null;
+    }
+    // For pagination of product table and page size should be 10 
+    // This method is not working with updation o fproduct table.
+    
+    /*
+public ApexPages.StandardSetController setCon {
+get{
+if(setCon == null){
+if(searchProduct == null)
+{
+System.debug('This is not in serch  condition');
+searchquery = 'SELECT id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 ORDER BY Name';
+}
+else //if serching is not yet applied it will take all the products by default
+{
+System.debug('This is in serch  condition');
+searchquery='SELECT id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%'+searchProduct+'%\' ORDER BY Name';
+}
+prdList = Database.query(searchquery);
+setCon = new ApexPages.StandardSetController(prdList);
+productPagesize = 10;
+setCon.setPageSize(productPagesize);
+noOfProducts = setCon.getResultSize();
+
+}
+return setCon;
+}set;
+}*/
+    
+    //************This section is for Cart detail***********
+    public pageReference AddToCart() // To add the products in cart table
+    {	
+        integer selected = 0;
+        integer notselected = 0;
+        for(Product2WrapperCls cWrapper : prdListTable){
+            if(cWrapper.isSelected == true)
+            {
+                boolean availableInCart = false;
+                //Quantity of product os picklist in standerd object
+                //hence needs to be converted first
+                if(cWrapper.cProduct.QuantityAvilable__c > 0)
+                {
+                    checkoutDisable = false;
+                    setShowCartList(true);
+                    cWrapper.cProduct.QuantityAvilable__c--; 
+                    // converting to string before saving to
+                    // the standerd product object
+                    
+                    // verify that product is avilable in cart or not
+                    // if avilalable then increment the available number of product in cart   
+                    for(CartWrapperCls crtWrap: selectedProducts)
+                    {
+                        if (crtWrap.cProduct.id == cWrapper.cProduct.id)
+                        {
+                            crtWrap.prdCount++;
+                            availableInCart = true;
+                        }
+                    }
+                    
+                    //if product is not avilable in list then add the product in list   
+                    if(!availableInCart)
+                        selectedProducts.add(new CartWrapperCls(cWrapper.cProduct,1));
+                    
+                }
+                
+            }
+        }//All products are added in map
+        
+        return null;
+    }
+    public Pagereference deleteRow(){
+        System.debug('Deleting Account');
+        String SelectedRowId=ApexPages.CurrentPage().getParameters().get('rowid');
+        System.debug(SelectedRowId);
+        Integer crtListIndex = 0;
+        while(crtListIndex < selectedProducts.size())
+        {
+            if(selectedProducts.get(crtListIndex).cProduct.id == SelectedRowId)
+            {
+                for(Product2WrapperCls cWrapper : prdListTable)
+                {
+                    if(cWrapper.cProduct.id == SelectedRowId)
+                    {
+                        cWrapper.cProduct.QuantityAvilable__c = cWrapper.cProduct.QuantityAvilable__c + selectedProducts.get(crtListIndex).prdCount;
+                    }
+                }
+                selectedProducts.remove(crtListIndex);
+                
+            }
+            else
+            {
+                crtListIndex++;
+            }
+            
+        }
+        system.debug(selectedProducts.size() +' Product Size');
+        if(selectedProducts.size() == 0)
+        {
+            system.debug(selectedProducts.size() +' Product Size');
+            setShowCartList(false);  
+        }
+        return null;
+        
+    }
+    public Boolean getShowCartList()
+    {
+        return this.showCartList;
+    }
+    public void setShowCartList(boolean s)
+    {
+        this.showCartList = s;
+    }
+    
+    //*********This section is to validate Cart Itema **************
+    public Pagereference handleUpdateChange()
+    {
+        ID objSelectedPrdID=ApexPages.CurrentPage().getParameters().get('updval');
+        for(CartWrapperCls wrp:selectedProducts)
+        {
+            Decimal maxprdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE id = :objSelectedPrdID][0].QuantityAvilable__c;
+            if(wrp.cProduct.id == objSelectedPrdID)
+            {
+                system.debug('this id is founded'+objSelectedPrdID + wrp.cProduct.id +'    ' + maxprdCount+ '  '+ wrp.prdCount);
+                checkoutDisable = false;	
+                if(wrp.prdCount < 0)
+                {
+                    system.debug('this id is founded'+objSelectedPrdID + wrp.cProduct.id);
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be negative for '+wrp.cProduct.Name ));
+                    checkoutDisable = true;	
+                }
+                if(wrp.prdCount > maxprdCount)
+                {
+                    system.debug('this id is founded'+objSelectedPrdID + wrp.cProduct.id);
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be more then '+ maxprdCount +' for '+wrp.cProduct.Name ));
+                    checkoutDisable = true;
+                }
+                if(wrp.prdCount == 0)
+                {
+                    system.debug('this id is founded'+objSelectedPrdID + wrp.cProduct.id);
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be Zero for '+wrp.cProduct.Name ));
+                    checkoutDisable = true;	
+                }
+                //updating the product detail table
+                for(Product2WrapperCls cWrapper : prdListTable)
+                {
+                    if(cWrapper.cProduct.id == objSelectedPrdID)
+                    {
+                        cWrapper.cProduct.QuantityAvilable__c = maxprdCount - wrp.prdCount + 1;
+                    }
+                }             
+                break;
+            }
+        }
+        return null;
+    }
+    
+    public pageReference Checkout() // To add the products in cart table
+    {	
+        Decimal totalSum = 0;
+        for(CartWrapperCls wrp:selectedProducts)
+        {
+            if(wrp.cProduct.ProductPrice__c != null)
+                totalSum = totalSum + (wrp.cProduct.ProductPrice__c * wrp.prdCount);
+        }
+        orderTotal = totalSum;
+        renderOrderDetails = true;
+        return null;
+    }
+    public pageReference placeOrder() // To add the products in cart table
+    {	
+        Purchaseorder__c ordr = new Purchaseorder__c();
+        ordr.OrderNumber__c = randomOrderNumber;
+        ordr.OrderPlaceTime__c = system.Now();
+        ordr.OrderPrice__c = orderTotal;
+        ordr.OrderStatus__c = 'Pending';
+        ordr.User__c = UserInfo.getUserId();
+        
+        upsert ordr;
+        List<PurchaseOrderLineItems__c> orderLineList = new  List<PurchaseOrderLineItems__c>();
+        for(CartWrapperCls wrp:selectedProducts)
+        {
+            PurchaseOrderLineItems__c POL = new PurchaseOrderLineItems__c();
+            POL.Product__c = wrp.cProduct.id;
+            POL.ProductQuantity__c = wrp.prdCount;
+            POL.PurchaseOrder__c = ordr.Id;
+            POL.Name = wrp.cProduct.Name+'Order';
+            orderLineList.add(POL);
+        }
+        upsert orderLineList;
+        PageReference currentPage = new pageReference('/apex/OrderHistory');
+        currentPage.setRedirect(true);
+        return currentPage ;
+        
+    }
+}
