@@ -1,0 +1,42 @@
+@isTest
+public class ClassTriggerTest 
+{
+    @testSetup static void dataSetupForTeacherTriggerTest() 
+    {
+        Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
+        insert cls;
+        List<Student__c> stdnt = new List<Student__c>();
+        for(Integer i=0;i<3;i++) {
+            stdnt.add(new Student__c(Name = 'TestStudent'+i, Sex__c = 'F', LastName__c = 'Lastname'+i, Class__c = cls.Id));
+        }
+        insert stdnt;
+    }
+    @isTest 
+    static void testClassTrigger_deleteClassWithFemaleStudents_getSucessRespond() 
+    {
+        String DMLResult;// Used to save the result of delete teacher
+        Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
+        Test.startTest();
+        try
+        {
+            Database.DeleteResult result= Database.delete(classId);
+        }
+        catch(Exception e)
+        {
+            DMLResult = e.getMessage();
+        }
+        Test.stopTest();
+        System.assert(DMLResult.contains('Cannot delete this class'));
+    }
+    @isTest 
+    static void testClassTrigger_resetClassDeleteStudents_getSucessRespond() 
+    {
+        Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
+        ClassId.Custom_Status__c = 'Reset';
+        Test.startTest();
+        Update classId;
+        Test.stopTest();
+        List<Student__c> stdntList = [SELECT Id FROM Student__c WHERE Class__c = :classId.Id];
+        System.assertEquals(0, stdntList.size());// All students should get deleted and size should be 0
+    }
+}

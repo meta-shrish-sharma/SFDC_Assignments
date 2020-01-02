@@ -1,0 +1,35 @@
+@isTest
+public class TeacherTriggerTest 
+{
+	@testSetup static void dataSetupForTeacherTriggerTest() 
+    {
+        Contact cnt = new Contact(Lastname = 'TestConatct');
+        insert cnt;
+        Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
+        insert cls;
+    }
+    @isTest static void testUpdateHindiTeacher_getSucessRespond() 
+    {
+        Teach__c newTeach = new Teach__c();
+        String DMLResult;// Used to save the result of update teacher
+        Contact teacher = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct'];
+        newteach.name = 'newHindiTeacher';
+        newteach.Class__c = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass'].Id;
+        newteach.Teacher__c = teacher.Id;
+        newteach.Subject__c = 'Hindi';
+        StaticTest.setDoNotRunTrigger();//Insert Hindi Teacher will get disabled here so that the next functionality of update can be tested
+        Database.SaveResult result = Database.insert(newTeach);
+        teacher.Lastname = 'newTestConatct';
+        Test.startTest();
+        try
+        {
+            update teacher;
+        }
+        catch(Exception e)
+        {
+            DMLResult = e.getMessage();
+        }
+        Test.stopTest();
+        system.assert(DMLResult.contains('Hindi teacher updation is not allowed'));
+    }
+}
