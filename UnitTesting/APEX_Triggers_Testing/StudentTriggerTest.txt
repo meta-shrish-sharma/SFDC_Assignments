@@ -17,7 +17,7 @@ public class StudentTriggerTest
     @isTest 
     static void testClassTrigger_testMoreThenMaxLimitInsert_getSucessRespond() 
     {
-        String DMLResult;
+        String operationResult;
         Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
         Student__c stdnt = new Student__c(Name = 'TestStudent', Class__c = classId.Id);
         Test.startTest();
@@ -27,27 +27,25 @@ public class StudentTriggerTest
         }
         catch(Exception e)
         {
-            DMLResult = e.getMessage();
+            operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.assert(DMLResult.contains('Cannot insert more then'));
+        System.assert(operationResult.contains('Cannot insert more then'));
     }
     @isTest 
     static void testClassTrigger_testMyCountCounterInsert_getSucessRespond() 
     {
-        String DMLResult;
         Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
         Student__c stdnt = new Student__c(Name = 'TestStudent', Class__c = classId.Id, LastName__c = 'Lastname');
         Test.startTest();
         Database.SaveResult result= Database.insert(stdnt);
         Test.stopTest();
-        Decimal MyCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
-        System.assertEquals(1, MyCount);
+        Decimal myCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
+        System.assertEquals(1, myCount);
     }
     @isTest 
     static void testClassTrigger_testMyCountCounterUpdate_getSucessRespond() 
     {
-        String DMLResult;
         Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
         Class__c newClassId = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
         Test.startTest();
@@ -58,9 +56,9 @@ public class StudentTriggerTest
         }
         update stdnt;
         Test.stopTest();
-        Decimal MyCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
-        System.assertEquals(3, MyCount);// New class should get increase from 0 to 3
-        Decimal MyCountOldClass = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'TestClass'].MyCount__c;
-        System.assertEquals(0, MyCountOldClass);// Old class should get decrease fro 3 to 0
+        Decimal myCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
+        System.assertEquals(3, myCount);// New class should get increase from 0 to 3
+        Decimal myCountOldClass = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'TestClass'].MyCount__c;
+        System.assertEquals(0, myCountOldClass);// Old class should get decrease fro 3 to 0
     }
 }

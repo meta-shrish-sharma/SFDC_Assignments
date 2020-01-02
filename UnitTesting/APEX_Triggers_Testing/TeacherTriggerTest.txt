@@ -11,7 +11,7 @@ public class TeacherTriggerTest
     @isTest static void testUpdateHindiTeacher_getSucessRespond() 
     {
         Teach__c newTeach = new Teach__c();
-        String DMLResult;// Used to save the result of update teacher
+        String operationResult;// Used to save the result of update teacher
         Contact teacher = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct'];
         newteach.name = 'newHindiTeacher';
         newteach.Class__c = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass'].Id;
@@ -27,9 +27,9 @@ public class TeacherTriggerTest
         }
         catch(Exception e)
         {
-            DMLResult = e.getMessage();
+            operationResult = e.getMessage();
         }
         Test.stopTest();
-        system.assert(DMLResult.contains('Hindi teacher updation is not allowed'));
+        System.assert(operationResult.contains('Hindi teacher updation is not allowed'));
     }
 }

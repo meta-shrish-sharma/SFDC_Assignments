@@ -14,7 +14,7 @@ public class ClassTriggerTest
     @isTest 
     static void testClassTrigger_deleteClassWithFemaleStudents_getSucessRespond() 
     {
-        String DMLResult;// Used to save the result of delete teacher
+        String operationResult;// Used to save the result of delete teacher
         Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
         Test.startTest();
         try
@@ -23,10 +23,10 @@ public class ClassTriggerTest
         }
         catch(Exception e)
         {
-            DMLResult = e.getMessage();
+            operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.assert(DMLResult.contains('Cannot delete this class'));
+        System.assert(operationResult.contains('Cannot delete this class'));
     }
     @isTest 
     static void testClassTrigger_resetClassDeleteStudents_getSucessRespond() 

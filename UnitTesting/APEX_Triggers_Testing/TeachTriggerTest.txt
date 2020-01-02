@@ -16,7 +16,7 @@ public class TeachTriggerTest
         newteach.Teacher__c = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct'].Id;
         newteach.Subject__c = 'Hindi';
         Database.SaveResult result;
-        String DMLResult;
+        String operationResult;
         Test.startTest();
         try
         {
@@ -24,9 +24,9 @@ public class TeachTriggerTest
         }
         catch(Exception e)
         {
-            DMLResult = e.getMessage();
+            operationResult = e.getMessage();
         }
         Test.stopTest();
-        system.assert(DMLResult.contains('Hindi teacher insertion not allowed'));
+        system.assert(operationResult.contains('Hindi teacher insertion not allowed'));
     }
 }
