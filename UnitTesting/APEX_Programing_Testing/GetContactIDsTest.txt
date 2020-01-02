@@ -1,7 +1,7 @@
 @isTest
 public class GetContactIDsTest 
 {
-    @testSetup static void setup() 
+    @testSetup static void setupGetContactIDsTestData() 
     {
         //Testing for Null GetContactID
         Account accnt = new Account(Name = 'TestAccount');
@@ -27,7 +27,7 @@ public class GetContactIDsTest
     @isTest static void testIDsInsertion_whenGetContactIdNull_getSucessRespond() 
     {
         boolean IDinserted = true;//This varible is used to verify that 
-        ID contactID = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct0'].id;
+        ID contactID = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct0'].Id;
         Test.startTest();
         GetContactIDs.populateContactIDs(contactID);
         Test.stopTest();
@@ -40,7 +40,7 @@ public class GetContactIDsTest
                 IDinserted = false;
             }
         }
-        system.assert(IDinserted);
+        System.assert(IDinserted);
     }
     @isTest static void testIDsInsertion_whenGetContactIdNotNull_getSucessRespond() 
     {
@@ -50,7 +50,7 @@ public class GetContactIDsTest
         Test.stopTest();
         Account updatedAccount = [SELECT ContactIDs__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
        	String AccountContID = updatedAccount.ContactIDs__c;
-        system.assert(AccountContID.contains(contactID));
+        System.assert(AccountContID.contains(contactID));
     }
     
 }

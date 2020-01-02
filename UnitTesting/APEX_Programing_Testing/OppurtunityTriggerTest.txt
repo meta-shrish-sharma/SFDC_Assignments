@@ -1,7 +1,7 @@
 @isTest
 public class OppurtunityTriggerTest 
 {
-    @testSetup static void setup() 
+    @testSetup static void setupDataForOppurtunityTrigger() 
     {
         Account accnt = new Account(Name = 'TestAccount');
         insert accnt;

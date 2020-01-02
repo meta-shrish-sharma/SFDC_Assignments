@@ -1,7 +1,7 @@
 @isTest
 public class PrintStudentsAssingment1Test 
 {
-    @testSetup static void setup() 
+    @testSetup static void setupDataForClassStudent() 
     {
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
@@ -14,7 +14,7 @@ public class PrintStudentsAssingment1Test
     @isTest 
     static void testStudentList_matchStudentList_getSucessRespond() 
     {
-        Id classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'].Id;
+        Id classId = [SELECT Id from Class__c WHERE Name = 'TestClass'].Id;
         Test.startTest();
         integer actualStudentListCount = PrintStudentsAssingment1.GetAllStudents(classId).size();
         Test.stopTest();
