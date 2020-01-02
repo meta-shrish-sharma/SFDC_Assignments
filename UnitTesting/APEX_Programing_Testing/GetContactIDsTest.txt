@@ -52,5 +52,4 @@ public class GetContactIDsTest
        	String AccountContID = updatedAccount.ContactIDs__c;
         System.assert(AccountContID.contains(contactID));
     }
-    
 }
