@@ -6,7 +6,8 @@ public class PrintStudentsAssingment1Test
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
         List<Student__c> stdnt = new List<Student__c>();
-        for(Integer i=0;i<2;i++) {
+        for(Integer i=0;i<2;i++) 
+        {
             stdnt.add(new Student__c(Name = 'TestStudent'+i, LastName__c = 'Lastname'+i ,Class__c = cls.Id));
         }
         insert stdnt;
