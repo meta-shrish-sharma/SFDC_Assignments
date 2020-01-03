@@ -1,49 +1,48 @@
-public class StudentPDFVFPageController {
-	public String currentPageId { get; set; }
+public class StudentPDFVFPageController 
+{
+    public String currentPageId { get; set; }
     public String pdfName { get; set; }
-	
     public StudentPDFVFPageController()
     {
-       currentPageId = ApexPages.currentPage().getParameters().get('id');
-		
+        currentPageId = ApexPages.currentPage().getParameters().get('id');
     }
     Public Student__c getStudents()
     {
         Student__c st= new Student__c();
-        st = [SELECT Name, Age__c, Sex__c, DOB__c FROM student__c WHERE id =  :currentPageId];
+        st = [SELECT Name, Age__c, Sex__c, DOB__c FROM student__c WHERE Id =  :currentPageId];
         pdfName = st.Name;
         return st;
     }
-	public PageReference returnSavePDF() 
+    public PageReference returnSavePDF() 
     {
         // Send the user to the detail page for the new account.
         PageReference pdf = Page.StudentPDFGenerator;
         // add parent id to the parameters for standardcontroller
-        pdf.getParameters().put('id',currentPageId);
-        // create the new attachment
+        pdf.getParameters().put('id', currentPageId);
         Attachment attachDelete = new Attachment();
+        //Delete if atachment already exist
         try
         {
-         attachDelete=[select id from Attachment where ParentId=:currentPageId];
-         delete attachDelete;
+            attachDelete = [SELECT Id FROM Attachment WHERE ParentId=:currentPageId];
+            delete attachDelete;
         }
-         catch (QueryException e) {
-           
+        catch (QueryException e) 
+        {
+            attachDelete = null;
         }
-       Attachment attach = new Attachment();
+        // create the new attachment
+        Attachment attach = new Attachment();
         // the contents of the attachment from the pdf
         Blob body;
-        
-        try {
-            
+        try 
+        {
             // returns the output of the page as a PDF
             body = pdf.getContent();
-            
-        // need to pass unit test -- current bug	
-        } catch (VisualforceException e) {
+        } 
+        catch (VisualforceException e) 
+        {
             body = Blob.valueOf('Some Text');
         }
-        
         attach.Body = body;
         // add the user entered name
         attach.Name = pdfName;
@@ -51,10 +50,7 @@ public class StudentPDFVFPageController {
         // attach the pdf to the account
         attach.ParentId = currentPageId;
         insert attach;
-        
         // send the user to the account to view results
-        return new PageReference('/'+currentPageId);
-            
-     }
-  
+        return new PageReference('/' + currentPageId);
+    }
 }

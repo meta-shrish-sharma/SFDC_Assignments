@@ -1,60 +1,53 @@
-public class UpdateBillToContactController {
-	 public String currentPageId { get; set; }
-	 public String selectedCard{get; set;}
-	 public List<Contact> contactList {get; set;}	
-     Opportunity opr{get; set;} 
-    public UpdateBillToContactController(){
-       currentPageId = ApexPages.currentPage().getParameters().get('id');
-		
+public class UpdateBillToContactController 
+{
+    public String currentPageId { get; set; }
+    public String selectedCard{get; set;}
+    public List<Contact> contactList {get; set;}	
+    public UpdateBillToContactController()
+    {
+        currentPageId = ApexPages.currentPage().getParameters().get('id');
     }
     Public List<Contact> getContacts()
     {
         contactList = new List<Contact>();
-        ID accID = [SELECT manager__c FROM Opportunity WHERE id  = :currentPageId][0].id;
-        contactList = [SELECT name, id, Birthdate, Department FROM contact WHERE OwnerId in (SELECT OwnerId FROM account WHERE id  = :accID)];
+        ID accID = [SELECT Manager__c FROM Opportunity WHERE Id  = :currentPageId][0].Id;
+        contactList = [SELECT Name, Id, Birthdate, Department FROM Contact WHERE OwnerId in (SELECT OwnerId FROM Account WHERE Id  = :accID)];
         return contactList;
     }
     public List<SelectOption> getRecords()
     {
-        
         List<Contact> contactList = getContacts();
         List<SelectOption> cntctListSelection = new List<SelectOption>();
-        ID accID = [SELECT manager__c FROM Opportunity WHERE id  = :currentPageId][0].manager__c;
-        contactList = [SELECT name, id, Birthdate, Department FROM contact WHERE OwnerId in (SELECT OwnerId FROM account WHERE id  = :accID)]; 
+        ID accID = [SELECT Manager__c FROM Opportunity WHERE Id  = :currentPageId][0].Manager__c;
+        contactList = [SELECT Name, Id, Birthdate, Department FROM contact WHERE OwnerId in (SELECT OwnerId FROM account WHERE Id  = :accID)]; 
         for(Contact cntct : contactList)
         {
-            cntctListSelection.add(new SelectOption(cntct.id,cntct.name+'/'+cntct.Birthdate+'/'+cntct.Department));
+            cntctListSelection.add(new SelectOption(cntct.Id,cntct.Name+'/'+cntct.Birthdate+'/'+cntct.Department));
         }
         return cntctListSelection;
     }
-	public void m1()
+    public PageReference returnSavePage() 
     {
-         system.debug(selectedCard+'selectID'+ currentPageId);  
-         Opportunity op = [select name, BillToContact__c from opportunity where id = :currentPageId LIMIT 1];  
-		 op.BillToContact__c = selectedCard; 
-         update op;
-        
-    }
-   public PageReference returnSavePage() {
         // Send the user to the detail page for the new account.
-        Opportunity op = [select name, BillToContact__c from opportunity where id = :currentPageId LIMIT 1];  
-		 op.BillToContact__c = selectedCard; 
-         update op;
+        Opportunity op = [SELECT Name, BillToContact__c FROM opportunity WHERE Id = :currentPageId LIMIT 1];  
+        op.BillToContact__c = selectedCard; 
+        update op;
         PageReference nextPage = new PageReference('/' + op.Id);
         return nextPage;
     }
-    public PageReference returnCancelPage() {
-        
+    public PageReference returnCancelPage() 
+    {
         PageReference nextPage = new PageReference('/' + currentPageId);
         return nextPage;
     }
-    public PageReference returnClearPage() {
+    public PageReference returnClearPage() 
+    {
         // Send the user to the detail page for the new account.
-        Opportunity op = [select name, BillToContact__c from opportunity where id = :currentPageId LIMIT 1];  
-		 op.BillToContact__c = null; 
-         update op;
+        Opportunity op = [SELECT Name, BillToContact__c FROM Opportunity WHERE Id = :currentPageId LIMIT 1];  
+        op.BillToContact__c = null; 
+        update op;
+        //redirect to opportunity page
         PageReference nextPage = new PageReference('/' + op.Id);
         return nextPage;
     }
-    
 }

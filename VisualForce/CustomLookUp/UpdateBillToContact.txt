@@ -1,19 +1,17 @@
 <apex:page Controller="UpdateBillToContactController" showHeader="false" showChat="false" sidebar="false">
     <apex:form >
- 	    <apex:pageBlock title="Contacts List">   
+        <apex:pageBlock title="Contacts List">   
             <apex:selectRadio layout="pageDirection" value="{!selectedCard}" >
                 <apex:selectOptions value="{!Records}"/>
             </apex:selectRadio>
-            <apex:pageBlockTable value="{! Contacts }" var="ct">
-            <apex:column value="{! ct.name }"/>
-            <apex:column value="{! ct.Birthdate }"/>
-            <apex:column value="{! ct.Department }"/>
-            
+            <apex:pageBlockTable value="{!Contacts }" var="ct">
+                <apex:column value="{!ct.name }"/>
+                <apex:column value="{!ct.Birthdate }"/>
+                <apex:column value="{!ct.Department }"/>
             </apex:pageBlockTable>
             <apex:commandButton action="{!returnSavePage}" title="Save" value="Save" />
             <apex:commandButton action="{!returnCancelPage}" title="Cancel" value="Cancel" />
             <apex:commandButton action="{!returnClearPage}" title="Clear" value="Clear" />
-    </apex:pageBlock>
+        </apex:pageBlock>
     </apex:form>
-
 </apex:page>
