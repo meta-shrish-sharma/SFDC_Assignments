@@ -1,10 +1,10 @@
 public class StudentPDFVFPageController 
 {
-    public String currentPageId { get; set; }
-    public String pdfName { get; set; }
+    private String currentPageId;
+    private String pdfName;
     public StudentPDFVFPageController()
     {
-        currentPageId = ApexPages.currentPage().getParameters().get('id');
+        currentPageId = ApexPages.currentPage().getParameters().get('Id');
     }
     Public Student__c getStudents()
     {

@@ -1,17 +1,12 @@
 public class FetchClassEditDelete
 {
-    Boolean showHideVariable = false;//used to render edit section
-    public List<Class__c> classDetails;
+    private Boolean showHideVariable = false;//used to render edit section
+    private List<Class__c> classDetails;
     public string className{get;set;}
     public string board{get;set;}
     public Decimal fee{get;set;}
     public Decimal myCount{get;set;}
     public ID editId{get;set;}
-    public pagereference showSection1() 
-    {
-        setHideshow(true);
-        return null; 
-    }
     public FetchClassEditDelete()
     {
         classDetails = [SELECT Name, Board__c, Fee__c, MyCount__c FROM Class__c];

@@ -1,11 +1,11 @@
 public class UpdateBillToContactController 
 {
-    public String currentPageId { get; set; }
+    private String currentPageId;
     public String selectedCard{get; set;}
-    public List<Contact> contactList {get; set;}	
+    private List<Contact> contactList;	
     public UpdateBillToContactController()
     {
-        currentPageId = ApexPages.currentPage().getParameters().get('id');
+        currentPageId = ApexPages.currentPage().getParameters().get('Id');
     }
     Public List<Contact> getContacts()
     {
@@ -19,7 +19,7 @@ public class UpdateBillToContactController
         List<Contact> contactList = getContacts();
         List<SelectOption> cntctListSelection = new List<SelectOption>();
         ID accID = [SELECT Manager__c FROM Opportunity WHERE Id  = :currentPageId][0].Manager__c;
-        contactList = [SELECT Name, Id, Birthdate, Department FROM contact WHERE OwnerId in (SELECT OwnerId FROM account WHERE Id  = :accID)]; 
+        contactList = [SELECT Name, Id, Birthdate, Department FROM contact WHERE AccountId = :accID]; 
         for(Contact cntct : contactList)
         {
             cntctListSelection.add(new SelectOption(cntct.Id,cntct.Name+'/'+cntct.Birthdate+'/'+cntct.Department));

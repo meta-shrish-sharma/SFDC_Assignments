@@ -1,8 +1,7 @@
 public class PaginationController 
 {
-    Public Integer noOfRecords{get; set;}
-    Public Integer size{get; set; }
-    public string strName {get; set; }
+    public Integer noOfRecords{get; set;}
+    public Integer size{get; set; }
     public Integer inputTotalNoOfRecords{get; set; } // input text1 value  from vf
     public String inputBillingCity{get; set; } // input text2 value  from vf
     public String inputBillingState{get; set; } 
