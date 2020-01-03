@@ -18,7 +18,7 @@
                     </apex:outputPanel>
                 </apex:panelGrid>   
             </apex.pageBlockSection>
-            <apex:CommandButton Id="btnAddPurchase" action="{!showProducts}" value="Add New Purchase" /><br/>
+            <apex:commandButton Id="btnAddPurchase" action="{!showProducts}" value="Add New Purchase" /><br/>
         </apex:pageBlock>
         <apex:pageBlock id="prdList" title="Products" rendered="{!Hideshow}">
             <apex:pageBlockSection >
@@ -27,7 +27,7 @@
                 </apex:inputText> 
             </apex:pageBlockSection> 
             <apex:pageBlockSection id="productSection">
-                <apex:CommandButton Id="btnAddToCart" value="Add To Cart" action="{!AddToCart}"/>
+                <apex:commandButton Id="btnAddToCart" value="Add To Cart" action="{!AddToCart}"/>
                 <br/>
                 <apex:pageBlockTable value="{!prdListTable}" var="pd" id="aProduct">
                     <apex:column headerValue="Select Products">
@@ -66,7 +66,7 @@
                         </apex:commandLink>
                     </apex:column>
                 </apex:pageBlockTable><br/>
-                <apex:CommandButton Id="btnCheckout" value="Checkout" action="{!Checkout}" disabled="{!checkoutDisable}"/><br/>
+                <apex:commandButton Id="btnCheckout" value="Checkout" action="{!Checkout}" disabled="{!checkoutDisable}"/><br/>
                 <apex:pageMessages id="showmsg"></apex:pageMessages><br/>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="Order Details" rendered="{!renderOrderDetails}">	
@@ -86,7 +86,7 @@
                 <apex:outputText style="font-style:italic" value="Total Amount ..# {0}.">
                     <apex:param value="{!orderTotal}"/>
                 </apex:outputText><br/>
-                <apex:CommandButton Id="btnPlaceOrder" value="Place Order" action="{!placeOrder}"/>
+                <apex:commandButton Id="btnPlaceOrder" value="Place Order" action="{!placeOrder}"/>
             </apex:pageBlockSection>
         </apex:pageBlock>
     </apex:form>    
