@@ -12,8 +12,7 @@
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value="<" action="{!setOrder.previous}" disabled="{!!setOrder.hasPrevious}" title="Previous Page"/>
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">" action="{!setOrder.next}" disabled="{!!setOrder.hasNext}" title="Next Page"/>
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">|" action="{!setOrder.last}" disabled="{!!setOrder.hasNext}" title="Last Page"/>
-                    <apex:outputText >{!(setOrder.pageNumber * orderPagesize)+1-orderPagesize}-{!IF((setOrder.pageNumber * orderPagesize)>noOfOrders, noOfOrders,(setOrder.pageNumber * orderPagesize))} of {!noOfOrders}</apex:outputText>
-                    <!--apex:commandButton status="fetchStatus" reRender="pb" value="Search" action="{!refresh}" title="Refresh Page"/-->
+                    <apex:outputText >{!(setOrder.pageNumber * orderPagesize) + 1 - orderPagesize}-{!IF((setOrder.pageNumber * orderPagesize) > noOfOrders, noOfOrders,(setOrder.pageNumber * orderPagesize))} of {!noOfOrders}</apex:outputText>
                     <apex:outputPanel style="color:#4AA02C;font-weight:bold">
                         <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
                     </apex:outputPanel>
@@ -28,68 +27,67 @@
                 </apex:inputText> 
             </apex:pageBlockSection> 
             <apex:pageBlockSection id="productSection">
-                <!--apex:CommandButton Id="btnSearch" action="{!refresh}" rerender="prdList" value="Search" /-->
                 <apex:CommandButton Id="btnAddToCart" value="Add To Cart" action="{!AddToCart}"/>
-                <br></br>
-            <apex:pageBlockTable value="{!prdListTable}" var="pd" id="aProduct">
-                <apex:column headerValue="Select Products">
-                    <apex:inputCheckbox value="{!pd.isSelected}"/>
-                </apex:column>
-                <apex:column value="{!pd.cProduct.id}"/>
-                <apex:column value="{!pd.cProduct.Name}"/>
-                <apex:column value="{!pd.cProduct.Description}"/> 
-                <apex:column value="{!pd.cProduct.ProductPrice__c}"/>	
-                <apex:column value="{!pd.cProduct.QuantityAvilable__c}"/>
-            </apex:pageBlockTable><br/>
-            <apex:panelGrid columns="7">
-            <apex:commandButton value="<<" rerender="productSection" action="{!beginning}" disabled="{!prev}"/>  
-            <apex:commandButton value="<" rerender="productSection" action="{!previous}" disabled="{!prev}"/>  
-            <apex:commandButton value=">" rerender="productSection" action="{!next}" disabled="{!nxt}"/>  
-            <apex:commandButton value=">>" rerender="productSection" action="{!end}" disabled="{!nxt}"/>
-            </apex:panelGrid>
-        </apex:pageBlockSection>
-        <apex:pageBlockSection title="Cart" id="cartSection" rendered="{!ShowCartList}">
-            <apex:pageBlockTable value="{!selectedProducts}" var="cartProducts" id="aCartPrd" >
-                <apex:column value="{!cartProducts.cProduct.Name}"/>
-                <apex:column value="{!cartProducts.cProduct.ProductCode}"/>
-                <apex:column value="{!cartProducts.cProduct.ProductPrice__c}"/>
-                <apex:column headerValue="Qty Selected">
-                    <apex:inputText value="{!cartProducts.prdCount}" id="prdQty">
-                        <apex:actionSupport event="onkeyup" action="{!handleUpdateChange}" reRender="prdQty,showmsg,btnCheckout,productSection">
-                            <apex:param name="updval" value="{!cartProducts.cProduct.ID}" assignTo="{!objSelectedPrdID}"/>
-                        </apex:actionSupport>
-                    </apex:inputText>
-                </apex:column>
-                <apex:column headerValue="DeleteRow">
-                    <apex:commandLink action="{!deleteRow}" reRender="crtList,prdList" value="Delete">
-                        <apex:param name="rowid" value="{!cartProducts.cProduct.Id}" assignTo="{!SelectedRowId}"/>
-                    </apex:commandLink>
-                </apex:column>
-            </apex:pageBlockTable><br/>
-            <apex:CommandButton Id="btnCheckout" value="Checkout" action="{!Checkout}" disabled="{!checkoutDisable}"/><br></br>
-            <apex:pageMessages id="showmsg"></apex:pageMessages><br></br>
-            <!-- id="errorTxt">{!prdError}</p-->
-    		</apex:pageBlockSection>
-			<apex:pageBlockSection title="Order Details" rendered="{!renderOrderDetails}">	
+                <br/>
+                <apex:pageBlockTable value="{!prdListTable}" var="pd" id="aProduct">
+                    <apex:column headerValue="Select Products">
+                        <apex:inputCheckbox value="{!pd.isSelected}"/>
+                    </apex:column>
+                    <apex:column value="{!pd.cProduct.id}"/>
+                    <apex:column value="{!pd.cProduct.Name}"/>
+                    <apex:column value="{!pd.cProduct.Description}"/> 
+                    <apex:column value="{!pd.cProduct.ProductPrice__c}"/>	
+                    <apex:column value="{!pd.cProduct.QuantityAvilable__c}"/>
+                </apex:pageBlockTable><br/>
+                <apex:panelGrid columns="7">
+                    <apex:commandButton value="<<" rerender="productSection" action="{!beginning}" disabled="{!prev}"/>  
+                    <apex:commandButton value="<" rerender="productSection" action="{!previous}" disabled="{!prev}"/>  
+                    <apex:commandButton value=">" rerender="productSection" action="{!next}" disabled="{!nxt}"/>  
+                    <apex:commandButton value=">>" rerender="productSection" action="{!end}" disabled="{!nxt}"/>
+                    <apex:outputText >{!(pageNumber * pageBlockSize) + 1 - pageBlockSize}-{!IF((pageNumber * pageBlockSize) > totalRecs, totalRecs,(pageNumber * pageBlockSize))} of {!totalRecs}</apex:outputText>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Cart" id="cartSection" rendered="{!ShowCartList}">
+                <apex:pageBlockTable value="{!selectedProducts}" var="cartProducts" id="aCartPrd" >
+                    <apex:column value="{!cartProducts.cProduct.Name}"/>
+                    <apex:column value="{!cartProducts.cProduct.ProductCode}"/>
+                    <apex:column value="{!cartProducts.cProduct.ProductPrice__c}"/>
+                    <apex:column headerValue="Qty Selected">
+                        <apex:inputText value="{!cartProducts.prdCount}" id="prdQty">
+                            <apex:actionSupport event="onkeyup" action="{!handleUpdateChange}" reRender="prdQty,showmsg,btnCheckout,productSection">
+                                <apex:param name="updVal" value="{!cartProducts.cProduct.ID}" assignTo="{!objSelectedPrdID}"/>
+                            </apex:actionSupport>
+                        </apex:inputText>
+                    </apex:column>
+                    <apex:column headerValue="DeleteRow">
+                        <apex:commandLink action="{!deleteRow}" reRender="crtList,prdList">
+                            <apex:param name="rowid" value="{!cartProducts.cProduct.Id}" assignTo="{!SelectedRowId}"/>
+                            <apex:image url="{!$Resource.DeleteImage}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                </apex:pageBlockTable><br/>
+                <apex:CommandButton Id="btnCheckout" value="Checkout" action="{!Checkout}" disabled="{!checkoutDisable}"/><br/>
+                <apex:pageMessages id="showmsg"></apex:pageMessages><br/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Order Details" rendered="{!renderOrderDetails}">	
                 <apex:outputText style="font-style:italic" value="Innvoice No ..# {0} Order Date {1}.">
-                <apex:param value="{!randomOrderNumber}"/>
-                 <apex:param value="{!NOW()}"/>
+                    <apex:param value="{!randomOrderNumber}"/>
+                    <apex:param value="{!NOW()}"/>
                 </apex:outputText><br/>
                 <apex:pageBlockTable value="{!selectedProducts}" var="cartProducts" id="aPlaceOrder">
-                <apex:column value="{!cartProducts.cProduct.Name}"/>
-                <apex:column value="{!cartProducts.cProduct.ProductCode}"/>
-                <apex:column value="{!cartProducts.cProduct.ProductPrice__c}"/>
-                <apex:column value="{!cartProducts.prdCount}"/>
-                <apex:column headerValue="Total Price">
-                    <apex:outputText > {!(cartProducts.prdCount * cartProducts.cProduct.ProductPrice__c)}</apex:outputText>
-                </apex:column>
-            </apex:pageBlockTable><br/>
+                    <apex:column value="{!cartProducts.cProduct.Name}"/>
+                    <apex:column value="{!cartProducts.cProduct.ProductCode}"/>
+                    <apex:column value="{!cartProducts.cProduct.ProductPrice__c}"/>
+                    <apex:column value="{!cartProducts.prdCount}"/>
+                    <apex:column headerValue="Total Price">
+                        <apex:outputText > {!(cartProducts.prdCount * cartProducts.cProduct.ProductPrice__c)}</apex:outputText>
+                    </apex:column>
+                </apex:pageBlockTable><br/>
                 <apex:outputText style="font-style:italic" value="Total Amount ..# {0}.">
-                <apex:param value="{!orderTotal}"/>
+                    <apex:param value="{!orderTotal}"/>
                 </apex:outputText><br/>
-                 <apex:CommandButton Id="btnPlaceOrder" value="Place Order" action="{!placeOrder}"/>
-        </apex:pageBlockSection>
-    </apex:pageBlock>
-    
-</apex:form>    
+                <apex:CommandButton Id="btnPlaceOrder" value="Place Order" action="{!placeOrder}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>    
 </apex:page>
