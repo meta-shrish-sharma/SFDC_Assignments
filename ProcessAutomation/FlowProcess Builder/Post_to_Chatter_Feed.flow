@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <interviewLabel>Post to Chatter Feed {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Post to Chatter Feed</label>
+    <label>Post to Chatter Feed Version 2</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -29,7 +29,7 @@
         <inputAssignments>
             <field>LinkUrl</field>
             <value>
-                <stringValue>https://ap16.salesforce.com/{!VarOpportunityID}</stringValue>
+                <stringValue>/{!VarOpportunityID}</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
