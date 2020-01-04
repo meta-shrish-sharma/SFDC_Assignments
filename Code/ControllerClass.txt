@@ -28,7 +28,8 @@ public class ShoppingCartController
     //total amount of all products in cart
     public Decimal orderTotal{get; set; } 
     // ** Variables for pagination of Products
-    public integer totalRecs{get; set; }       
+    public integer totalRecs{get; set; }  
+    private integer totalRecsWithoutSearch;
     private integer index = 0;  
     private integer blockSize = 10;
     public integer pageBlockSize{get; set; }
@@ -36,14 +37,15 @@ public class ShoppingCartController
     // **
     public ShoppingCartController()
     {
+        pageBlockSize = 10;
+        pageNumber = 1;
         selectedProducts = new List<CartWrapperCls>();
         getAllProducts();
         checkoutDisable = true;
         renderOrderDetails = false;
         randomOrderNumber = Integer.valueof((Math.random() * 1000000));
         totalRecs = [SELECT COUNT() FROM Product2];
-        pageBlockSize = 10;
-        pageNumber = 1;
+        totalRecsWithoutSearch = totalRecs;
     }
     //**This section is for Purchase History detail**
     public List<Purchaseorder__c> getAllOrders()
@@ -94,16 +96,18 @@ public class ShoppingCartController
                 cartMap.put(cartProdCount.cProduct.id, cartProdCount.prdCount);
             }
         }
-        if(searchProduct == null)
+        if(searchProduct == null || searchProduct == '')
         {
-            searchQuery = 'SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 ORDER BY Name LIMIT :blockSize OFFSET '+index;
+            searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 LIMIT '+ pageBlockSize +' OFFSET ' + index;
+            prdList = Database.query(searchQuery);
+            totalRecs = totalRecsWithoutSearch; // Updation required after search operation
         }
         else //if serching is not yet applied it will take all the products by default
         {
-            searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%'+searchProduct+'%\' ORDER BY Name LIMIT :blockSize OFFSET '+index;
+            searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%' + searchProduct + '%\' ORDER BY Name LIMIT '+ pageBlockSize +' OFFSET ' + index;
+            prdList = Database.query(searchQuery);
+            totalRecs = prdList.size(); // Updation required after search operation
         }
-        prdList = Database.query(searchQuery);
-        totalRecs = prdList.size(); // Updation required after search operation
         for(Product2 prd : prdList)
         {	
             if((selectedProducts.size() > 0) && (cartMap.get(prd.Id) > 0))
@@ -115,25 +119,25 @@ public class ShoppingCartController
         return prdListTable;
     }
     public void beginning() {  
-        index = 1;  
-        pageNumber = 0;
+        index = 0;  
+        pageNumber = 1;
         getAllProducts();   
     }  
     public void previous() {  
         pageNumber--;
-        index = index - blockSize;  
+        index = index - pageBlockSize;  
         getAllProducts();
     }  
     public void next() {  
         pageNumber++;
-        index = index + blockSize;  
+        index = index + pageBlockSize;  
         getAllProducts();
     }  
     public void end() {  
-        pageNumber = totalrecs/blockSize; 
-        index = totalrecs - math.mod(totalRecs,blockSize);  
+        pageNumber = (totalrecs/pageBlockSize) + 1; 
+        index = totalrecs - math.mod(totalRecs,pageBlockSize);  
         getAllProducts();
-    }          
+    } 
     public boolean getprev() {  
         if(index == 0)  
             return true;  
@@ -141,11 +145,11 @@ public class ShoppingCartController
             return false;  
     }    
     public boolean getnxt() {  
-        if((index + blockSize) > totalRecs)  
+        if((index + pageBlockSize) > totalRecs)  
             return true;  
         else  
             return false;  
-    }   
+    }  
     public pageReference refresh() //to refresh the page block after taking input for search box
     {
         getAllProducts();

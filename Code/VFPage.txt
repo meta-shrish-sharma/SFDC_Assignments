@@ -13,7 +13,7 @@
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">" action="{!setOrder.next}" disabled="{!!setOrder.hasNext}" title="Next Page"/>
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">|" action="{!setOrder.last}" disabled="{!!setOrder.hasNext}" title="Last Page"/>
                     <apex:outputText >{!(setOrder.pageNumber * orderPagesize) + 1 - orderPagesize}-{!IF((setOrder.pageNumber * orderPagesize) > noOfOrders, noOfOrders,(setOrder.pageNumber * orderPagesize))} of {!noOfOrders}</apex:outputText>
-                    <apex:outputPanel>
+                    <apex:outputPanel >
                         <b><font color="#4AA02C"><apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/></font></b>
                     </apex:outputPanel>
                 </apex:panelGrid>   
@@ -23,7 +23,7 @@
         <apex:pageBlock id="prdList" title="Products" rendered="{!Hideshow}">
             <apex:pageBlockSection >
                 <apex:inputText value="{!searchProduct}" label="Product Name" >
-                    <apex:actionSupport event="onkeydown" action="{!refresh}" reRender="productSection"/>
+                    <apex:actionSupport event="onkeyup" action="{!refresh}" reRender="productSection"/>
                 </apex:inputText> 
             </apex:pageBlockSection> 
             <apex:pageBlockSection id="productSection">
