@@ -18,7 +18,7 @@ trigger LoanTrigger on Loan__c (before insert)
     }
     Map<Id, Id> cityManagerMap = new Map<Id, Id>();
     List<City_Manager__c> getManagers = [SELECT Id, Manager__c FROM City_Manager__c WHERE Id IN :citysInserted];
-    for (City_Manager__c ctyManager : getManagers)
+    for(City_Manager__c ctyManager : getManagers)
     {
         cityManagerMap.put(ctyManager.Id, ctyManager.Manager__c);
     }
