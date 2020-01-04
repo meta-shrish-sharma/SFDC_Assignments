@@ -1,3 +1,11 @@
 <apex:page standardController="Contact" extensions="InlinePageController">
-    <p style="background-color:powderblue;text-align:center;font-size: 20px;" >{!teacherType} Teacher</p>
+    <style>
+    .tagStyle
+        {
+        background-color:powderblue;
+        text-align:center;
+        font-size: 20px;
+        }
+    </style>
+    <p class="tagStyle" >{!teacherType} Teacher</p>
 </apex:page>

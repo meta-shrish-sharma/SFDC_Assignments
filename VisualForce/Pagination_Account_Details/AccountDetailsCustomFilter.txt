@@ -1,21 +1,21 @@
 <apex:page Controller="PaginationController">
     <apex:form >
         <apex:pageBlock title="Account Search">
-             <table>
+            <table>
                 <tr>
-                   <apex:inputText id="totalNoOfRecords" value="{!inputTotalNoOfRecords}">
-                    <apex:outputLabel >Total No of Records: </apex:outputLabel>
+                    <apex:inputText id="totalNoOfRecords" value="{!inputTotalNoOfRecords}">
+                        <apex:outputLabel >Total No of Records: </apex:outputLabel>
                     </apex:inputText>
                     <apex:inputText id="BillingCity" value="{!inputBillingCity}">
-                    <apex:outputLabel >BillingCity: </apex:outputLabel>
+                        <apex:outputLabel >BillingCity: </apex:outputLabel>
                     </apex:inputText>
                 </tr>
                 <tr>
                     <apex:inputText id="BillingState" value="{!inputBillingState}">
-                    <apex:outputLabel >BillingState: </apex:outputLabel>
+                        <apex:outputLabel >BillingState: </apex:outputLabel>
                     </apex:inputText>
                     <apex:inputText id="BillingCountry" value="{!inputBillingCountry}">
-            		<apex:outputLabel >BillingCountry: </apex:outputLabel>
+                        <apex:outputLabel >BillingCountry: </apex:outputLabel>
                     </apex:inputText>
                 </tr>
             </table>
@@ -35,9 +35,9 @@
                 <apex:commandButton status="fetchStatus" reRender="pb" value="<" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}" title="Previous Page"/>
                 <apex:commandButton status="fetchStatus" reRender="pb" value=">" action="{!setCon.next}" disabled="{!!setCon.hasNext}" title="Next Page"/>
                 <apex:commandButton status="fetchStatus" reRender="pb" value=">|" action="{!setCon.last}" disabled="{!!setCon.hasNext}" title="Last Page"/>
-                <apex:outputText >{!(setCon.pageNumber * size) + 1 - size}-{!IF((setCon.pageNumber * size) > noOfRecords, noOfRecords,(setCon.pageNumber * size))} of {!noOfRecords}</apex:outputText>
-                <apex:outputPanel style="color:#4AA02C;font-weight:bold">
-                    <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                <apex:outputText>{!(setCon.pageNumber * size) + 1 - size}-{!IF((setCon.pageNumber * size) > noOfRecords, noOfRecords,(setCon.pageNumber * size))} of {!noOfRecords}</apex:outputText>
+                <apex:outputPanel>
+                    <b><font color="#4AA02C"><apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/></font></b>
                 </apex:outputPanel>
             </apex:panelGrid>
         </apex:pageBlock>

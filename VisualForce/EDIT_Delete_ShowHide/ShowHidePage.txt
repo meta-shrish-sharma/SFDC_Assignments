@@ -27,7 +27,7 @@
                     </apex:selectList>
                     <apex:inputText id="cFee" value="{!fee}" label="Fee:" />
                     <apex:inputText id="cMyCount" value="{!myCount}" label="My Count:" />
-                    <apex:commandButton action="{!updateClass}" value="Update" styleClass="btn">
+                    <apex:commandButton action="{!updateClass}" value="Update">
                     </apex:commandButton>	
                 </apex:pageBlockSection>
             </apex:outputPanel>
