@@ -13,8 +13,8 @@
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">" action="{!setOrder.next}" disabled="{!!setOrder.hasNext}" title="Next Page"/>
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value=">|" action="{!setOrder.last}" disabled="{!!setOrder.hasNext}" title="Last Page"/>
                     <apex:outputText >{!(setOrder.pageNumber * orderPagesize) + 1 - orderPagesize}-{!IF((setOrder.pageNumber * orderPagesize) > noOfOrders, noOfOrders,(setOrder.pageNumber * orderPagesize))} of {!noOfOrders}</apex:outputText>
-                    <apex:outputPanel style="color:#4AA02C;font-weight:bold">
-                        <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                    <apex:outputPanel>
+                        <b><font color="#4AA02C"><apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/></font></b>
                     </apex:outputPanel>
                 </apex:panelGrid>   
             </apex.pageBlockSection>
@@ -70,7 +70,7 @@
                 <apex:pageMessages id="showmsg"></apex:pageMessages><br/>
             </apex:pageBlockSection>
             <apex:pageBlockSection title="Order Details" rendered="{!renderOrderDetails}">	
-                <apex:outputText style="font-style:italic" value="Innvoice No ..# {0} Order Date {1}.">
+                <apex:outputText value="Innvoice No ..# {0} Order Date {1, date, dd-MMM-yyyy}.">
                     <apex:param value="{!randomOrderNumber}"/>
                     <apex:param value="{!NOW()}"/>
                 </apex:outputText><br/>
@@ -83,7 +83,7 @@
                         <apex:outputText > {!(cartProducts.prdCount * cartProducts.cProduct.ProductPrice__c)}</apex:outputText>
                     </apex:column>
                 </apex:pageBlockTable><br/>
-                <apex:outputText style="font-style:italic" value="Total Amount ..# {0}.">
+                <apex:outputText value="Total Amount ..# {0}.">
                     <apex:param value="{!orderTotal}"/>
                 </apex:outputText><br/>
                 <apex:commandButton Id="btnPlaceOrder" value="Place Order" action="{!placeOrder}"/>
