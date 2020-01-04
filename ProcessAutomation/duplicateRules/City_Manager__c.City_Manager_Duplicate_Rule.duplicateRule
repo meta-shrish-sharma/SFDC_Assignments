@@ -3,7 +3,7 @@
     <actionOnInsert>Block</actionOnInsert>
     <actionOnUpdate>Block</actionOnUpdate>
     <alertText>Use one of these records?</alertText>
-    <description>Do not allow duplicate on name column of City Manager</description>
+    <description>Do not allow duplicate on name column of city manager</description>
     <duplicateRuleFilter xsi:nil="true"/>
     <duplicateRuleMatchRules>
         <matchRuleSObjectType>City_Manager__c</matchRuleSObjectType>
