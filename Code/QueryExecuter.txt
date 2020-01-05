@@ -1,0 +1,17 @@
+<apex:page controller="QueryExecuterController">
+    <apex:form>
+        <apex:pageblock>
+            <apex:pageBlockTable value="{!lstObjs}" var="rec">
+                <apex:repeat value="{!lstFlds}" var="fld">
+                    <apex:column value="{!rec[fld]}">
+                        <apex:facet name="header">   
+                            <apex:commandLink action="{!ViewData}" value="{!fld} {!IF(sortExpression==fld,IF(sortDirection='ASC','▼','▲'),'')}" id="cmdSort">
+                                <apex:param value="{!fld}" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                </apex:repeat>
+            </apex:pageBlockTable>        
+        </apex:pageblock>
+    </apex:form>
+</apex:page>
