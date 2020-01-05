@@ -1,0 +1,15 @@
+public class QueryEditorInputBoxController 
+{
+    public String queryInput {get;set;}
+    public Boolean showQueryOutput{get;set;}
+    public QueryEditorInputBoxController()
+    {
+        showQueryOutput = false;
+    }
+    public PageReference executeQuery()
+    {
+     	showQueryOutput = true;
+        system.debug(queryInput);
+        return null;
+    }
+}
