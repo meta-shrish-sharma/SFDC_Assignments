@@ -1,24 +1,20 @@
 @isTest
 public class TeacherTriggerTest 
 {
-	@testSetup static void dataSetupForTeacherTriggerTest() 
+    @testSetup 
+    static void dataSetupForTeacherTriggerTest() 
     {
-        Contact cnt = new Contact(Lastname = 'TestConatct');
+        Contact cnt = new Contact(Lastname = 'TestContact', Subject__c = 'Hindi');
+        TeacherTriggerStaticClass.setDoNotRunTeacherTrigger();//Insert Hindi Teacher will get disabled here so that the next functionality of update can be tested
         insert cnt;
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
     }
-    @isTest static void testUpdateHindiTeacher_getSucessRespond() 
+    @isTest 
+    static void testUpdateHindiTeacher_getFailureResponse() 
     {
-        Teach__c newTeach = new Teach__c();
         String operationResult;// Used to save the result of update teacher
-        Contact teacher = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct'];
-        newteach.name = 'newHindiTeacher';
-        newteach.Class__c = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass'].Id;
-        newteach.Teacher__c = teacher.Id;
-        newteach.Subject__c = 'Hindi';
-        StaticTest.setDoNotRunTrigger();//Insert Hindi Teacher will get disabled here so that the next functionality of update can be tested
-        Database.SaveResult result = Database.insert(newTeach);
+        Contact teacher = [SELECT Id FROM Contact WHERE Lastname = 'TestContact'];
         teacher.Lastname = 'newTestConatct';
         Test.startTest();
         try
@@ -30,6 +26,25 @@ public class TeacherTriggerTest
             operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.assert(operationResult.contains('Hindi teacher updation is not allowed'));
+        System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'));
+    }
+    @isTest 
+    static void testInsertHindiTeacher_getFailureResponse() 
+    {
+        String operationResult;
+        Contact cnt = new Contact(Lastname = 'TestContact', Subject__c = 'Hindi');
+        TeacherTriggerStaticClass.setRunTeacherTrigger();//Insert Hindi Teacher will get disabled here so that the next functionality of update can be tested
+        Test.startTest();
+        try
+        {
+            insert cnt;
+        }
+        catch(Exception e)
+        {
+            operationResult = e.getMessage();
+        }
+        Test.stopTest();
+        System.debug(operationResult);
+        System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'));
     }
 }
