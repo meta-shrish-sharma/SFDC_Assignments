@@ -14,7 +14,7 @@ public class ClassTriggerTest
         insert st;
     }
     @isTest 
-    static void testClassTrigger_deleteClassWithFemaleStudents_getSuccessRespond() 
+    static void testClassTrigger_deleteClassWithFemaleStudents_getSuccessResponse() 
     {
         String operationResult;// Used to save the result of delete teacher
         Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
@@ -31,7 +31,7 @@ public class ClassTriggerTest
         System.assert(operationResult.contains('Cannot delete this class'));
     }
     @isTest 
-    static void testClassTrigger_resetClassDeleteStudents_getSucessRespond() 
+    static void testClassTrigger_resetClassDeleteStudents_getSuccessResponse() 
     {
         Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
         testClass.Custom_Status__c = 'Reset';
