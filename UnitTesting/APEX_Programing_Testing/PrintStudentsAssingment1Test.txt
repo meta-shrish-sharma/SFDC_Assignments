@@ -14,7 +14,7 @@ public class PrintStudentsAssingment1Test
         insert st;
     }
     @isTest 
-    static void testStudentList_matchStudentList_getSuccessRespond() 
+    static void testStudentList_matchStudentList_getSuccessResponse() 
     {
         Id classId = [SELECT Id from Class__c WHERE Name = 'TestClass'].Id;
         Test.startTest();
