@@ -1,7 +1,8 @@
 @isTest
 public class GetContactIdsTest 
 {
-    @testSetup static void setupGetContactIdsTestData() 
+    @testSetup 
+    static void setupGetContactIdsTestData() 
     {
         //Testing for Null GetContactId
         Account acc = new Account(Name = 'TestAccount');
@@ -24,7 +25,8 @@ public class GetContactIdsTest
         accNotNull.ContactIds__c = ctNotNull[0].Id;//Update value of 1 Id
         update accNotNull;
     }
-    @isTest static void testIdsInsertion_whenGetContactIdNull_getSuccessRespond() 
+    @isTest 
+    static void testIdsInsertion_whenGetContactIdNull_getSuccessRespond() 
     {
         boolean contactIdsInserted = true;//This varible is used to verify that 
         ID contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct0'].Id;
@@ -42,7 +44,8 @@ public class GetContactIdsTest
         }
         System.assert(contactIdsInserted);
     }
-    @isTest static void testIDsInsertion_whenGetContactIdNotNull_getSuccessRespond() 
+    @isTest 
+    static void testIDsInsertion_whenGetContactIdNotNull_getSuccessRespond() 
     {
         Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull1'].Id;
         Test.startTest();
@@ -52,5 +55,16 @@ public class GetContactIdsTest
        	String AccountContID = updatedAccount.ContactIds__c;
         System.assert(AccountContID.contains(contactId));
     }
-    //Now test for Id already available
+    //Test for Id already available then Id should not insert
+    @isTest 
+    static void testIDsInsertion_whenIdAvaialableInGetContactId_getSuccessRespond() 
+    {
+        Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull0'].Id;
+        Test.startTest();
+        GetContactIds.populateContactIds(contactId);
+        Test.stopTest();
+        Account updatedAccount = [SELECT ContactIds__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
+       	String AccountContID = updatedAccount.ContactIds__c;
+        System.assertEquals(contactId, AccountContID);// Only one Id should exist
+    }
 }
