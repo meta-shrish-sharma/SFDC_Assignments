@@ -3,17 +3,17 @@ public class OppurtunityTriggerTest
 {
     @testSetup static void setupDataForOppurtunityTrigger() 
     {
-        Account accnt = new Account(Name = 'TestAccount');
-        insert accnt;
-        Contact cntct = new Contact(Lastname = 'TestConatct', AccountId = accnt.Id);
-        insert cntct;
+        Account acc = new Account(Name = 'TestAccount');
+        insert acc;
+        Contact ct = new Contact(Lastname = 'TestConatct', AccountId = acc.Id);
+        insert ct;
         Opportunity op = new Opportunity();
         op.Name = 'newOppourtnity';
         op.Amount = 500;
         op.CloseDate = System.today().addDays(-2);
         op.StageName = 'Prospecting';
         insert op;
-        op.BillToContact__c = cntct.Id;
+        op.BillToContact__c = ct.Id;
         op.StageName = 'Closed Won';
         update op;
     }
