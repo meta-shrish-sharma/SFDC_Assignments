@@ -1,49 +1,52 @@
 /*
 Following are the test cases 	
-1. Test two dates without any weekand in between
-2. Test two dates with weekand in between
+1. Test two dates without any weekend in between
+2. Test two dates with weekend in between
 3. Test with null date
-4. Test by passing both same date ande day as weekand
-
+4. Test by passing both same date
 */
 @isTest
 public class GetWorkingDaysTest 
 {
-    //Test two dates without any weekand in between
-    @isTest static void testWithoutWeekandDates() 
+    //Test two dates without any weekend in between
+    @isTest 
+    static void testWithoutWeekendDates_getSuccessRespond() 
     {
         Integer workingDays;
         Test.startTest();
-        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/16/2019'),Date.parse('12/20/2019'));
+        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/16/2019'), Date.parse('12/20/2019'));
         Test.stopTest();
-        System.assertEquals(3,workingDays);
+        System.assertEquals(3, workingDays);
     } 
-    //Test two dates with weekand in between
-    @isTest static void testWithWeekandDates() 
+    //Test two dates with weekend in between
+    @isTest 
+    static void testWithWeekendDates_getSuccessRespond() 
     {
         Integer workingDays;
         Test.startTest();
-        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/14/2019'),Date.parse('12/20/2019'));
+        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/14/2019'), Date.parse('12/20/2019'));
         Test.stopTest();
-        System.assertEquals(4,workingDays);
+        System.assertEquals(4, workingDays);
     } 
     //Test with null date
-    @isTest static void testNullDates() 
+    @isTest 
+    static void testNullDates_getSuccessRespond() 
     {
         Integer workingDays;
         Test.startTest();
-        workingDays = GetWorkingDays.getWorkingDays(null,null);
+        workingDays = GetWorkingDays.getWorkingDays(null, null);
         Test.stopTest();
-        System.assertEquals(0,workingDays);
+        System.assertEquals(0, workingDays);
     }       
     //Test by passing both same date
-    @isTest static void testSameDates() 
+    @isTest 
+    static void testSameDates_getSuccessRespond() 
     {
         Integer workingDays;
         Test.startTest();
-        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/14/2019'),Date.parse('12/14/2019'));
+        workingDays = GetWorkingDays.getWorkingDays(Date.parse('12/14/2019'), Date.parse('12/14/2019'));
         Test.stopTest();
         system.debug(system.today());
-        System.assertEquals(0,workingDays);
+        System.assertEquals(0, workingDays);
     }  
 }
