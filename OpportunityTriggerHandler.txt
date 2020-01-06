@@ -16,8 +16,8 @@ public class OpportunityTriggerHandler
             }
             if(opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost')
             {
-                String previousOpp = oldOpportunities.get(opp.Id).StageName;
-                if(previousOpp != 'Closed Won' && previousOpp != 'Closed Lost')
+                String oldOpp = oldOpportunities.get(opp.Id).StageName;
+                if(oldOpp != 'Closed Won' && oldOpp != 'Closed Lost')
                 {
                     opp.CloseDate = System.today();
                 }
