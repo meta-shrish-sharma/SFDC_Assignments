@@ -60,39 +60,39 @@ trigger StudentTrigger on Student__c (before insert, before update)
     {
         Map<Id, Integer> updatedClassCount = new Map<Id, Integer>();//Track total no of inserted students
         List<Id> updatedClassId = new List<Id>();
-        for(Student__c stdnt: Trigger.new)//Add students to newly inserted class
+        for(Student__c st: Trigger.new)//Add students to newly inserted class
         {
-            if(stdnt.Class__c != null)
+            if(st.Class__c != null)
             {
-                if(!updatedClassId.contains(stdnt.Class__c))
+                if(!updatedClassId.contains(st.Class__c))
                 {
-                    updatedClassId.add(stdnt.Class__c);
+                    updatedClassId.add(st.Class__c);
                 }
-                if(updatedClassCount.get(stdnt.Class__c) != null)
+                if(updatedClassCount.get(st.Class__c) != null)
                 {
-                    updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) + 1));
+                    updatedClassCount.put(st.Class__c, (updatedClassCount.get(st.Class__c) + 1));
                 }
                 else
                 {
-                    updatedClassCount.put(stdnt.Class__c, 1);   
+                    updatedClassCount.put(st.Class__c, 1);   
                 }
             }
         }// List created for updated inserted students
-        for(Student__c stdnt: Trigger.old)//Remove students from newly inserted class
+        for(Student__c st: Trigger.old)//Remove students from newly inserted class
         {
-            if(stdnt.Class__c != null)
+            if(st.Class__c != null)
             {
-                if(!updatedClassId.contains(stdnt.Class__c))
+                if(!updatedClassId.contains(st.Class__c))
                 {
-                    updatedClassId.add(stdnt.Class__c);
+                    updatedClassId.add(st.Class__c);
                 }
-                if(updatedClassCount.get(stdnt.Class__c) != null)
+                if(updatedClassCount.get(st.Class__c) != null)
                 {
-                    updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) - 1));
+                    updatedClassCount.put(st.Class__c, (updatedClassCount.get(st.Class__c) - 1));
                 }
                 else
                 {
-                    updatedClassCount.put(stdnt.Class__c, -1);   
+                    updatedClassCount.put(st.Class__c, -1);   
                 }
             }
         }// List created for updated removed students
