@@ -26,7 +26,7 @@ public class GetContactIdsTest
         update accNotNull;
     }
     @isTest 
-    static void testIdsInsertion_whenGetContactIdNull_getSuccessRespond() 
+    static void testIdsInsertion_whenGetContactIdNull_getSuccessResponse() 
     {
         boolean contactIdsInserted = true;//This varible is used to verify that 
         Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestConatct0'].Id;
@@ -45,7 +45,7 @@ public class GetContactIdsTest
         System.assert(contactIdsInserted);
     }
     @isTest 
-    static void testIdsInsertion_whenGetContactIdNotNull_getSuccessRespond() 
+    static void testIdsInsertion_whenGetContactIdNotNull_getSuccessResponse() 
     {
         Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull1'].Id;
         Test.startTest();
@@ -57,7 +57,7 @@ public class GetContactIdsTest
     }
     //Test for Id already available then Id should not insert
     @isTest 
-    static void testIdsInsertion_whenIdAvaialableInGetContactId_getFailureRespond() 
+    static void testIdsInsertion_whenIdAvaialableInGetContactId_getFailureResponse() 
     {
         Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull0'].Id;
         Test.startTest();
