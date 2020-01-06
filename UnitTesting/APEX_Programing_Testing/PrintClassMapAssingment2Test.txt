@@ -5,19 +5,27 @@ public class PrintClassMapAssingment2Test
     {
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
-        List<Student__c> stdnt = new List<Student__c>();
-        for(Integer i=0;i<2;i++) {
-            stdnt.add(new Student__c(Name = 'TestStudent'+i, LastName__c = 'Lastname'+i ,Class__c = cls.Id));
+        List<Student__c> st = new List<Student__c>();
+        for(Integer count = 0;count < 2;count++) 
+        {
+            st.add(new Student__c(Name = 'TestStudent' + count, LastName__c = 'Lastname' + count,Class__c = cls.Id));
         }
-        insert stdnt;
+        insert st;
     }
     @isTest 
     static void testStudentList_matchStudentListInClass_getSucessRespond() 
     {
-        Map<Class__c, Set<Student__c>> ClassStudentMap;
+        Map<Class__c, Set<Student__c>> classStudentMap;
         Test.startTest();
-        ClassStudentMap = PrintClassMap.listClassStudent();
+        classStudentMap = PrintClassMap.listClassStudent();
         Test.stopTest();
-        System.assertEquals(1, ClassStudentMap.size());	
+        Set<Student__c> studentSet;
+        for(Class__c key : classStudentMap.keySet())
+        {
+            studentSet = classStudentMap.get(key);
+        }
+        List<Student__c> stdnList = [SELECT Id, Name FROM Student__c WHERE Name LIKE '%TestStudent%'];
+        System.assertEquals(1, classStudentMap.size());//Compare class size
+        System.assertEquals(2, studentSet.size());//Compare student size
     }
 }
