@@ -1,29 +1,30 @@
 @isTest
 public class StudentTriggerTest 
 {
-    @testSetup static void dataSetupForStudentTriggerTest() 
+    @testSetup 
+    static void dataSetupForStudentTriggerTest() 
     {
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
         Class__c newCls = new Class__c(Name = 'newTestClass', MaxSize__c = 3, MyCount__c = 0);
         insert newCls;
-        List<Student__c> stdnt = new List<Student__c>();
-        for(Integer i=0;i<3;i++) 
+        List<Student__c> st = new List<Student__c>();
+        for(Integer studentCount = 0;studentCount < 3;studentCount++) 
         {
-            stdnt.add(new Student__c(Name = 'TestStudent'+i, Sex__c = 'F', LastName__c = 'Lastname'+i, Class__c = cls.Id));
+            st.add(new Student__c(Name = 'TestStudent' + studentCount, Sex__c = 'F', LastName__c = 'Lastname' + studentCount, Class__c = cls.Id));
         }
-        insert stdnt;
+        insert st;
     }
     @isTest 
-    static void testClassTrigger_testMoreThenMaxLimitInsert_getSucessRespond() 
+    static void testClassTrigger_testMoreThenMaxLimitInsert_getFailureRespond() 
     {
         String operationResult;
-        Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
-        Student__c stdnt = new Student__c(Name = 'TestStudent', Class__c = classId.Id);
+        Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
+        Student__c st = new Student__c(Name = 'TestStudent', Class__c = testClass.Id);
         Test.startTest();
         try
         {
-            Database.SaveResult result= Database.insert(stdnt);
+            insert st ;
         }
         catch(Exception e)
         {
@@ -35,10 +36,10 @@ public class StudentTriggerTest
     @isTest 
     static void testClassTrigger_testMyCountCounterInsert_getSucessRespond() 
     {
-        Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
-        Student__c stdnt = new Student__c(Name = 'TestStudent', Class__c = classId.Id, LastName__c = 'Lastname');
+        Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
+        Student__c st = new Student__c(Name = 'TestStudent', Class__c = testClass.Id, LastName__c = 'Lastname');
         Test.startTest();
-        Database.SaveResult result= Database.insert(stdnt);
+        insert st;
         Test.stopTest();
         Decimal myCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
         System.assertEquals(1, myCount);
@@ -46,15 +47,14 @@ public class StudentTriggerTest
     @isTest 
     static void testClassTrigger_testMyCountCounterUpdate_getSucessRespond() 
     {
-        Class__c classId = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
-        Class__c newClassId = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
+        Class__c newtestClass = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
         Test.startTest();
-        List<Student__c> stdnt = [SELECT Id, Class__c FROM Student__c WHERE Name LIKE '%TestStudent%'];
-        for(Student__c updatedStudent: stdnt)
+        List<Student__c> st = [SELECT Id, Class__c FROM Student__c WHERE Name LIKE '%TestStudent%'];
+        for(Student__c updatedStudent: st)
         {
-        updatedStudent.Class__c = newClassId.Id;
+            updatedStudent.Class__c = newtestClass.Id;
         }
-        update stdnt;
+        update st;
         Test.stopTest();
         Decimal myCount = [SELECT Id, MyCount__c FROM Class__c WHERE Name = 'newTestClass'].MyCount__c;
         System.assertEquals(3, myCount);// New class should get increase from 0 to 3
