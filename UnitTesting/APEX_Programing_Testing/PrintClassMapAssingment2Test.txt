@@ -1,7 +1,8 @@
 @isTest 
 public class PrintClassMapAssingment2Test 
 {
-    @testSetup static void setupDataForClassStudent() 
+    @testSetup 
+    static void setupDataForClassStudent() 
     {
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
