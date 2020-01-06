@@ -2,7 +2,7 @@
 public class ListSObjectsAssingment4Test 
 {
     @isTest 
-    static void testListObjects_getSuccessRespond() 
+    static void testListObjects_getSuccessResponse() 
     {
         Boolean allListObject = true;
         Test.startTest();
