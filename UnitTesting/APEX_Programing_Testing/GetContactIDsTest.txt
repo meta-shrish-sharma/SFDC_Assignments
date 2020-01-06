@@ -57,7 +57,7 @@ public class GetContactIdsTest
     }
     //Test for Id already available then Id should not insert
     @isTest 
-    static void testIDsInsertion_whenIdAvaialableInGetContactId_getSuccessRespond() 
+    static void testIDsInsertion_whenIdAvaialableInGetContactId_getFailureRespond() 
     {
         Id contactId = [SELECT Id FROM Contact WHERE Lastname = 'TestNotNull0'].Id;
         Test.startTest();
