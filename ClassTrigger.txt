@@ -4,14 +4,14 @@ trigger ClassTrigger on Class__c (before delete, after update)
     if(trigger.isDelete && trigger.isBefore)
     {
         List<AggregateResult> classList = [SELECT Class__c FROM Student__c WHERE Sex__c = 'F' AND Class__c IN :Trigger.old GROUP BY Class__c HAVING COUNT(Id) > 1];
-        List<Id> classListString = new List<Id>();
+        List<Id> classIdList = new List<Id>();
         for(AggregateResult ar: classList)
         {
-            classListString.add((Id)ar.get('Class__c'));
+            classIdList.add((Id)ar.get('Class__c'));
         }
         for(Class__c currClass: Trigger.old)
         {
-            if(classListString.contains(currClass.Id))
+            if(classIdList.contains(currClass.Id))
             {
                 currClass.addError('Cannot delete this class, This class has more then one female members');
             }
