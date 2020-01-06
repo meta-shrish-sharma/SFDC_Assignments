@@ -1,11 +1,12 @@
 @isTest
 public class ListSObjectsAssingment4Test 
 {
-    @isTest static void testListObjects_getSucessRespond() 
+    @isTest 
+    static void testListObjects_getSuccessRespond() 
     {
         Boolean allListObject = true;
         Test.startTest();
-        List<string> SObjectList = ListSObjects.ListObjects();
+        List<String> SObjectList = ListSObjects.ListObjects();
         Test.stopTest();
         for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values())
         {
