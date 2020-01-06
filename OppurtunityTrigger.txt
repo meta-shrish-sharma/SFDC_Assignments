@@ -1,0 +1,7 @@
+trigger OppurtunityTrigger on Opportunity (before update) 
+{
+    if(trigger.isBefore && trigger.isUpdate)
+    {
+        OpportunityTriggerHandler.updateOpportunityList(Trigger.new);
+    }
+}

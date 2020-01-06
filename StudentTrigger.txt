@@ -8,7 +8,10 @@ trigger StudentTrigger on Student__c (before insert, before update)
         //Fetch all those classes whose records are updated
         for(Student__c st: Trigger.new)
         {
-            classId.add(st.Class__c);
+            if(st.Class__c != null)
+            {
+                classId.add(st.Class__c);
+            }
         }
         Map<Id, Class__c> insertedClass = new Map<Id, Class__c>([SELECT ID, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :classId]);
         //get total students of classes in which students are inserted
@@ -20,35 +23,38 @@ trigger StudentTrigger on Student__c (before insert, before update)
         }
         for(Student__c st: Trigger.new)//Update students
         {
-            //First verify that both values exist in map or not
-            Boolean countExistInMap = (classCount.get(st.Class__c)!= null) && (insertedClass.get(st.Class__c).MaxSize__c != null);
-            //This code block will not allow to insert if max limit reached
-            if((classCount.get(st.Class__c) >= insertedClass.get(st.Class__c).MaxSize__c) && countExistInMap)
+            if(st.Class__c != null)
             {
-                st.addError('Cannot insert more then '+insertedClass.get(st.Class__c).MaxSize__c +  ' student');
-            }
-            //This code block sync the value of Mycount with the insert of students
-            else
-            {
-                if(insertedClassCount.get(st.Class__c) != null)
+                //First verify that both values exist in map or not
+                Boolean countExistInMap = (classCount.get(st.Class__c)!= null) && (insertedClass.get(st.Class__c).MaxSize__c != null);
+                //This code block will not allow to insert if max limit reached
+                if((classCount.get(st.Class__c) >= insertedClass.get(st.Class__c).MaxSize__c) && countExistInMap)
                 {
-                    insertedClassCount.put(st.Class__c, (insertedClassCount.get(st.Class__c) + 1));
+                    st.addError('Cannot insert more then '+insertedClass.get(st.Class__c).MaxSize__c +  ' student');
                 }
+                //This code block sync the value of Mycount with the insert of students
                 else
                 {
-                    insertedClassCount.put(st.Class__c, 1);   
+                    if(insertedClassCount.get(st.Class__c) != null)
+                    {
+                        insertedClassCount.put(st.Class__c, (insertedClassCount.get(st.Class__c) + 1));
+                    }
+                    else
+                    {
+                        insertedClassCount.put(st.Class__c, 1);   
+                    }
                 }
             }
         }//students Updated
         //Update the number of inserted students in every class
         for(Id cls: insertedClass.keySet())
         {
-            if(insertedClassCount.get(cls) != null)
+            if(insertedClassCount.get(cls) != null && insertedClassCount.get(cls) != null)
             {
                 insertedClass.get(cls).MyCount__c = insertedClass.get(cls).MyCount__c + insertedClassCount.get(cls);
             }
         }
-        update insertedClass.values(); // update the class with the count of newly inserted students
+        update insertedClass.values(); // update the class with the count of newly inserted students 
     }
     if(trigger.isUpdate && trigger.isBefore)
     {
@@ -56,32 +62,38 @@ trigger StudentTrigger on Student__c (before insert, before update)
         List<Id> updatedClassId = new List<Id>();
         for(Student__c stdnt: Trigger.new)//Add students to newly inserted class
         {
-            if(!updatedClassId.contains(stdnt.Class__c))
+            if(stdnt.Class__c != null)
             {
-                updatedClassId.add(stdnt.Class__c);
-            }
-            if(updatedClassCount.get(stdnt.Class__c) != null)
-            {
-                updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) + 1));
-            }
-            else
-            {
-                updatedClassCount.put(stdnt.Class__c, 1);   
+                if(!updatedClassId.contains(stdnt.Class__c))
+                {
+                    updatedClassId.add(stdnt.Class__c);
+                }
+                if(updatedClassCount.get(stdnt.Class__c) != null)
+                {
+                    updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) + 1));
+                }
+                else
+                {
+                    updatedClassCount.put(stdnt.Class__c, 1);   
+                }
             }
         }// List created for updated inserted students
         for(Student__c stdnt: Trigger.old)//Remove students from newly inserted class
         {
-            if(!updatedClassId.contains(stdnt.Class__c))
+            if(stdnt.Class__c != null)
             {
-                updatedClassId.add(stdnt.Class__c);
-            }
-            if(updatedClassCount.get(stdnt.Class__c) != null)
-            {
-                updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) - 1));
-            }
-            else
-            {
-                updatedClassCount.put(stdnt.Class__c, -1);   
+                if(!updatedClassId.contains(stdnt.Class__c))
+                {
+                    updatedClassId.add(stdnt.Class__c);
+                }
+                if(updatedClassCount.get(stdnt.Class__c) != null)
+                {
+                    updatedClassCount.put(stdnt.Class__c, (updatedClassCount.get(stdnt.Class__c) - 1));
+                }
+                else
+                {
+                    updatedClassCount.put(stdnt.Class__c, -1);   
+                }
             }
         }// List created for updated removed students
         List<Class__c> updateClass = [SELECT Id, Maxsize__c, Mycount__c FROM Class__c WHERE Id IN :updatedClassId];
@@ -89,7 +101,14 @@ trigger StudentTrigger on Student__c (before insert, before update)
         {
             if(updatedClassCount.get(cls.Id) != null)
             {
+                if(cls.MyCount__c == null)
+                {
+                   cls.MyCount__c = updatedClassCount.get(cls.Id);
+                }
+                else
+                {
                 cls.MyCount__c = cls.MyCount__c + updatedClassCount.get(cls.Id);
+                }
             }
         }
         update updateClass; // update the class with the count of newly inserted students

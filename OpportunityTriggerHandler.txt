@@ -1,0 +1,33 @@
+public class OpportunityTriggerHandler 
+{
+    public static void updateOpportunityList(List<Opportunity> oprtnList)
+    {
+        List<Id> cntId = new List<Id>();
+        for(Opportunity oprtnty: oprtnList)
+        {
+            cntId.add(oprtnty.BillToContact__c);
+        }
+        Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
+        for(Opportunity oprtnty: oprtnList)
+        {
+            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null && idCntMap.get(Oprtnty.BillToContact__c) != null)
+            {
+                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
+            }
+            if(oprtnty.StageName == 'Closed Won' || oprtnty.StageName == 'Closed Lost')
+            {
+                oprtnty.CloseDate = System.today();
+            }
+        }
+    } 
+}
+
+/*
+trigger OpportunityTrigger on Opportunity (before update) 
+{
+if(trigger.isbefore && trigger.isupdate)
+{
+OpportunityTriggerHandler.updateOppertunityList(trigger.new);
+}
+}
+*/
