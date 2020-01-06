@@ -2,7 +2,7 @@
 public class mailToOpportunityOwnerTest 
 {
     @isTest    
-    static void testMailCronExp_getSucessRespond() 
+    static void testMailCronExp_getSuccessRespond() 
      {
         Test.startTest();
         Datetime dt = Datetime.now().addMinutes(1);
