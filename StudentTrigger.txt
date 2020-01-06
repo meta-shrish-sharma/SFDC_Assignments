@@ -26,11 +26,11 @@ trigger StudentTrigger on Student__c (before insert, before update)
             if(st.Class__c != null)
             {
                 //First verify that both values exist in map or not
-                Boolean countExistInMap = (classCount.get(st.Class__c)!= null) && (insertedClass.get(st.Class__c).MaxSize__c != null);
+                Boolean countExistInMap = (classCount.get(st.Class__c) != null) && (insertedClass.get(st.Class__c).MaxSize__c != null);
                 //This code block will not allow to insert if max limit reached
                 if((classCount.get(st.Class__c) >= insertedClass.get(st.Class__c).MaxSize__c) && countExistInMap)
                 {
-                    st.addError('Cannot insert more then '+insertedClass.get(st.Class__c).MaxSize__c +  ' student');
+                    st.addError('Cannot insert more then ' + insertedClass.get(st.Class__c).MaxSize__c +  ' student');
                 }
                 //This code block sync the value of Mycount with the insert of students
                 else
@@ -101,13 +101,9 @@ trigger StudentTrigger on Student__c (before insert, before update)
         {
             if(updatedClassCount.get(cls.Id) != null)
             {
-                if(cls.MyCount__c == null)
+                if(cls.MyCount__c != null)
                 {
-                   cls.MyCount__c = updatedClassCount.get(cls.Id);
-                }
-                else
-                {
-                cls.MyCount__c = cls.MyCount__c + updatedClassCount.get(cls.Id);
+                    cls.MyCount__c = cls.MyCount__c + updatedClassCount.get(cls.Id);
                 }
             }
         }

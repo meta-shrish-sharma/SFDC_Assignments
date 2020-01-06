@@ -2,6 +2,7 @@ trigger OppurtunityTrigger on Opportunity (before update)
 {
     if(trigger.isBefore && trigger.isUpdate)
     {
-        OpportunityTriggerHandler.updateOpportunityList(Trigger.new);
+        Map<Id, Opportunity> oldOpportunities = new Map<Id, Opportunity>([SELECT Id, Name, StageName FROM Opportunity WHERE Id IN :Trigger.old]);
+        OpportunityTriggerHandler.updateOpportunityList(Trigger.new, oldOpportunities);
     }
 }

@@ -1,33 +1,27 @@
 public class OpportunityTriggerHandler 
 {
-    public static void updateOpportunityList(List<Opportunity> oprtnList)
+    public static void updateOpportunityList(List<Opportunity> oppList, Map<Id, Opportunity> oldOpportunities)
     {
         List<Id> cntId = new List<Id>();
-        for(Opportunity oprtnty: oprtnList)
+        for (Opportunity opp: oppList)
         {
-            cntId.add(oprtnty.BillToContact__c);
+            cntId.add(opp.BillToContact__c);
         }
         Map<Id, Contact> idCntMap = new Map<Id, Contact>([SELECT Accountid FROM Contact WHERE Id IN :cntId]);
-        for(Opportunity oprtnty: oprtnList)
+        for(Opportunity opp: oppList)
         {
-            if(oprtnty.Manager__c == null && oprtnty.BillToContact__c != null && idCntMap.get(Oprtnty.BillToContact__c) != null)
+            if(opp.Manager__c == null && opp.BillToContact__c != null && idCntMap.get(opp.BillToContact__c) != null)
             {
-                oprtnty.Manager__c = idCntMap.get(Oprtnty.BillToContact__c).Accountid;
+                opp.Manager__c = idCntMap.get(opp.BillToContact__c).Accountid;
             }
-            if(oprtnty.StageName == 'Closed Won' || oprtnty.StageName == 'Closed Lost')
+            if(opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost')
             {
-                oprtnty.CloseDate = System.today();
+                String previousOpp = oldOpportunities.get(opp.Id).StageName;
+                if(previousOpp != 'Closed Won' && previousOpp != 'Closed Lost')
+                {
+                    opp.CloseDate = System.today();
+                }
             }
         }
     } 
 }
-
-/*
-trigger OpportunityTrigger on Opportunity (before update) 
-{
-if(trigger.isbefore && trigger.isupdate)
-{
-OpportunityTriggerHandler.updateOppertunityList(Trigger.New);
-}
-}
-*/

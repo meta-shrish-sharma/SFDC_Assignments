@@ -9,7 +9,7 @@ trigger ClassTrigger on Class__c (before delete, after update)
         {
             classListString.add((Id)ar.get('Class__c'));
         }
-        for(Class__c currClass:Trigger.old)
+        for(Class__c currClass: Trigger.old)
         {
             if(classListString.contains(currClass.Id))
             {
