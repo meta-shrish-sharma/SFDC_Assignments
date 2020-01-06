@@ -7,9 +7,9 @@ public class PrintClassMapAssingment2Test
         Class__c cls = new Class__c(Name = 'TestClass', MaxSize__c = 3, MyCount__c = 0);
         insert cls;
         List<Student__c> st = new List<Student__c>();
-        for(Integer count = 0;count < 2;count++) 
+        for(Integer studentCount = 0;studentCount < 2;studentCount++) 
         {
-            st.add(new Student__c(Name = 'TestStudent' + count, LastName__c = 'Lastname' + count, Class__c = cls.Id));
+            st.add(new Student__c(Name = 'TestStudent' + studentCount, LastName__c = 'Lastname' + studentCount, Class__c = cls.Id));
         }
         insert st;
     }
