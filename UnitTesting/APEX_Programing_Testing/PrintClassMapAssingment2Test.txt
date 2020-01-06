@@ -14,7 +14,7 @@ public class PrintClassMapAssingment2Test
         insert st;
     }
     @isTest 
-    static void testStudentList_matchStudentListInClass_getSuccessRespond() 
+    static void testStudentList_matchStudentListInClass_getSuccessResponse() 
     {
         Map<Class__c, Set<Student__c>> classStudentMap;
         Test.startTest();
