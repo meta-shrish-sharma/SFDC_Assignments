@@ -10,7 +10,7 @@ public class GetWorkingDaysTest
 {
     //Test two dates without any weekend in between
     @isTest 
-    static void testWithoutWeekendDates_getSuccessRespond() 
+    static void testWithoutWeekendDates_getSuccessResponse() 
     {
         Integer workingDays;
         Test.startTest();
@@ -20,7 +20,7 @@ public class GetWorkingDaysTest
     } 
     //Test two dates with weekend in between
     @isTest 
-    static void testWithWeekendDates_getSuccessRespond() 
+    static void testWithWeekendDates_getSuccessResponse() 
     {
         Integer workingDays;
         Test.startTest();
@@ -30,7 +30,7 @@ public class GetWorkingDaysTest
     } 
     //Test with null date
     @isTest 
-    static void testNullDates_getSuccessRespond() 
+    static void testNullDates_getSuccessResponse() 
     {
         Integer workingDays;
         Test.startTest();
@@ -40,7 +40,7 @@ public class GetWorkingDaysTest
     }       
     //Test by passing both same date
     @isTest 
-    static void testSameDates_getSuccessRespond() 
+    static void testSameDates_getSuccessResponse() 
     {
         Integer workingDays;
         Test.startTest();
