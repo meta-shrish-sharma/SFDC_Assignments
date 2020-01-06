@@ -1,0 +1,19 @@
+
+//This class is used to prevent trigger from execution at the time of testing of update Hindi teacher.
+//For testing update Hindi teacher it is necessary that a Hindi teacher should get inserted so this trigger should not get execute
+public class TeacherTriggerStaticClass
+{
+    public static Boolean doNotRunTrigger = false;
+    public static void setDoNotRunTeacherTrigger()
+    {
+        doNotRunTrigger = true;
+    }
+    public static void setRunTeacherTrigger()
+    {
+        doNotRunTrigger = false;
+    }
+    public static Boolean shouldRunTeacherTrigger() 
+    {
+        return !doNotRunTrigger;
+    }
+}
