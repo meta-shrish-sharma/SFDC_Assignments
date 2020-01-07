@@ -18,18 +18,16 @@ public class OpportunityTriggerHandler
             }
             if(opp.StageName == wonValue || opp.StageName == lostValue)
             {
-                if(oldOpportunities.get(opp.Id).StageName != null)
+                if(oldOpportunities.get(opp.Id) != null)//Opportunity should exist in map
                 {
-                    String oldOpp = oldOpportunities.get(opp.Id).StageName;
-                    if(oldOpp != wonValue && oldOpp != lostValue)
+                    if(oldOpportunities.get(opp.Id).StageName != null)//Opportunity should have a proper stage name
                     {
-                        opp.CloseDate = System.today();
+                        String oldOpp = oldOpportunities.get(opp.Id).StageName;
+                        if(oldOpp != wonValue && oldOpp != lostValue)
+                        {
+                            opp.CloseDate = System.today();
+                        }
                     }
-                }
-                else
-                {
-                    opp.CloseDate = System.today();
-                    //If opportunity stage changes to close from null
                 }
             }
         }
