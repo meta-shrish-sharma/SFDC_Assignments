@@ -18,7 +18,7 @@ public class OpportunityTriggerHandler
             }
             if(opp.StageName == wonValue || opp.StageName == lostValue)
             {
-                if(oldOpportunities.get(opp.Id) != null)//Opportunity should exist in map
+                if(oldOpportunities.containsKey(opp.Id))//Opportunity should exist in map
                 {
                     if(oldOpportunities.get(opp.Id).StageName != null)//Opportunity should have a proper stage name
                     {
