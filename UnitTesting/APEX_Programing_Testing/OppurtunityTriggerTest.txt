@@ -43,10 +43,4 @@ public class OppurtunityTriggerTest
         Opportunity newOpportunity = [SELECT Manager__c, CloseDate, StageName FROM Opportunity WHERE Name = 'newOppourtnity'];
         System.assertEquals(newOpportunity.CloseDate, System.today());//Test the close date
     }
-    @isTest 
-    static void testChangeFromCloseDateToCloseWon_getFailureResponse() 
-    {
-        Opportunity newOpportunity = [SELECT Manager__c, CloseDate, StageName FROM Opportunity WHERE Name = 'newClosedOppourtnity'];
-        System.assertNotEquals(newOpportunity.CloseDate, System.today());//Test the close date
-    }
 }
