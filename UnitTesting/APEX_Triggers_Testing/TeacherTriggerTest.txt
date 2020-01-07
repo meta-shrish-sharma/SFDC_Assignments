@@ -11,7 +11,7 @@ public class TeacherTriggerTest
         insert cls;
     }
     @isTest 
-    static void testUpdateHindiTeacher_getFailureResponse() 
+    static void testUpdateHindiTeacher_updateFailure() 
     {
         String operationResult;// Used to save the result of update teacher
         Contact teacher = [SELECT Id FROM Contact WHERE Lastname = 'TestContact'];
@@ -29,11 +29,10 @@ public class TeacherTriggerTest
         System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'));
     }
     @isTest 
-    static void testInsertHindiTeacher_getFailureResponse() 
+    static void testInsertHindiTeacher_insertFailure() 
     {
         String operationResult;
         Contact cnt = new Contact(Lastname = 'TestContact', Subject__c = 'Hindi');
-        TeacherTriggerStaticClass.setRunTeacherTrigger();//Insert Hindi Teacher will get disabled here so that the next functionality of update can be tested
         Test.startTest();
         try
         {
@@ -44,7 +43,23 @@ public class TeacherTriggerTest
             operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.debug(operationResult);
         System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'));
+    }
+    @isTest 
+    static void testInsertHindiTeacher_insertSuccess() 
+    {
+        String operationResult;
+        Contact cnt = new Contact(Lastname = 'TestContact', Subject__c = 'English');
+        Test.startTest();
+        try
+        {
+            insert cnt;
+        }
+        catch(Exception e)
+        {
+            operationResult = e.getMessage();
+        }
+        Test.stopTest();
+        System.assertEquals(null, operationResult);
     }
 }
