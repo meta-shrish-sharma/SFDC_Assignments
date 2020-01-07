@@ -2,6 +2,8 @@ public class OpportunityTriggerHandler
 {
     public static void updateOpportunityList(List<Opportunity> oppList, Map<Id, Opportunity> oldOpportunities)
     {
+        String lostValue = 'Closed Lost';
+        String wonValue = 'Closed Won';
         List<Id> cntId = new List<Id>();
         for (Opportunity opp: oppList)
         {
@@ -14,12 +16,20 @@ public class OpportunityTriggerHandler
             {
                 opp.Manager__c = idCntMap.get(opp.BillToContact__c).Accountid;
             }
-            if(opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost')
+            if(opp.StageName == wonValue || opp.StageName == lostValue)
             {
-                String oldOpp = oldOpportunities.get(opp.Id).StageName;
-                if(oldOpp != 'Closed Won' && oldOpp != 'Closed Lost')
+                if(oldOpportunities.get(opp.Id).StageName != null)
+                {
+                    String oldOpp = oldOpportunities.get(opp.Id).StageName;
+                    if(oldOpp != wonValue && oldOpp != lostValue)
+                    {
+                        opp.CloseDate = System.today();
+                    }
+                }
+                else
                 {
                     opp.CloseDate = System.today();
+                    //If opportunity stage changes to close from null
                 }
             }
         }
