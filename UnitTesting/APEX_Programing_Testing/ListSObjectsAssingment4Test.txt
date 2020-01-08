@@ -16,6 +16,6 @@ public class ListSObjectsAssingment4Test
                 allListObject = false;
             }
         }
-        System.assert(allListObject);        
+        System.assert(allListObject, 'Expected was the list of all objects, but didnt found all objects');        
     }
 }
