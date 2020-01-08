@@ -1,0 +1,12 @@
+<apex:page controller="UpdateBillToContactController" showHeader="false" showChat="false" sidebar="false">
+    <apex:form >
+        <apex:pageBlock title="Contacts List">   
+            <apex:selectRadio layout="pageDirection" value="{!selectedCard}" >
+                <apex:selectOptions value="{!Records}"/>
+            </apex:selectRadio>
+            <apex:commandButton action="{!returnSavePage}" title="Save" value="Save" />
+            <apex:commandButton action="{!returnCancelPage}" title="Cancel" value="Cancel" />
+            <apex:commandButton action="{!returnClearPage}" title="Clear" value="Clear" />
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

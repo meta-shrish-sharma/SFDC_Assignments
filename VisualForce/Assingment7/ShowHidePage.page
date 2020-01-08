@@ -1,0 +1,36 @@
+<apex:page controller="FetchClassEditDelete">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1" title="Class Table">
+                <apex:pageBlockTable value="{!ClassDetails}" var="class" id="cDeleted">
+                    <apex:column value="{!class.Name}"/>
+                    <apex:column value="{!class.Board__c}"/>
+                    <apex:column value="{!class.Fee__c}"/> 
+                    <apex:column value="{!class.MyCount__c}"/>
+                    <apex:column headerValue="Delete">
+                        <apex:commandLink action="{!deleteRow}" immediate="true" reRender="cDeleted" value="Delete">
+                            <apex:param name="rowId" value="{!class.Id}" assignTo="{!SelectedRowId}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:column headerValue="EditRow">
+                        <apex:commandLink action="{!editRow}" value="Edit" reRender="details">
+                            <apex:param name="eRowId" value="{!class.Id}" assignTo="{!selectededitRowId}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="details">
+                <apex:pageBlockSection id="newData" title="Class Detail" rendered="{!hideShow}">
+                    <apex:inputText id="cName" value="{!className}" label="Name:" />
+                    <apex:selectList value="{!board}" multiselect="false" size="1" label="Board:">
+                        <apex:selectOptions value="{!Boards}"/>  
+                    </apex:selectList>
+                    <apex:inputText id="cFee" value="{!fee}" label="Fee:" />
+                    <apex:inputText id="cMyCount" value="{!myCount}" label="My Count:" />
+                    <apex:commandButton action="{!updateClass}" value="Update">
+                    </apex:commandButton>	
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
