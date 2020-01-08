@@ -1,11 +1,11 @@
 public class PaginationController 
 {
     public Integer noOfRecords{get; set;}
-    public Integer size{get; set; }
-    public Integer inputTotalNoOfRecords{get; set; } // input text1 value  from vf
-    public String inputBillingCity{get; set; } // input text2 value  from vf
-    public String inputBillingState{get; set; } 
-    public String inputBillingCountry{get; set; } 
+    public Integer size{get;set;}
+    public Integer inputTotalNoOfRecords{get;set;} // input text1 value  from vf
+    public String inputBillingCity{get;set;} // input text2 value  from vf
+    public String inputBillingState{get;set;} 
+    public String inputBillingCountry{get;set;} 
     public ApexPages.StandardSetController setCon 
     {
         get{
@@ -22,7 +22,7 @@ public class PaginationController
                 string whereQueryString = '';
                 if(inputBillingCity != null && inputBillingCity != '')
                 {
-                    whereQueryString = ' BillingCity = \''+inputBillingCity+'\' ';
+                    whereQueryString = ' BillingCity = \'' + inputBillingCity + '\' ';
                 }
                 if(inputBillingState != null && inputBillingState != '')
                 {
@@ -30,7 +30,7 @@ public class PaginationController
                     {
                         whereQueryString = whereQueryString + ' AND ';
                     }
-                    whereQueryString = whereQueryString+' BillingState = \''+inputBillingState+'\' ';
+                    whereQueryString = whereQueryString + ' BillingState = \'' + inputBillingState + '\' ';
                 }
                 if(inputBillingCountry != null && inputBillingCountry != '')
                 {
@@ -38,11 +38,11 @@ public class PaginationController
                     {
                         whereQueryString = whereQueryString + ' AND ';
                     }
-                    whereQueryString = whereQueryString+' BillingCountry = \''+inputBillingCountry+'\'';
+                    whereQueryString = whereQueryString + ' BillingCountry = \'' + inputBillingCountry + '\'';
                 }
                 if(whereQueryString != null && whereQueryString != '')
                 {
-                    whereQueryString = ' WHERE '+ whereQueryString;
+                    whereQueryString = ' WHERE ' + whereQueryString;
                     queryString = queryString + whereQueryString;
                 }
                 setCon = new ApexPages.StandardSetController(Database.getQueryLocator(queryString));
