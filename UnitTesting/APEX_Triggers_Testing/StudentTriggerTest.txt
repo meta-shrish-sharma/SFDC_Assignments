@@ -9,7 +9,7 @@ public class StudentTriggerTest
         Class__c newCls = new Class__c(Name = 'newTestClass', MaxSize__c = 3, MyCount__c = 0);
         insert newCls;
         List<Student__c> st = new List<Student__c>();
-        for(Integer studentCount = 0;studentCount < 3;studentCount++) 
+        for(Integer studentCount = 0; studentCount < 3; studentCount++) 
         {
             st.add(new Student__c(Name = 'TestStudent' + studentCount, Sex__c = 'F', LastName__c = 'Lastname' + studentCount, Class__c = cls.Id));
         }
