@@ -8,7 +8,7 @@ public class GetContactIdsTest
         Account acc = new Account(Name = 'TestAccount');
         insert acc;
         List<Contact> ct = new List<Contact>();
-        for(Integer contactCount = 0; contactCount < 2;contactCount++)
+        for(Integer contactCount = 0; contactCount < 2; contactCount++)
         {
             ct.add(new Contact(Lastname = 'TestConatct' + contactCount, AccountId = acc.Id));
         }
@@ -42,7 +42,7 @@ public class GetContactIdsTest
                 contactIdsInserted = false;
             }
         }
-        System.assert(contactIdsInserted);
+        System.assert(contactIdsInserted, 'All contect Ids should get inserted, but it didnt occur as expected');
     }
     @isTest 
     static void testIdsInsertion_whenGetContactIdNotNull_getSuccessResponse() 
@@ -53,7 +53,7 @@ public class GetContactIdsTest
         Test.stopTest();
         Account updatedAccount = [SELECT ContactIds__c, (SELECT Id FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId  FROM Contact WHERE Id = :contactId)];
        	String AccountContId = updatedAccount.ContactIds__c;
-        System.assert(AccountContId.contains(contactId));
+        System.assert(AccountContId.contains(contactId), 'ContactIds column should contain the contact Id, but contact Id not found');
     }
     //Test for Id already available then Id should not insert
     @isTest 
