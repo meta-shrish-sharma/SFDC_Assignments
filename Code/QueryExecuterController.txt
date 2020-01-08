@@ -1,11 +1,11 @@
 public class QueryExecuterController 
 {
-    public List<sObject> lstObjs {get;set;}
-    public List<string> lstFlds {get;private set;}
-    public String sortDirection {get;set;}
+    public List<sObject> lstObjs{get;set;}
+    public List<String> lstFlds{get;private set;}
+    public String sortDirection{get;set;}
     private String sortExp;
-    public Boolean renderPB {get;set;}
-    public Boolean renderError {get;set;}
+    public Boolean renderPB{get;set;}
+    public Boolean renderError{get;set;}
     public String sortExpression 
     {
         get
@@ -22,16 +22,16 @@ public class QueryExecuterController
             sortExp = value;
         }
     }
-    // ** Variables for pagination of Products
-    public integer totalRecs{get; set; }       
-    private integer index = 0;  
-    public integer pageBlockSize{get; set; }
-    public integer pageNumber{get; set; }
-    //**
-    public integer inputPageNumber{get; set; }
+    // Variables for pagination of Products
+    public Integer totalRecs{get;set;}       
+    private Integer index = 0;  
+    public Integer pageBlockSize{get;set;}
+    public Integer pageNumber{get;set;}
+    public Integer inputPageNumber{get;set;}
     public String queryString;
-    public void setqueryString (String s) {
-        queryString = s;
+    public void setqueryString(String inputValue) 
+    {
+        queryString = inputValue;
         renderPB = true;
         renderError = false;
         pageBlockSize = 10;
@@ -39,92 +39,80 @@ public class QueryExecuterController
         {
             pageNumber = 1;
         }
-        //queryString = 'Select Id, Name, BillingCity, BillingCountry, Phone FROM Account';
-        system.debug(queryString);
         try
         {
             List<sObject> countLstObjs = Database.query(queryString);
             totalRecs = countLstObjs.size();
             if(totalRecs <= 0)
             {
-                renderPB= false;
-                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'No records found'));
+                renderPB = false;
+                renderError = true;
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'No records found'));
             }
             lstFlds = new List<String>();
-            string query = queryString + ' LIMIT '+ pageBlockSize+' OFFSET '+index;
-            lstObjs = Database.query(query);
-            Set<string> setFlds = new Set<String>();
-            for(integer i=0;i<lstObjs.size();i++)
+            if(sortExp != null && sortDirection != null)
             {
-                setFlds.addAll(lstObjs[i].getPopulatedFieldsAsMap().keySet());
+                String sortFullExp = sortExp  + ' ' + sortDirection;
+                queryString = queryString + ' ORDER BY ' + sortFullExp + ' LIMIT '+pageBlockSize + ' OFFSET ' + index;
+                lstObjs = Database.query(queryString);
             }
-            lstFlds.addAll(setFlds);
+            else
+            {
+                queryString = queryString + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
+                lstObjs = Database.query(queryString);    
+            }
+            lstObjs = Database.query(queryString);
+            String fieldsName = queryString.substring(7, queryString.indexOf(' FROM'));
+            fieldsName = fieldsName.remove(' ');
+            lstFlds = fieldsName.split(',');
         }
         catch(Exception e)
         {
             renderPB = false;
             renderError = true;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Please enter correct query'));
+            pageNumber = 1;
+            index = 0;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Please enter the correct query'));
         }
     }
-   
-    public String getqueryString() {
+    public String getqueryString() 
+    {
         return queryString;
     } 
-    public PageReference ViewData() 
+    public PageReference viewData() 
     {
-        //build the full sort expression
-        string sortFullExp = sortExp  + ' ' + sortDirection;
-        //query the database based on the sort expression
-        try
-        {
-        renderPB = true;
-        renderError = false;
-        if(sortExp != null && sortDirection != null)
-        {
-            lstObjs = Database.query(queryString + ' order by ' + sortFullExp + ' LIMIT '+pageBlockSize+' OFFSET '+index);
-        }
-        else
-        {
-            lstObjs = Database.query(queryString + ' LIMIT '+pageBlockSize+' OFFSET '+index);    
-        }
-        }
-        catch(Exception e)
-        {
-            renderPB = false;
-            renderError = true;
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Please enter correct query'));
-        }
         return null;
     }
-    //*** Code for pagination
-    public void beginning() {  
+    // Code for pagination
+    public void beginning() 
+    {  
         index = 0;  
         pageNumber = 1;
-        ViewData();   
     }  
-    public void previous() {  
+    public void previous() 
+    {  
         pageNumber--;
         index = index - pageBlockSize;  
-        ViewData();
     }  
-    public void next() {  
+    public void next() 
+    {  
         pageNumber++;
         index = index + pageBlockSize;  
-        ViewData();
     }  
-    public void end() {  
+    public void end() 
+    {  
         pageNumber = (totalrecs/pageBlockSize) + 1; 
-        index = totalrecs - math.mod(totalRecs,pageBlockSize);  
-        ViewData();
+        index = totalrecs - math.mod(totalRecs, pageBlockSize);  
     } 
-    public boolean getprev() {  
+    public boolean getPrev() 
+    {  
         if(index == 0)  
             return true;  
         else  
             return false;  
     }    
-    public boolean getnxt() {  
+    public boolean getNxt() 
+    {  
         if((index + pageBlockSize) > totalRecs)  
             return true;  
         else  
@@ -136,8 +124,7 @@ public class QueryExecuterController
         {
             index = pageBlockSize * (inputPageNumber - 1);
             pageNumber = inputPageNumber;
-            ViewData();
-        }
+        }	
         return null;
     }
 }

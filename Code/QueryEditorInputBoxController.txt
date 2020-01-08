@@ -1,6 +1,7 @@
 public class QueryEditorInputBoxController 
 {
-    public String queryInput {get;set;}
+    public String queryInput{get;set;}
+    public String sendQueryInput{get;set;}
     public Boolean showQueryOutput{get;set;}
     public QueryEditorInputBoxController()
     {
@@ -8,8 +9,11 @@ public class QueryEditorInputBoxController
     }
     public PageReference executeQuery()
     {
-     	showQueryOutput = true;
-        system.debug(queryInput);
+        if(queryInput != null && queryInput != '')
+        {
+            sendQueryInput = queryInput;
+            showQueryOutput = true;
+        }
         return null;
     }
 }
