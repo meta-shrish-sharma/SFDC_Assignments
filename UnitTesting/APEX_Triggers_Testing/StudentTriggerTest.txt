@@ -16,7 +16,7 @@ public class StudentTriggerTest
         insert st;
     }
     @isTest 
-    static void testClassTrigger_testMoreThenMaxLimitInsert_getFailureResponse() 
+    static void testClassTrigger_testMoreThenMaxLimitInsert_insertFailure() 
     {
         String operationResult;
         Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'TestClass'];
@@ -24,17 +24,17 @@ public class StudentTriggerTest
         Test.startTest();
         try
         {
-            insert st ;
+            insert st;
         }
         catch(Exception e)
         {
             operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.assert(operationResult.contains('Cannot insert more then'));
+        System.assert(operationResult.contains('Cannot insert more then'), 'Expected was the student should not get inserted more then max limit, but student get inserted');
     }
     @isTest 
-    static void testClassTrigger_testMyCountCounterInsert_getSuccessResponse() 
+    static void testClassTrigger_testMyCountCounterInsert_myCountIncreaseByOne() 
     {
         Class__c testClass = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
         Student__c st = new Student__c(Name = 'TestStudent', Class__c = testClass.Id, LastName__c = 'Lastname');
@@ -45,7 +45,7 @@ public class StudentTriggerTest
         System.assertEquals(1, myCount);
     }
     @isTest 
-    static void testClassTrigger_testMyCountCounterUpdate_getSuccessResponse() 
+    static void testClassTrigger_testMyCountCounterUpdate_myCountUpdated() 
     {
         Class__c newtestClass = [SELECT Id FROM Class__c WHERE Name = 'newTestClass'];
         Test.startTest();
