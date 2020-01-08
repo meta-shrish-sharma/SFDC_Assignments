@@ -43,7 +43,7 @@ public class TeacherTriggerTest
             operationResult = e.getMessage();
         }
         Test.stopTest();
-        System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'));
+        System.assert(operationResult.contains('Insert or Update of Hindi teacher is not allowed'), 'Expected was the Hindi teacher should not get inserted, but it get inserted');
     }
     @isTest 
     static void testInsertHindiTeacher_insertSuccess() 
