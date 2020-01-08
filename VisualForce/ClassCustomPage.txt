@@ -1,3 +1,0 @@
-<apex:page standardController="Class__c" showHeader="false" showChat="false" sidebar="false">
-<apex:detail/>
-</apex:page>
