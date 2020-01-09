@@ -191,7 +191,7 @@ public class ShoppingCartController
                     }
                     //if product is not avilable in list then add the product in list   
                     if(!availableInCart)
-                        selectedProducts.add(new CartWrapperCls(cWrapper.cProduct,1));
+                        selectedProducts.add(new CartWrapperCls(cWrapper.cProduct, 1));
                 }
             }
         }//All products are added in map
@@ -246,17 +246,17 @@ public class ShoppingCartController
                 checkoutDisable = false;	
                 if(wrp.prdCount < 0)
                 {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be negative for '+wrp.cProduct.Name ));
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be negative for ' + wrp.cProduct.Name ));
                     checkoutDisable = true;	
                 }
-                if(wrp.prdCount > maxprdCount)
+                if(wrp.prdCount > maxPrdCount)
                 {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be more then '+ maxprdCount +' for '+wrp.cProduct.Name ));
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be more then ' + maxPrdCount + ' for ' + wrp.cProduct.Name));
                     checkoutDisable = true;
                 }
                 if(wrp.prdCount == 0)
                 {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be Zero for '+wrp.cProduct.Name ));
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be Zero for ' + wrp.cProduct.Name ));
                     checkoutDisable = true;	
                 }
                 //updating the product detail table
@@ -264,7 +264,7 @@ public class ShoppingCartController
                 {
                     if(cWrapper.cProduct.id == objSelectedPrdID)
                     {
-                        cWrapper.cProduct.QuantityAvilable__c = maxprdCount - wrp.prdCount + 1;
+                        cWrapper.cProduct.QuantityAvilable__c = maxPrdCount - wrp.prdCount + 1;
                     }
                 }             
                 break;
@@ -286,26 +286,26 @@ public class ShoppingCartController
     }
     public pageReference placeOrder() // To add the products in cart table
     {	
-        Purchaseorder__c ordr = new Purchaseorder__c();
-        ordr.OrderNumber__c = randomOrderNumber;
-        ordr.OrderPlaceTime__c = system.Now();
-        ordr.OrderPrice__c = orderTotal;
-        ordr.OrderStatus__c = 'Pending';
-        ordr.User__c = UserInfo.getUserId();
-        upsert ordr;
+        Purchaseorder__c ord = new Purchaseorder__c();
+        ord.OrderNumber__c = randomOrderNumber;
+        ord.OrderPlaceTime__c = System.Now();
+        ord.OrderPrice__c = orderTotal;
+        ord.OrderStatus__c = 'Pending';
+        ord.User__c = UserInfo.getUserId();
+        upsert ord;
         List<PurchaseOrderLineItems__c> orderLineList = new  List<PurchaseOrderLineItems__c>();
         for(CartWrapperCls wrp:selectedProducts)
         {
             PurchaseOrderLineItems__c POL = new PurchaseOrderLineItems__c();
             POL.Product__c = wrp.cProduct.id;
             POL.ProductQuantity__c = wrp.prdCount;
-            POL.PurchaseOrder__c = ordr.Id;
-            POL.Name = wrp.cProduct.Name+'Order';
+            POL.PurchaseOrder__c = ord.Id;
+            POL.Name = wrp.cProduct.Name + ' Order';
             orderLineList.add(POL);
         }
         upsert orderLineList;
         PageReference currentPage = new pageReference('/apex/OrderHistory');
         currentPage.setRedirect(true);
-        return currentPage ;
+        return currentPage;
     }
 }
