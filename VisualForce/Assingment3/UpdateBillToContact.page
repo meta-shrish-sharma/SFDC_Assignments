@@ -1,5 +1,5 @@
 <apex:page controller="UpdateBillToContactController" showHeader="false" showChat="false" sidebar="false">
-    <apex:form >
+    <apex:form>
         <apex:pageBlock title="Contacts List">   
             <apex:selectRadio layout="pageDirection" value="{!selectedCard}" >
                 <apex:selectOptions value="{!Records}"/>
