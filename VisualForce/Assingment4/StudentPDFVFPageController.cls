@@ -23,7 +23,7 @@ public class StudentPDFVFPageController
         //Delete if atachment already exist
         try
         {
-            attachDelete = [SELECT Id FROM Attachment WHERE ParentId = :currentPageId];
+            attachDelete = [SELECT Id FROM Attachment WHERE ParentId=:currentPageId];
             delete attachDelete;
         }
         catch (QueryException e) 
@@ -45,7 +45,7 @@ public class StudentPDFVFPageController
         }
         attach.Body = body;
         // add the user entered name
-        attach.Name = pdfName;
+        attach.Name = pdfName + '.pdf';
         attach.IsPrivate = false;
         // attach the pdf to the account
         attach.ParentId = currentPageId;
