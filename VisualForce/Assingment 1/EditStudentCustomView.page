@@ -1,15 +1,15 @@
 <apex:page standardController="Student__c">
-    <apex:form >
+    <apex:form>
         <apex:pageBlock title="Edit Student">
-            <apex:pageBlockSection >
+            <apex:pageBlockSection>
                 <apex:inputField value="{!Student__c.Name }"/> 
                 <apex:inputField value="{!Student__c.Email__c }"/>  
                 <apex:inputField value="{!Student__c.Married__c }"/>  
                 <apex:inputField value="{!Student__c.Class__c }"/>  
                 <apex:inputField value="{!Student__c.Sex__c }"/>  
             </apex:pageBlockSection>
-            <apex:pageBlockButtons >
-                <apex:commandButton action="{!save }" value="Save" />        
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!save }" value="Save"/>        
             </apex:pageBlockButtons>
         </apex:pageBlock>
     </apex:form>
