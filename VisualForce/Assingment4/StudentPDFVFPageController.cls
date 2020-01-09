@@ -23,7 +23,7 @@ public class StudentPDFVFPageController
         //Delete if atachment already exist
         try
         {
-            attachDelete = [SELECT Id FROM Attachment WHERE ParentId=:currentPageId];
+            attachDelete = [SELECT Id FROM Attachment WHERE ParentId = :currentPageId];
             delete attachDelete;
         }
         catch (QueryException e) 
