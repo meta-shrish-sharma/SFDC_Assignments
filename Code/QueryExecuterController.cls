@@ -1,0 +1,130 @@
+public class QueryExecuterController 
+{
+    public List<sObject> lstObjs{get;set;}
+    public List<String> lstFlds{get;set;}
+    public String sortDirection{get;set;}
+    private String sortExp;
+    public Boolean renderPB{get;set;}
+    public Boolean renderError{get;set;}
+    public String sortExpression 
+    {
+        get
+        {
+            return sortExp;
+        }
+        set
+        {
+            //if the column is clicked on then switch between Ascending and Descending modes
+            if (value == sortExp)
+                sortDirection = (sortDirection == 'ASC')? 'DESC' : 'ASC';
+            else
+                sortDirection = 'ASC';
+            sortExp = value;
+        }
+    }
+    // Variables for pagination of Products
+    public Integer totalRecs{get;set;}       
+    private Integer index = 0;  
+    public Integer pageBlockSize{get;set;}
+    public Integer pageNumber{get;set;}
+    public Integer inputPageNumber{get;set;}
+    public String queryString;
+    public void setqueryString(String inputValue) 
+    {
+        queryString = inputValue;
+        renderPB = true;
+        renderError = false;
+        pageBlockSize = 10;
+        if(pageNumber == null)
+        {
+            pageNumber = 1;
+        }
+        try
+        {
+            List<sObject> countLstObjs = Database.query(queryString);
+            totalRecs = countLstObjs.size();
+            if(totalRecs <= 0)
+            {
+                renderPB = false;
+                renderError = true;
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'No records found'));
+            }
+            lstFlds = new List<String>();
+            if(sortExp != null && sortDirection != null)
+            {
+                String sortFullExp = sortExp  + ' ' + sortDirection;
+                queryString = queryString + ' ORDER BY ' + sortFullExp + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
+                lstObjs = Database.query(queryString);
+            }
+            else
+            {
+                queryString = queryString + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
+                lstObjs = Database.query(queryString);    
+            }
+            lstObjs = Database.query(queryString);
+            String fieldsName = queryString.substring(7, queryString.indexOf(' FROM'));
+            fieldsName = fieldsName.remove(' ');
+            lstFlds = fieldsName.split(',');
+        }
+        catch(Exception e)
+        {
+            renderPB = false;
+            renderError = true;
+            pageNumber = 1;
+            index = 0;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Please enter the correct query'));
+        }
+    }
+    public String getqueryString() 
+    {
+        return queryString;
+    } 
+    public PageReference viewData() 
+    {
+        return null;
+    }
+    // Code for pagination
+    public void beginning() 
+    {  
+        index = 0;  
+        pageNumber = 1;
+    }  
+    public void previous() 
+    {  
+        pageNumber--;
+        index = index - pageBlockSize;  
+    }  
+    public void next() 
+    {  
+        pageNumber++;
+        index = index + pageBlockSize;  
+    }  
+    public void end() 
+    {  
+        pageNumber = (totalrecs/pageBlockSize) + 1; 
+        index = totalrecs - math.mod(totalRecs, pageBlockSize);  
+    } 
+    public boolean getPrev() 
+    {  
+        if(index == 0)  
+            return true;  
+        else  
+            return false;  
+    }    
+    public boolean getNxt() 
+    {  
+        if((index + pageBlockSize) > totalRecs)  
+            return true;  
+        else  
+            return false;  
+    }
+    public PageReference goToPageNumber()
+    {
+        if(inputPageNumber <= ((totalRecs / pageBlockSize) + 1))
+        {
+            index = pageBlockSize * (inputPageNumber - 1);
+            pageNumber = inputPageNumber;
+        }	
+        return null;
+    }
+}
