@@ -9,7 +9,7 @@ public with sharing class JSONGenerator
     private String prepareJSON() 
     {
         List<Class__c> classList = new  List<Class__c>();
-        classList = [SELECT Name, Fee__c, MaxSize__c, MyCount__c FROM class__c];
+        classList = [SELECT Name, Fee__c, MaxSize__c, MyCount__c FROM Class__c];
         // Serialize the list of BillingStatement objects.
         jsonStr = JSON.serialize(classList);	
         // return the JSON string
