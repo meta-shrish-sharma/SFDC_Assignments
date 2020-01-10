@@ -1,0 +1,10 @@
+<apex:page standardController="Student__c">
+    <table border="5px" font="20px">
+        <th>Name</th>
+        <th>Class</th>
+        <tr>
+            <td><apex:outputField value="{!Student__c.Name}"/></td>
+            <td><apex:outputField value="{!Student__c.Class__c}"/></td>
+        </tr>
+    </table>
+</apex:page>
