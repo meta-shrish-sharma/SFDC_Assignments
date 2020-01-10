@@ -2,15 +2,13 @@ public class UpdateBillToContactController
 {
     private String currentPageId;
     public String selectedCard{get;set;}
-    public Boolean showSelectList{get;set;}
-    public Boolean showErrorList{get;set;}
+    public Boolean togglePageBlock{get;set;}
     private List<Contact> contactList;
     private Id accId;
     private List<SelectOption> cntctListSelection;
     public UpdateBillToContactController()
     {
-        showSelectList = true;
-        showErrorList = false;
+        togglePageBlock = true;
         currentPageId = ApexPages.currentPage().getParameters().get('Id');
         accId = [SELECT Manager__c FROM Opportunity WHERE Id  = :currentPageId][0].Manager__c;
         if(accId != null)
@@ -19,10 +17,10 @@ public class UpdateBillToContactController
             contactList = [SELECT Id, Name FROM contact WHERE AccountId = :accId];
             if(contactList.size() > 0)
             {
-            for(Contact ct : contactList)
-            {
-                cntctListSelection.add(new SelectOption(ct.Id, ct.Name));
-            }
+                for(Contact ct : contactList)
+                {
+                    cntctListSelection.add(new SelectOption(ct.Id, ct.Name));
+                }
             }
             else
             {
@@ -36,14 +34,12 @@ public class UpdateBillToContactController
     }
     public void noRecordsFound()
     {
-        showSelectList = false;
-        showErrorList = true;
-        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'No records found'));
+        togglePageBlock = false;
+        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, Label.Error_Message_Zero_Records));
     }
     public List<SelectOption> getRecords()
     {
         return cntctListSelection;
-        
     }
     public PageReference returnSavePage() 
     {
