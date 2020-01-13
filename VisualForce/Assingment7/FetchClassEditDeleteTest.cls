@@ -1,7 +1,7 @@
 @isTest
 public class FetchClassEditDeleteTest 
 {
-	@testSetup 
+    @testSetup 
     static void setup() 
     {
         List<Class__c> clsList = new List<Class__c>();
@@ -14,25 +14,47 @@ public class FetchClassEditDeleteTest
     @isTest
     static void testFetchClassEditDelete_delete_deleteSelectedClass()
     {
-        Class__c cls = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass0'];
-        Test.setCurrentPage(Page.ShowHidePage);
-        ApexPages.currentPage().getParameters().put('rowId', cls.Id);
+        Id clsId = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass0'].Id;
         FetchClassEditDelete pageController = new FetchClassEditDelete();
+        pageController.selectedClassId = clsId;
         pageController.deleteRow();
         List<Class__c> clsList = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass0'];
         System.assertEquals(0, clsList.size());
     }
     @isTest
-    static void testFetchClassEditDelete_edit_editSelectedClass()
+    static void testFetchClassEditDelete_editSelect_editSelectedClass()
     {
-        Class__c cls = [SELECT Id, Name FROM Class__c WHERE Name = 'TestClass0'];
+        Class__c cls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Name = 'TestClass0'];
         FetchClassEditDelete pageController = new FetchClassEditDelete();
-        pageController.editId = cls.Id;
-        pageController.className = 'newTestClass0';
-        pageController.board = 'Bihar';
-        pageController.fee = 500;
+        pageController.selectedClassId = cls.Id;
+        pageController.editRow();
+        System.assertEquals(cls.Name, pageController.selectedClass.Name);
+        System.assertEquals(cls.Board__c, pageController.selectedClass.Board__c);
+        System.assertEquals(cls.Fee__c, pageController.selectedClass.Fee__c);
+        System.assertEquals(cls.MyCount__c, pageController.selectedClass.MyCount__c);
+    }
+    @isTest
+    static void testFetchClassEditDelete_edit_editClass()
+    {
+        Class__c cls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Name = 'TestClass0'];
+        cls.Name = 'New Test Class';
+        cls.Board__c = 'Bihar';
+        cls.Fee__c = 500;
+        cls.MyCount__c = 4;
+        FetchClassEditDelete pageController = new FetchClassEditDelete();
+        pageController.selectedClass = cls;
         pageController.updateClass();
-        List<Class__c> clsList = [SELECT Id, Name FROM Class__c WHERE Name = 'newTestClass0'];
-        System.assertEquals(1, clsList.size());
+        Class__c updatedCls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Id = :cls.Id];
+        System.assertEquals(updatedCls.Name, updatedCls.Name);
+        System.assertEquals(updatedCls.Board__c, updatedCls.Board__c);
+        System.assertEquals(updatedCls.Fee__c, updatedCls.Fee__c);
+        System.assertEquals(updatedCls.MyCount__c, updatedCls.MyCount__c);
+    }
+    @isTest
+    static void testFetchClassEditDelete_pickListValues_getPickListValues()
+    {
+        FetchClassEditDelete pageController = new FetchClassEditDelete();
+        List<SelectOption> pickListFields = pageController.getBoards();
+        System.assertEquals(3, pickListFields.size());
     }
 }
