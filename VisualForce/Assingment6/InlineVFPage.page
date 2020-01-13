@@ -1,5 +1,5 @@
-<apex:page standardController="Contact" extensions="InlinePageController">
-    <style>
+<apex:page standardController="Contact">
+     <style>
     .tagStyle
         {
         background-color:powderblue;
@@ -7,5 +7,5 @@
         font-size: 20px;
         }
     </style>
-    <p class="tagStyle" >{!teacherType} Teacher</p>
+    <p class="tagStyle">{!Contact.RecordType.Name}</p>
 </apex:page>
