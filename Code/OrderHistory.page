@@ -1,11 +1,29 @@
-<apex:page controller="ShoppingCartController">
+<apex:page controller="ShoppingCartController" showChat="true" sidebar="false">
     <apex:form >
         <apex:pageBlock id="prchHist" title="My Purchase Order">
             <apex.pageBlockSection>
                 <apex:pageBlockTable value="{!AllOrders}" var="orders" id="aOrder">
-                    <apex:column value="{!orders.id}"/>
-                    <apex:column value="{!orders.OrderPrice__c}"/>
-                    <apex:column value="{!orders.OrderStatus__c}"/> 
+                    <apex:column value="{!orders.Id}">
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!refreshOrders}" value="Id{!IF(sortExpression=='Id',IF(sortDirection='ASC','▼','▲'),'')}">
+                                <apex:param value="Id" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column value="{!orders.OrderPrice__c}">
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!refreshOrders}" value="Order Price {!IF(sortExpression=='OrderPrice__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                                <apex:param value="OrderPrice__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column value="{!orders.OrderStatus__c}">
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!refreshOrders}" value="Order Status {!IF(sortExpression=='OrderStatus__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                                <apex:param value="OrderStatus__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
                 </apex:pageBlockTable><br/>
                 <apex:panelGrid columns="7">
                     <apex:commandButton status="fetchStatus" reRender="prchHist" value="|<" action="{!setOrder.first}" disabled="{!!setOrder.hasPrevious}" title="First Page"/>

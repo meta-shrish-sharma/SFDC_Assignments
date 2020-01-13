@@ -1,40 +1,59 @@
 public class ShoppingCartController 
 {
-    // this varibales value is used for searching product. Value is taken from search box labeled product name.
-    // the value is further appended with SOQL query with where condition to sesrch the products
+    /* This variable is used for searching product. Value is taken from search box labeled product name.
+The value is further appended with SOQL query with where condition to search the products */
     public String searchProduct{get;set;}
-    //List of all the products needs to be displayed in pageBlockTable in beginning from the search query
+    // List of all the products needs to be displayed in pageBlockTable in beginning with searching
     private List<Product2> prdList;
-    //List of all orders placed by current login user in past
+    // List of all orders placed by current login user in past
     public List<Purchaseorder__c> ordrList{get;set;}
     // Total no of orders available in purchase history
     public Integer noOfOrders{get;set;}
-    //For pagination of order table, Purchase order history table size
+    // For pagination of order table, Purchase order history table size
     public Integer orderPagesize{get;set;}
-    //Search query to get the products with applying all filters also
+    // Varibles for sorting of order history
+    public String sortDirection{get;set;}
+    private String sortExp;
+    public String sortExpression 
+    {
+        get
+        {
+            return sortExp;
+        }
+        set
+        {
+            // If the column is clicked on then switch between Ascending and Descending modes
+            if (value == sortExp)
+                sortDirection = (sortDirection == 'ASC')? 'DESC' : 'ASC';
+            else
+                sortDirection = 'ASC';
+            sortExp = value;
+            setOrder = null;
+        }
+    }
+    // Search query to get the products with applying all filters also
     private String searchQuery;
-    //Products needs to be added to cart after selecting from product list
+    // Products needs to be added to cart after selecting from product list
     public List<CartWrapperCls> selectedProducts{get;set;}
-    //products list with wrapper class with checkboxes
+    // Products list with wrapper class with checkboxes
     public List<Product2WrapperCls> prdListTable{get;set;}
     private Boolean showProdList = false;
     private Boolean showCartList = false;
-    //used to view cart only when products are added button
+    // Rendring the cart only when products are added button
     public Boolean renderOrderDetails{get;set;}
-    //used to enable checkout button
+    // Disable the checkout if cart is empty or data is not correct
     public Boolean checkoutDisable{get;set;}
-    //to create a random number for order details
+    // Create a random varible for order number
     public Integer randomOrderNumber{get;set;}
-    //total amount of all products in cart
+    // Grand total of cart products
     public Decimal orderTotal{get;set;}
-    // ** Variables for pagination of Products
+    // Variables for pagination of Products
     public Integer totalRecs{get;set;}
     private Integer totalRecsWithoutSearch;
     private Integer index = 0;  
     private Integer blockSize = 10;
     public Integer pageBlockSize{get;set;}
     public Integer pageNumber{get;set;}
-    // **
     public ShoppingCartController()
     {
         pageBlockSize = 10;
@@ -47,19 +66,30 @@ public class ShoppingCartController
         totalRecs = [SELECT COUNT() FROM Product2];
         totalRecsWithoutSearch = totalRecs;
     }
-    //**This section is for Purchase History detail**
+    // Below code is for Purchase History detail
     public List<Purchaseorder__c> getAllOrders()
     {
         List<Purchaseorder__c> ordListTable = new List<Purchaseorder__c>();
-        for(Purchaseorder__c order : (List<Purchaseorder__c>)setOrder.getRecords()) // Data should be fetched from setCon to form the data in pages
+        for(Purchaseorder__c order: (List<Purchaseorder__c>)setOrder.getRecords()) // Data should be fetched from setCon to form the data in pages
             ordListTable.add(order);
         return ordListTable;
     }
     public ApexPages.StandardSetController setOrder 
     {
-        get{
-            if(setOrder == null){
-                string ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c';        
+        get
+        {
+            if(setOrder == null)
+            {
+                String ordSearchQuery;
+                if(sortExp == null)
+                {
+                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c';  
+                }
+                else
+                {
+                    String sortFullExp = sortExp  + ' ' + sortDirection;
+                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c ' + ' ORDER BY ' + sortFullExp;  
+                }
                 ordrList = Database.query(ordSearchQuery);
                 setOrder = new ApexPages.StandardSetController(ordrList);
                 orderPagesize = 10;
@@ -69,8 +99,13 @@ public class ShoppingCartController
             return setOrder;
         }set;
     }
-    //**This section is for Product detail**
-    public pageReference showProducts() //to refresh the page block after taking input for search box
+    public pageReference refreshOrders() // Refresh the page block after taking input for search box
+    {
+        getAllOrders();
+        return null;
+    }
+    // This section is for Product detail 
+    public pageReference showProducts() // Used to refresh the page block after taking input for search box
     {
         setHideshow(true);  
         return null;
@@ -86,32 +121,35 @@ public class ShoppingCartController
     public List<Product2WrapperCls> getAllProducts()
     {
         prdListTable = new List<Product2WrapperCls>();
-        //This map is used to exclude the number of products already added in cart
+        // This map is used to exclude the number of products already added in cart
         Map<Id, Integer> cartMap = new Map<Id, Integer>();
         if(selectedProducts.size() > 0)
         {
-            for(CartWrapperCls cartProdCount : selectedProducts)
+            for(CartWrapperCls cartProdCount: selectedProducts)
             {
                 cartMap.put(cartProdCount.cProduct.id, cartProdCount.prdCount);
             }
         }
-        if(searchProduct == null || searchProduct == '')
+        if(String.isBlank(searchProduct))
         {
             searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 LIMIT ' + pageBlockSize + ' OFFSET ' + index;
             prdList = Database.query(searchQuery);
             totalRecs = totalRecsWithoutSearch; // Updation required after search operation
         }
-        else //if serching is not yet applied it will take all the products by default
+        else // If serching is not yet applied it will take all the products by default
         {
             searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%' + searchProduct + '%\' ORDER BY Name LIMIT ' + pageBlockSize + ' OFFSET ' + index;
             prdList = Database.query(searchQuery);
             totalRecs = prdList.size(); // Updation required after search operation
         }
-        for(Product2 prd : prdList)
+        for(Product2 prd: prdList)
         {	
-            if((selectedProducts.size() > 0) && (cartMap.get(prd.Id) > 0))
+            if((selectedProducts.size() > 0) && (cartMap.get(prd.Id) != null))
             {
-                prd.QuantityAvilable__c = prd.QuantityAvilable__c - cartMap.get(prd.Id);
+                if(cartMap.get(prd.Id) > 0)
+                {
+                    prd.QuantityAvilable__c = prd.QuantityAvilable__c - cartMap.get(prd.Id);
+                }
             }
             prdListTable.add(new Product2WrapperCls(prd));
         }
@@ -155,32 +193,32 @@ public class ShoppingCartController
         else  
             return false;  
     }  
-    public pageReference refresh() //to refresh the page block after taking input for search box
+    public pageReference refresh() // Used to refresh the page block after taking input for search box
     {
         getAllProducts();
         return null;
     }
-    //**This section is for Cart detail**
+    // This section is for Cart detail 
     public pageReference AddToCart() // To add the products in cart table
     {	
         Integer selected = 0;
         Integer notselected = 0;
-        for(Product2WrapperCls cWrapper : prdListTable)
+        for(Product2WrapperCls cWrapper: prdListTable)
         {
             if(cWrapper.isSelected == true)
             {
                 boolean availableInCart = false;
-                //Quantity of product os picklist in standerd object
-                //hence needs to be converted first
+                /* Quantity of product os picklist in standerd object
+hence needs to be converted first */
                 if(cWrapper.cProduct.QuantityAvilable__c > 0)
                 {
                     checkoutDisable = false;
                     setShowCartList(true);
                     cWrapper.cProduct.QuantityAvilable__c--; 
-                    // converting to string before saving to
-                    // the standerd product object
-                    // verify that product is avilable in cart or not
-                    // if avilalable then increment the available number of product in cart   
+                    /*  converting to string before saving to
+the standerd product object
+verify that product is avilable in cart or not
+if avilalable then increment the available number of product in cart*/   
                     for(CartWrapperCls crtWrap: selectedProducts)
                     {
                         if (crtWrap.cProduct.id == cWrapper.cProduct.id)
@@ -189,12 +227,12 @@ public class ShoppingCartController
                             availableInCart = true;
                         }
                     }
-                    //if product is not avilable in list then add the product in list   
+                    // If product is not avilable in list then add the product in list   
                     if(!availableInCart)
                         selectedProducts.add(new CartWrapperCls(cWrapper.cProduct, 1));
                 }
             }
-        }//All products are added in map
+        }// All products are added in map
         return null;
     }
     public Pagereference deleteRow()
@@ -203,11 +241,11 @@ public class ShoppingCartController
         Integer crtListIndex = 0;
         while(crtListIndex < selectedProducts.size())
         {
-            if(selectedProducts.get(crtListIndex).cProduct.id == SelectedRowId)
+            if(selectedProducts.get(crtListIndex).cProduct.Id == SelectedRowId)
             {
-                for(Product2WrapperCls cWrapper : prdListTable)
+                for(Product2WrapperCls cWrapper: prdListTable)
                 {
-                    if(cWrapper.cProduct.id == SelectedRowId)
+                    if(cWrapper.cProduct.Id == SelectedRowId)
                     {
                         cWrapper.cProduct.QuantityAvilable__c = cWrapper.cProduct.QuantityAvilable__c + selectedProducts.get(crtListIndex).prdCount;
                     }
@@ -233,15 +271,15 @@ public class ShoppingCartController
     {
         this.showCartList = showValue;
     }
-    //**This section is to validate Cart Items **
+    // Below code section is to validate Cart Items 
     public Pagereference handleUpdateChange()
     {
-        ID objSelectedPrdID=ApexPages.CurrentPage().getParameters().get('updVal');
-        for(CartWrapperCls wrp:selectedProducts)
+        Id objSelectedPrdId=ApexPages.CurrentPage().getParameters().get('updVal');
+        for(CartWrapperCls wrp: selectedProducts)
         {
-            Decimal maxPrdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE Id = :objSelectedPrdID][0].QuantityAvilable__c;
-            //validate the value of inputbox.
-            if(wrp.cProduct.id == objSelectedPrdID)
+            Decimal maxPrdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE Id = :objSelectedPrdId][0].QuantityAvilable__c;
+            // Validate the value of inputbox
+            if(wrp.cProduct.Id == objSelectedPrdId)
             {
                 checkoutDisable = false;	
                 if(wrp.prdCount < 0)
@@ -259,10 +297,10 @@ public class ShoppingCartController
                     ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be Zero for ' + wrp.cProduct.Name ));
                     checkoutDisable = true;	
                 }
-                //updating the product detail table
-                for(Product2WrapperCls cWrapper : prdListTable)
+                // Updating the product detail table
+                for(Product2WrapperCls cWrapper: prdListTable)
                 {
-                    if(cWrapper.cProduct.id == objSelectedPrdID)
+                    if(cWrapper.cProduct.Id == objSelectedPrdId)
                     {
                         cWrapper.cProduct.QuantityAvilable__c = maxPrdCount - wrp.prdCount + 1;
                     }
@@ -275,7 +313,7 @@ public class ShoppingCartController
     public pageReference Checkout() // To add the products in cart table
     {	
         Decimal totalSum = 0;
-        for(CartWrapperCls wrp:selectedProducts)
+        for(CartWrapperCls wrp: selectedProducts)
         {
             if(wrp.cProduct.ProductPrice__c != null)
                 totalSum = totalSum + (wrp.cProduct.ProductPrice__c * wrp.prdCount);
@@ -297,7 +335,7 @@ public class ShoppingCartController
         for(CartWrapperCls wrp:selectedProducts)
         {
             PurchaseOrderLineItems__c POL = new PurchaseOrderLineItems__c();
-            POL.Product__c = wrp.cProduct.id;
+            POL.Product__c = wrp.cProduct.Id;
             POL.ProductQuantity__c = wrp.prdCount;
             POL.PurchaseOrder__c = ord.Id;
             POL.Name = wrp.cProduct.Name + ' Order';
