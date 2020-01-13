@@ -529,30 +529,6 @@
         <type>DateTime</type>
     </fields>
     <fields>
-        <fullName>Teacher_Type__c</fullName>
-        <externalId>false</externalId>
-        <label>Teacher Type</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>PGT</fullName>
-                    <default>false</default>
-                    <label>PGT</label>
-                </value>
-                <value>
-                    <fullName>TGT</fullName>
-                    <default>false</default>
-                    <label>TGT</label>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Title</fullName>
         <trackFeedHistory>false</trackFeedHistory>
     </fields>
@@ -567,7 +543,6 @@
         <columns>CORE.USERS.ALIAS</columns>
         <columns>CONTACT.DEPARTMENT</columns>
         <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>Teacher_Type__c</columns>
         <columns>CONTACT.BIRTHDATE</columns>
         <columns>Subject__c</columns>
         <filterScope>Everything</filterScope>
@@ -689,17 +664,6 @@
                 <default>false</default>
             </values>
         </picklistValues>
-        <picklistValues>
-            <picklist>Teacher_Type__c</picklist>
-            <values>
-                <fullName>PGT</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TGT</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>TGT_Teacher</fullName>
@@ -778,17 +742,6 @@
             </values>
             <values>
                 <fullName>Maths</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Teacher_Type__c</picklist>
-            <values>
-                <fullName>PGT</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TGT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
