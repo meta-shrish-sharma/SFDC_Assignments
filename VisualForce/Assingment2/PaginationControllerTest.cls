@@ -31,7 +31,7 @@ public class PaginationControllerTest
         System.assertNotEquals(1, pgController.getAccounts().size());
     }
     @isTest
-    static void testAccountFilter_matchCountry_zeroRecords() 
+    static void testAccountFilter_matchCountry_getCountryRecords() 
     {
         PaginationController pgController = new  PaginationController();
         pgController.inputBillingCountry = 'Test Country 2';
@@ -50,10 +50,8 @@ public class PaginationControllerTest
     static void testAccountFilter_pageSize_getPageSize() 
     {
         PaginationController pgController = new  PaginationController();
-        pgController.inputBillingCountry = 'Test Country 1';
-        pgController.inputBillingState = 'Test State 1';
-        pgController.inputBillingCity = 'Test City 1';
+        pgController.inputTotalNoOfRecords = 2;
         pgController.refresh();
-        System.assertEquals(1, pgController.setCon.getRecords().size());
+        System.assertEquals(2, pgController.setCon.getPageSize());
     }
 }
