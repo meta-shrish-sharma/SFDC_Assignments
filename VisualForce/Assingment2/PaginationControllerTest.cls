@@ -53,5 +53,7 @@ public class PaginationControllerTest
         pgController.inputTotalNoOfRecords = 2;
         pgController.refresh();
         System.assertEquals(2, pgController.setCon.getPageSize());
+        // Test total no of pages
+        System.assertEquals(2, (pgController.setCon.getResultSize() / setCon.getPageSize()));
     }
 }
