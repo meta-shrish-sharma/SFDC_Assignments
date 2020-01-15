@@ -2,31 +2,31 @@
     <apex:form >
         <apex:pageBlock >
             <apex:pageBlockSection columns="1" title="Class Table">
-                <apex:pageBlockTable value="{!ClassDetails}" var="class" id="cDeleted">
-                    <apex:column value="{!class.Name}"/>
-                    <apex:column value="{!class.Board__c}"/>
-                    <apex:column value="{!class.Fee__c}"/> 
-                    <apex:column value="{!class.MyCount__c}"/>
+                <apex:pageBlockTable value="{!classDetails}" var="class" id="cDeleted">
+                    <apex:column value="{!classDetails[class].Name}"/>
+                    <apex:column value="{!classDetails[class].Board__c}"/>
+                    <apex:column value="{!classDetails[class].Fee__c}"/> 
+                    <apex:column value="{!classDetails[class].MyCount__c}"/>
                     <apex:column headerValue="Delete">
                         <apex:commandLink action="{!deleteRow}" immediate="true" reRender="cDeleted" value="Delete">
-                            <apex:param name="rowId" value="{!class.Id}" assignTo="{!SelectedRowId}"/>
+                            <apex:param name="rowId" value="{!classDetails[class].Id}" assignTo="{!selectedClassId}"/>
                         </apex:commandLink>
                     </apex:column>
                     <apex:column headerValue="EditRow">
                         <apex:commandLink action="{!editRow}" value="Edit" reRender="details">
-                            <apex:param name="eRowId" value="{!class.Id}" assignTo="{!selectededitRowId}"/>
+                            <apex:param name="eRowId" value="{!classDetails[class].Id}" assignTo="{!selectedClassId}"/>
                         </apex:commandLink>
                     </apex:column>
                 </apex:pageBlockTable>
             </apex:pageBlockSection>
             <apex:outputPanel id="details">
                 <apex:pageBlockSection id="newData" title="Class Detail" rendered="{!hideShow}">
-                    <apex:inputText id="cName" value="{!className}" label="Name:" />
-                    <apex:selectList value="{!board}" multiselect="false" size="1" label="Board:">
+                    <apex:inputText id="cName" value="{!selectedClass.Name}" label="Name:" />
+                    <apex:selectList value="{!selectedClass.Board__c}" multiselect="false" size="1" label="Board:">
                         <apex:selectOptions value="{!Boards}"/>  
                     </apex:selectList>
-                    <apex:inputText id="cFee" value="{!fee}" label="Fee:" />
-                    <apex:inputText id="cMyCount" value="{!myCount}" label="My Count:" />
+                    <apex:inputText id="cFee" value="{!selectedClass.Fee__c}" label="Fee:" />
+                    <apex:inputText id="cMyCount" value="{!selectedClass.MyCount__c}" label="My Count:" />
                     <apex:commandButton action="{!updateClass}" value="Update">
                     </apex:commandButton>	
                 </apex:pageBlockSection>

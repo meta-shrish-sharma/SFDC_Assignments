@@ -1,35 +1,19 @@
 public class FetchClassEditDelete
 {
     private Boolean showHideVariable = false;//used to render edit section
-    private List<Class__c> classDetails;
-    public String className{get;set;}
-    public String board{get;set;}
-    public Decimal fee{get;set;}
-    public Decimal myCount{get;set;}
-    public Id editId{get;set;}
+    public Map<ID, Class__c> classDetails{get;set;}
+    public Id selectedClassId{get;set;}
+    public Class__c selectedClass{get;set;}
     public FetchClassEditDelete()
     {
-        classDetails = [SELECT Name, Board__c, Fee__c, MyCount__c FROM Class__c];
-    }
-    public List<Class__c> getClassDetails()
-    {
-        return classDetails;
+        classDetails = new Map<ID, Class__c>([SELECT Name, Board__c, Fee__c, MyCount__c FROM Class__c]);
     }
     public Pagereference deleteRow()
     {
-        String selectedRowId = ApexPages.CurrentPage().getParameters().get('rowId');
-        Class__c deletedClass = null;
-        for(Class__c cls: classDetails)
+        if(classDetails.get(selectedClassId) != null)
         {
-            if(cls.Id == selectedRowId) 
-            {
-                deletedClass = cls;
-                break;
-            } 
-        }
-        if(deletedClass != null) 
-        {
-            delete deletedClass;
+            Class__c deleteClass = classDetails.get(selectedClassId);
+            delete deleteClass;
         }
         pagereference pg= new PageReference('/apex/ShowHidePage');
         pg.setRedirect(True);
@@ -37,28 +21,20 @@ public class FetchClassEditDelete
     }
     public Void editRow()
     {
-        editId = ApexPages.CurrentPage().getParameters().get('eRowId');
-        for(Class__c cls: classDetails)
+        selectedClass = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Id = :selectedClassId];
+        if(classDetails.get(selectedClassId) != null)
         {
-            if(cls.Id == editId) 
-            {
-                className = cls.Name;
-                board = cls.Board__c;
-                fee = cls.Fee__c;
-                myCount = cls.MyCount__c;
-                break;
-            } 
+            Class__c editClass = classDetails.get(selectedClassId);
+            selectedClass.Name = editClass.Name;
+            selectedClass.Board__c = editClass.Board__c;
+            selectedClass.Fee__c = editClass.Fee__c;
+            selectedClass.MyCount__c = editClass.MyCount__c;
         }
         setHideshow(true);
     }
     public Pagereference updateClass()
     {
-        Class__c updClass = [SELECT Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Id  = :editId];    
-        updClass.Name = className;
-        updClass.Board__c = board;	
-        updClass.Fee__c = fee;	
-        updClass.MyCount__c = myCount;	
-        update updClass;
+        update selectedClass;
         pageReference pg= new PageReference('/apex/ShowHidePage');
         pg.setRedirect(True);
         return pg;
@@ -75,11 +51,11 @@ public class FetchClassEditDelete
         }       
         return options;
     }
-    public Boolean getHideshow()
+    public Boolean getHideShow()
     {
         return this.showHideVariable;
     }
-    public void setHideshow(boolean s)
+    public void setHideShow(boolean s)
     {
         this.showHideVariable = s;
     }
