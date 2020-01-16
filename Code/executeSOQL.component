@@ -24,7 +24,7 @@
                 <apex:commandButton value="Go" action="{!goToPageNumber}" title="Refresh Page"/>
             </apex:panelGrid>
         </apex:pageblock>
-        <apex:pageblock id="errorNull" rendered="{!renderError}">
+        <apex:pageblock id="errorNull" rendered="{!!renderPB}">
         <apex:pageMessages id="showmsg"/>
         </apex:pageblock>
 </apex:component>

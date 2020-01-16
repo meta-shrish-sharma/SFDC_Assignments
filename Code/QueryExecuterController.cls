@@ -5,7 +5,13 @@ public class QueryExecuterController
     public String sortDirection{get;set;}
     private String sortExp;
     public Boolean renderPB{get;set;}
-    public Boolean renderError{get;set;}
+    // Variables for pagination of Products
+    public Integer totalRecs{get;set;}       
+    private Integer index = 0;  
+    public Integer pageBlockSize{get;set;}
+    public Integer pageNumber{get;set;}
+    public Integer inputPageNumber{get;set;}
+    public String queryString;
     public String sortExpression 
     {
         get
@@ -22,18 +28,10 @@ public class QueryExecuterController
             sortExp = value;
         }
     }
-    // Variables for pagination of Products
-    public Integer totalRecs{get;set;}       
-    private Integer index = 0;  
-    public Integer pageBlockSize{get;set;}
-    public Integer pageNumber{get;set;}
-    public Integer inputPageNumber{get;set;}
-    public String queryString;
     public void setqueryString(String inputValue) 
     {
         queryString = inputValue;
         renderPB = true;
-        renderError = false;
         pageBlockSize = 10;
         if(pageNumber == null)
         {
@@ -46,7 +44,6 @@ public class QueryExecuterController
             if(totalRecs <= 0)
             {
                 renderPB = false;
-                renderError = true;
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'No records found'));
             }
             lstFlds = new List<String>();
@@ -69,7 +66,6 @@ public class QueryExecuterController
         catch(Exception e)
         {
             renderPB = false;
-            renderError = true;
             pageNumber = 1;
             index = 0;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Please enter the correct query'));
