@@ -17,8 +17,10 @@ public class StudentPDFVFPageControllerTest
         ApexPages.currentPage().getParameters().put('Id', st.Id);
         StudentPDFVFPageController stPDF = new StudentPDFVFPageController();
         stPDF.returnSavePDF();
-        List<Attachment> attachments=[select id, name from Attachment where parent.id=:st.id];
+        List<Attachment> attachments = [SELECT Id, Name FROM Attachment WHERE parent.Id = :st.Id];
         System.assertEquals(1, attachments.size());
         System.assertEquals('TestStudent', stPDF.getStudents().Name);
+        stPDF.returnSavePDF();
+        System.assertEquals(1, attachments.size());
     }
 }
