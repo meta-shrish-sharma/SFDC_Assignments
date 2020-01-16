@@ -1,7 +1,7 @@
 @isTest
 public class FetchClassEditDeleteTest 
 {
-    @testSetup 
+	@testSetup 
     static void setup() 
     {
         List<Class__c> clsList = new List<Class__c>();
@@ -27,7 +27,9 @@ public class FetchClassEditDeleteTest
         Class__c cls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Name = 'TestClass0'];
         FetchClassEditDelete pageController = new FetchClassEditDelete();
         pageController.selectedClassId = cls.Id;
+        System.assertEquals(false, pageController.getHideShow());
         pageController.editRow();
+        System.assertEquals(true, pageController.getHideShow());
         System.assertEquals(cls.Name, pageController.selectedClass.Name);
         System.assertEquals(cls.Board__c, pageController.selectedClass.Board__c);
         System.assertEquals(cls.Fee__c, pageController.selectedClass.Fee__c);
@@ -38,17 +40,17 @@ public class FetchClassEditDeleteTest
     {
         Class__c cls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Name = 'TestClass0'];
         cls.Name = 'New Test Class';
-        cls.Board__c = 'Bihar';
+        cls.Board__c = 'BIHAR';
         cls.Fee__c = 500;
         cls.MyCount__c = 4;
         FetchClassEditDelete pageController = new FetchClassEditDelete();
         pageController.selectedClass = cls;
         pageController.updateClass();
         Class__c updatedCls = [SELECT Id, Name, Board__c, Fee__c, MyCount__c FROM Class__c WHERE Id = :cls.Id];
-        System.assertEquals(updatedCls.Name, updatedCls.Name);
-        System.assertEquals(updatedCls.Board__c, updatedCls.Board__c);
-        System.assertEquals(updatedCls.Fee__c, updatedCls.Fee__c);
-        System.assertEquals(updatedCls.MyCount__c, updatedCls.MyCount__c);
+        System.assertEquals(cls.Name, updatedCls.Name);
+        System.assertEquals(cls.Board__c, updatedCls.Board__c);
+        System.assertEquals(cls.Fee__c, updatedCls.Fee__c);
+        System.assertEquals(cls.MyCount__c, updatedCls.MyCount__c);
     }
     @isTest
     static void testFetchClassEditDelete_pickListValues_getPickListValues()
