@@ -1,6 +1,6 @@
 public class ShoppingCartController 
 {
-    /*  This variable is used for searching product. Value is taken from search box labeled product name.
+    /* This variable is used for searching product. Value is taken from search box labeled product name.
 	The value is further appended with SOQL query with where condition to search the products */
     public String searchProduct{get;set;}
     // List of all the products needs to be displayed in pageBlockTable in beginning with searching
@@ -107,7 +107,7 @@ public class ShoppingCartController
         return null;
     }
     // This section is for Product detail 
-    public pageReference showProducts() // Used to refresh the page block after taking input for search box
+    public pageReference showProducts()
     {
         setHideshow(true);  
         return null;
@@ -123,12 +123,11 @@ public class ShoppingCartController
     public Map<Id, Product2WrapperCls> getAllProducts()
     {
         prdListTable = new Map<Id, Product2WrapperCls>();
-        // This map is used to exclude the number of products already added in cart
         if(String.isBlank(searchProduct))// If serching is not yet applied it will take all the products by default
         {
             searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 LIMIT ' + pageBlockSize + ' OFFSET ' + index;
             prdList = Database.query(searchQuery);
-            totalRecs = totalRecsWithoutSearch; // Updation required after search operation
+            totalRecs = totalRecsWithoutSearch; // Updating total records after search operation
         }
         else 
         {
@@ -191,7 +190,7 @@ public class ShoppingCartController
         else  
             return false;  
     }  
-    public pageReference refresh() // Used to refresh the page block after taking input for search box
+    public pageReference refresh()
     {
         getAllProducts();
         return null;
@@ -206,14 +205,10 @@ public class ShoppingCartController
             if((prdListTable.get(cWrapper).isSelected == true) && (prdListTable.get(cWrapper).cProduct.QuantityAvilable__c > 0))
             {
                 boolean availableInCart = false;
-                /* Quantity of product os picklist in standerd object
-                    hence needs to be converted first */
                 checkoutDisable = false;
                 setShowCartList(true);
                 prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
-                /*  converting to string before saving to
-                    the standerd product object
-                    verify that product is avilable in cart or not
+                /*  verify that product is avilable in cart or not
                     if avilalable then increment the available number of product in cart*/   
                 if(selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id) != null)
                 {
@@ -224,7 +219,7 @@ public class ShoppingCartController
                     selectedProducts.put(prdListTable.get(cWrapper).cProduct.Id, new CartWrapperCls(prdListTable.get(cWrapper).cProduct, 1));
                 }
             }
-        }// All products are added in map
+        }// All selected products are added in map
         return null;
     }
     public Pagereference deleteRow()
@@ -286,7 +281,7 @@ public class ShoppingCartController
         }
         return null;
     }
-    public pageReference checkout() // To add the products in cart table
+    public pageReference checkout()
     {	
         Decimal totalSum = 0;
         for(Id cartProducts: selectedProducts.keySet())
@@ -298,7 +293,7 @@ public class ShoppingCartController
         renderOrderDetails = true;
         return null;
     }
-    public pageReference placeOrder() // To add the products in cart table
+    public pageReference placeOrder()
     {	
         Purchaseorder__c ord = new Purchaseorder__c();
         ord.OrderNumber__c = randomOrderNumber;
