@@ -34,9 +34,11 @@ The value is further appended with SOQL query with where condition to search the
     // Search query to get the products with applying all filters also
     private String searchQuery;
     // Products needs to be added to cart after selecting from product list
-    public List<CartWrapperCls> selectedProducts{get;set;}
+    public Map<Id, CartWrapperCls> selectedProducts{get;set;}
+    // For update delete operation in cart
+    public Id cartSelectPrdId{get;set;}
     // Products list with wrapper class with checkboxes
-    public List<Product2WrapperCls> prdListTable{get;set;}
+    public Map<Id, Product2WrapperCls> prdListTable{get;set;}
     private Boolean showProdList = false;
     private Boolean showCartList = false;
     // Rendring the cart only when products are added button
@@ -58,7 +60,7 @@ The value is further appended with SOQL query with where condition to search the
     {
         pageBlockSize = 10;
         pageNumber = 1;
-        selectedProducts = new List<CartWrapperCls>();
+        selectedProducts = new Map<Id, CartWrapperCls>();
         getAllProducts();
         checkoutDisable = true;
         renderOrderDetails = false;
@@ -83,12 +85,12 @@ The value is further appended with SOQL query with where condition to search the
                 String ordSearchQuery;
                 if(sortExp == null)
                 {
-                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c';  
+                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c WHERE User__c = \'' + UserInfo.getUserId() + '\'';  
                 }
                 else
                 {
                     String sortFullExp = sortExp  + ' ' + sortDirection;
-                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c ' + ' ORDER BY ' + sortFullExp;  
+                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c ' + 'WHERE User__c = \'' + UserInfo.getUserId() + '\' ORDER BY ' + sortFullExp;  
                 }
                 ordrList = Database.query(ordSearchQuery);
                 setOrder = new ApexPages.StandardSetController(ordrList);
@@ -118,25 +120,17 @@ The value is further appended with SOQL query with where condition to search the
     {
         this.showProdList = s;
     }
-    public List<Product2WrapperCls> getAllProducts()
+    public Map<Id, Product2WrapperCls> getAllProducts()
     {
-        prdListTable = new List<Product2WrapperCls>();
+        prdListTable = new Map<Id, Product2WrapperCls>();
         // This map is used to exclude the number of products already added in cart
-        Map<Id, Integer> cartMap = new Map<Id, Integer>();
-        if(selectedProducts.size() > 0)
-        {
-            for(CartWrapperCls cartProdCount: selectedProducts)
-            {
-                cartMap.put(cartProdCount.cProduct.id, cartProdCount.prdCount);
-            }
-        }
-        if(String.isBlank(searchProduct))
+        if(String.isBlank(searchProduct))// If serching is not yet applied it will take all the products by default
         {
             searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 LIMIT ' + pageBlockSize + ' OFFSET ' + index;
             prdList = Database.query(searchQuery);
             totalRecs = totalRecsWithoutSearch; // Updation required after search operation
         }
-        else // If serching is not yet applied it will take all the products by default
+        else 
         {
             searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%' + searchProduct + '%\' ORDER BY Name LIMIT ' + pageBlockSize + ' OFFSET ' + index;
             prdList = Database.query(searchQuery);
@@ -144,14 +138,14 @@ The value is further appended with SOQL query with where condition to search the
         }
         for(Product2 prd: prdList)
         {	
-            if((selectedProducts.size() > 0) && (cartMap.get(prd.Id) != null))
+            if(selectedProducts.get(prd.Id) != null)
             {
-                if(cartMap.get(prd.Id) > 0)
+                if(selectedProducts.get(prd.Id).prdCount > 0)
                 {
-                    prd.QuantityAvilable__c = prd.QuantityAvilable__c - cartMap.get(prd.Id);
+                    prd.QuantityAvilable__c = prd.QuantityAvilable__c - selectedProducts.get(prd.Id).prdCount;
                 }
             }
-            prdListTable.add(new Product2WrapperCls(prd));
+            prdListTable.put(prd.Id, new Product2WrapperCls(prd));
         }
         return prdListTable;
     }
@@ -203,33 +197,27 @@ The value is further appended with SOQL query with where condition to search the
     {	
         Integer selected = 0;
         Integer notselected = 0;
-        for(Product2WrapperCls cWrapper: prdListTable)
+        for(Id cWrapper: prdListTable.keySet())
         {
-            if(cWrapper.isSelected == true)
+            if(prdListTable.get(cWrapper).isSelected == true)
             {
                 boolean availableInCart = false;
                 /* Quantity of product os picklist in standerd object
-hence needs to be converted first */
-                if(cWrapper.cProduct.QuantityAvilable__c > 0)
+                   hence needs to be converted first */
+                checkoutDisable = false;
+                setShowCartList(true);
+                prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
+                /*  converting to string before saving to
+                    the standerd product object
+                    verify that product is avilable in cart or not
+                    if avilalable then increment the available number of product in cart*/   
+                if(selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id) != null)
                 {
-                    checkoutDisable = false;
-                    setShowCartList(true);
-                    cWrapper.cProduct.QuantityAvilable__c--; 
-                    /*  converting to string before saving to
-the standerd product object
-verify that product is avilable in cart or not
-if avilalable then increment the available number of product in cart*/   
-                    for(CartWrapperCls crtWrap: selectedProducts)
-                    {
-                        if (crtWrap.cProduct.id == cWrapper.cProduct.id)
-                        {
-                            crtWrap.prdCount++;
-                            availableInCart = true;
-                        }
-                    }
-                    // If product is not avilable in list then add the product in list   
-                    if(!availableInCart)
-                        selectedProducts.add(new CartWrapperCls(cWrapper.cProduct, 1));
+                    selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id).prdCount++;
+                }
+                else
+                {
+                    selectedProducts.put(prdListTable.get(cWrapper).cProduct.Id, new CartWrapperCls(prdListTable.get(cWrapper).cProduct, 1));
                 }
             }
         }// All products are added in map
@@ -237,29 +225,18 @@ if avilalable then increment the available number of product in cart*/
     }
     public Pagereference deleteRow()
     {
-        String SelectedRowId=ApexPages.CurrentPage().getParameters().get('rowid');
-        Integer crtListIndex = 0;
-        while(crtListIndex < selectedProducts.size())
+        if(selectedProducts.get(cartSelectPrdId) != null)
         {
-            if(selectedProducts.get(crtListIndex).cProduct.Id == SelectedRowId)
+            if(selectedProducts.get(cartSelectPrdId).prdCount > 0)
             {
-                for(Product2WrapperCls cWrapper: prdListTable)
-                {
-                    if(cWrapper.cProduct.Id == SelectedRowId)
-                    {
-                        cWrapper.cProduct.QuantityAvilable__c = cWrapper.cProduct.QuantityAvilable__c + selectedProducts.get(crtListIndex).prdCount;
-                    }
-                }
-                selectedProducts.remove(crtListIndex);
+                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c + selectedProducts.get(cartSelectPrdId).prdCount;
             }
-            else
+            prdListTable.remove(cartSelectPrdId);
+            selectedProducts.remove(cartSelectPrdId);
+            if(selectedProducts.size() == 0)
             {
-                crtListIndex++;
+                setShowCartList(false);  
             }
-        }
-        if(selectedProducts.size() == 0)
-        {
-            setShowCartList(false);  
         }
         return null;
     }
@@ -274,38 +251,33 @@ if avilalable then increment the available number of product in cart*/
     // Below code section is to validate Cart Items 
     public Pagereference handleUpdateChange()
     {
-        Id objSelectedPrdId=ApexPages.CurrentPage().getParameters().get('updVal');
-        for(CartWrapperCls wrp: selectedProducts)
+        Decimal maxPrdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE Id = :cartSelectPrdId][0].QuantityAvilable__c;
+        checkoutDisable = false;
+        if(selectedProducts.get(cartSelectPrdId) != null)
         {
-            Decimal maxPrdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE Id = :objSelectedPrdId][0].QuantityAvilable__c;
-            // Validate the value of inputbox
-            if(wrp.cProduct.Id == objSelectedPrdId)
+            if(selectedProducts.get(cartSelectPrdId).prdCount < 0)
             {
-                checkoutDisable = false;	
-                if(wrp.prdCount < 0)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be negative for ' + wrp.cProduct.Name ));
-                    checkoutDisable = true;	
-                }
-                if(wrp.prdCount > maxPrdCount)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be more then ' + maxPrdCount + ' for ' + wrp.cProduct.Name));
-                    checkoutDisable = true;
-                }
-                if(wrp.prdCount == 0)
-                {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'Qty cannot be Zero for ' + wrp.cProduct.Name ));
-                    checkoutDisable = true;	
-                }
-                // Updating the product detail table
-                for(Product2WrapperCls cWrapper: prdListTable)
-                {
-                    if(cWrapper.cProduct.Id == objSelectedPrdId)
-                    {
-                        cWrapper.cProduct.QuantityAvilable__c = maxPrdCount - wrp.prdCount + 1;
-                    }
-                }             
-                break;
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Qty cannot be negative for ' + selectedProducts.get(cartSelectPrdId).cProduct.Name ));
+                checkoutDisable = true;	
+            }
+            if(selectedProducts.get(cartSelectPrdId).prdCount > maxPrdCount)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Qty cannot be more then ' + maxPrdCount + ' for ' + selectedProducts.get(cartSelectPrdId).cProduct.Name));
+                checkoutDisable = true;
+            }
+            if(selectedProducts.get(cartSelectPrdId).prdCount == 0)
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Qty cannot be Zero for ' + selectedProducts.get(cartSelectPrdId).cProduct.Name ));
+                checkoutDisable = true;	
+            }
+            // Updating the product detail table
+            if(checkoutDisable == false)
+            {
+                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount - selectedProducts.get(cartSelectPrdId).prdCount + 1;
+            }
+            else
+            {
+                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount;
             }
         }
         return null;
@@ -313,10 +285,10 @@ if avilalable then increment the available number of product in cart*/
     public pageReference Checkout() // To add the products in cart table
     {	
         Decimal totalSum = 0;
-        for(CartWrapperCls wrp: selectedProducts)
+        for(Id cartProducts: selectedProducts.keySet())
         {
-            if(wrp.cProduct.ProductPrice__c != null)
-                totalSum = totalSum + (wrp.cProduct.ProductPrice__c * wrp.prdCount);
+            if(selectedProducts.get(cartProducts) != null)
+                totalSum = totalSum + (selectedProducts.get(cartProducts).cProduct.ProductPrice__c * selectedProducts.get(cartProducts).prdCount);
         }
         orderTotal = totalSum;
         renderOrderDetails = true;
@@ -332,13 +304,13 @@ if avilalable then increment the available number of product in cart*/
         ord.User__c = UserInfo.getUserId();
         upsert ord;
         List<PurchaseOrderLineItems__c> orderLineList = new  List<PurchaseOrderLineItems__c>();
-        for(CartWrapperCls wrp:selectedProducts)
+        for(Id cartProducts: selectedProducts.keySet())
         {
             PurchaseOrderLineItems__c POL = new PurchaseOrderLineItems__c();
-            POL.Product__c = wrp.cProduct.Id;
-            POL.ProductQuantity__c = wrp.prdCount;
+            POL.Product__c = selectedProducts.get(cartProducts).cProduct.Id;
+            POL.ProductQuantity__c = selectedProducts.get(cartProducts).prdCount;
             POL.PurchaseOrder__c = ord.Id;
-            POL.Name = wrp.cProduct.Name + ' Order';
+            POL.Name = selectedProducts.get(cartProducts).cProduct.Name + ' Order';
             orderLineList.add(POL);
         }
         upsert orderLineList;
