@@ -21,6 +21,7 @@ public class StudentPDFVFPageControllerTest
         System.assertEquals(1, attachments.size());
         System.assertEquals('TestStudent', stPDF.getStudents().Name);
         stPDF.returnSavePDF();
+        attachments = [SELECT Id, Name FROM Attachment WHERE parent.Id = :st.Id];
         System.assertEquals(1, attachments.size());
     }
 }
