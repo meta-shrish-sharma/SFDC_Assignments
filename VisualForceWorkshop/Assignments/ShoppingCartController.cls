@@ -1,7 +1,7 @@
 public class ShoppingCartController 
 {
-    /* This variable is used for searching product. Value is taken from search box labeled product name.
-The value is further appended with SOQL query with where condition to search the products */
+    /*  This variable is used for searching product. Value is taken from search box labeled product name.
+	The value is further appended with SOQL query with where condition to search the products */
     public String searchProduct{get;set;}
     // List of all the products needs to be displayed in pageBlockTable in beginning with searching
     private List<Product2> prdList;
@@ -170,6 +170,10 @@ The value is further appended with SOQL query with where condition to search the
     public void end() 
     {  
         pageNumber = (totalrecs / pageBlockSize) + 1; 
+        if (math.mod(totalrecs, pageBlockSize) == 0)
+        {
+            pageNumber = pageNumber - 1;
+        }
         index = totalrecs - math.mod(totalRecs, pageBlockSize);  
         getAllProducts();
     } 
@@ -193,17 +197,17 @@ The value is further appended with SOQL query with where condition to search the
         return null;
     }
     // This section is for Cart detail 
-    public pageReference AddToCart() // To add the products in cart table
+    public pageReference addToCart() // To add the products in cart table
     {	
         Integer selected = 0;
         Integer notselected = 0;
         for(Id cWrapper: prdListTable.keySet())
         {
-            if(prdListTable.get(cWrapper).isSelected == true)
+            if((prdListTable.get(cWrapper).isSelected == true) && (prdListTable.get(cWrapper).cProduct.QuantityAvilable__c > 0))
             {
                 boolean availableInCart = false;
                 /* Quantity of product os picklist in standerd object
-                   hence needs to be converted first */
+                    hence needs to be converted first */
                 checkoutDisable = false;
                 setShowCartList(true);
                 prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
@@ -282,7 +286,7 @@ The value is further appended with SOQL query with where condition to search the
         }
         return null;
     }
-    public pageReference Checkout() // To add the products in cart table
+    public pageReference checkout() // To add the products in cart table
     {	
         Decimal totalSum = 0;
         for(Id cartProducts: selectedProducts.keySet())

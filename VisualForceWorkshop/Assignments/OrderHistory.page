@@ -45,7 +45,7 @@
                 </apex:inputText> 
             </apex:pageBlockSection> 
             <apex:pageBlockSection id="productSection">
-                <apex:commandButton Id="btnAddToCart" value="Add To Cart" action="{!AddToCart}"/>
+                <apex:commandButton Id="btnAddToCart" value="Add To Cart" action="{!addToCart}"/>
                 <br/>
                 <apex:pageBlockTable value="{!prdListTable}" var="pd" id="aProduct">
                     <apex:column headerValue="Select Products">
@@ -86,7 +86,7 @@
                     </apex:column>
                 </apex:pageBlockTable>
                 <br/>
-                <apex:commandButton Id="btnCheckout" value="Checkout" action="{!Checkout}" disabled="{!checkoutDisable}"/>
+                <apex:commandButton Id="btnCheckout" value="Checkout" action="{!checkout}" disabled="{!checkoutDisable}"/>
                 <br/>
                 <apex:pageMessages id="showmsg"></apex:pageMessages>
                 <br/>
