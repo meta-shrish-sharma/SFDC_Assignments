@@ -36,6 +36,9 @@ public class UpdateBillToContactControllerTest
     static void testUpdateBillToContact_clear_clearUpdateBillToContact()
     {
         Opportunity opp = [SELECT Id, Name, BillToContact__c FROM Opportunity WHERE Name = 'Test Opportunity'];
+        Contact ct = [SELECT Id, Name FROM Contact WHERE LastName = 'Test Contact'];
+        opp.BillToContact__c = ct.Id;
+        update opp;
         Test.setCurrentPage(Page.UpdateBillToContact);
         ApexPages.currentPage().getParameters().put('Id', opp.Id);
         UpdateBillToContactController pageController = new UpdateBillToContactController();
