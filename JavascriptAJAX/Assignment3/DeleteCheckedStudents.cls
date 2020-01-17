@@ -1,4 +1,4 @@
-global class DeleteCheckedStudents
+public class DeleteCheckedStudents
 {
     webservice static String deleteStudents(List<String> stId) 
     {
@@ -10,7 +10,6 @@ global class DeleteCheckedStudents
         } 
         catch(DmlException e) 
         {
-            system.debug(e.getmessage());
             return 'Fail';
         }
     }
