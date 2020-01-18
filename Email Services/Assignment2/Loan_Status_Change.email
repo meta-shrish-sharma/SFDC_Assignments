@@ -1,0 +1,5 @@
+Hi,
+
+Loan status has been changed to {!Loan__c.Loan_Approval__c}.
+
+Thanks

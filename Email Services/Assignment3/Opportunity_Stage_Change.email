@@ -1,0 +1,5 @@
+Hi,
+
+The Stage of your Opportunity is now {!Opportunity.StageName}.
+
+Thanks

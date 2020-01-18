@@ -1,0 +1,55 @@
+@isTest
+public class OppurtunityTriggerTest 
+{
+    @testSetup 
+    static void setupDataForOppurtunityTrigger() 
+    {
+        //Test data for auto-populating BillToContact__c
+        Account acc = new Account(Name = 'TestAccount');
+        insert acc;
+        Contact ct = new Contact(Lastname = 'TestConatct', AccountId = acc.Id);
+        insert ct;
+        Opportunity op = new Opportunity();
+        op.Name = 'newOppourtnity';
+        op.Amount = 500;
+        op.CloseDate = System.today().addDays(-2);
+        op.StageName = 'Prospecting';
+        insert op;
+        //Test data for close date update to todays date
+        op.BillToContact__c = ct.Id;
+        op.StageName = 'Closed Won';
+        update op;
+        //Test data for close date should not update when already Close Lost or Close Won
+        Opportunity opp = new Opportunity();
+        opp.Name = 'newClosedOppourtnity';
+        opp.Amount = 500;
+        opp.CloseDate = System.today().addDays(-2);
+        opp.StageName = 'Close Won';
+        insert opp;
+        opp.StageName = 'Closed Lost';
+        update opp;
+    }
+    //Test the value of manager field is getting autopopulated or not
+    @isTest 
+    static void testAutoPopulated_contactField_getSuccessResponse() 
+    {
+        Id newOpportunityManager = [SELECT Manager__c FROM Opportunity WHERE Name = 'newOppourtnity'].Manager__c;
+        String managerName = [SELECT Name FROM Account WHERE Id = :newOpportunityManager].Name;
+        System.assertEquals('TestAccount', managerName);//Test The name of Manager
+    }
+    @isTest 
+    static void testChange_fromOtherToCloseDateOrCloseWon_getSuccessResponse() 
+    {
+        Opportunity newOpportunity = [SELECT Manager__c, CloseDate, StageName FROM Opportunity WHERE Name = 'newOppourtnity'];
+        System.assertEquals(newOpportunity.CloseDate, System.today());//Test the close date
+    }
+    @isTest 
+    static void testStatusChange_mailSend_emailLimitDecrease() 
+    {
+        Integer emailbefore = Limits.getEmailInvocations();
+        Opportunity newOpportunity = [SELECT Manager__c, CloseDate, StageName FROM Opportunity WHERE Name = 'newOppourtnity'];
+        newOpportunity.StageName = 'Qualification';
+        update newOpportunity;
+        System.assertEquals(emailbefore + 1, Limits.getEmailInvocations(), 'should have increased');//Test the close date
+    }
+}

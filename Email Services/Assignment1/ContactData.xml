@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contacts>
+<contact>
+<Name>Contact 1</Name>
+<Email>shrish.sharma@metacube.com</Email>
+<Department>Department 1</Department>
+<Phone>9999999991</Phone>
+<Subject>English</Subject>
+</contact>
+<contact>
+<Name>Contact 2</Name>
+<Email>shrish.sharma@metacube.com</Email>
+<Department>Department 2</Department>
+<Phone>9999999992</Phone>
+<Subject>English</Subject>
+</contact>
+<contact>
+<Name>Contact 3</Name>
+<Email>shrish.sharma@metacube.com</Email>
+<Department>Department 3</Department>
+<Phone>9999999993</Phone>
+<Subject>English</Subject>
+</contact>
+<contact>
+<Name>Contact 4</Name>
+<Email>shrish.sharma@metacube.com</Email>
+<Department>Department 4</Department>
+<Phone>9999999994</Phone>
+<Subject>English</Subject>
+</contact>
+<contact>
+<Name>Contact 5</Name>
+<Email>shrish.sharma@metacube.com</Email>
+<Department>Department 5</Department>
+<Phone>9999999995</Phone>
+<Subject>English</Subject>
+</contact>
+</contacts>
