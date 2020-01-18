@@ -9,13 +9,13 @@ public class ShoppingCartControllerTest
         {
             purchaseOrderList.add(new PurchaseOrder__c (Name = 'Test Order ' + orderCount, OrderPrice__c = 100 * orderCount, User__c = UserInfo.getUserId()));
         }
-        upsert purchaseOrderList;
+        insert purchaseOrderList;
         List<Product2> prdList = new List<Product2>();
         for(Integer prdCount = 0; prdCount < 20; prdCount++)
         {
             prdList.add(new Product2 (Name = 'Test Product ' + prdCount, QuantityAvilable__c = prdCount, ProductPrice__c = 100 * prdCount));
         }
-        upsert prdList;
+        insert prdList;
     }
     @isTest
     static void testShoppingCartControllerTest_orderDetails_getOrderHistorySize()
