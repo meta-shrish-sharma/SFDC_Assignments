@@ -9,39 +9,50 @@ public class QueryExecuterControllerTest
         {
             accList.add(new Account (Name = 'Test Account ' + accountCount));
         }
-        upsert accList;
+        insert accList;
     }
     @isTest
     static void queryExecuterControllerTest_testWrongQuery_getErrorMessage()
     {
         QueryExecuterController queryExecuter = new QueryExecuterController();
+        Boolean foundErrorMessage = false;
         queryExecuter.setqueryString('SELECT FROM Account');
         // Query output page block should get invisible
         System.assertEquals(false, queryExecuter.renderPB);
         // Get error message
         List<Apexpages.Message> msgs = ApexPages.getMessages();
-        boolean foundErrorMessage = false;
         for(Apexpages.Message msg:msgs)
         {
-            if (msg.getDetail().contains('Please enter the correct query')) 
+            if(msg.getDetail().contains('Please enter the correct query')) 
                 foundErrorMessage = true;
         }
+        System.assert(foundErrorMessage);
+    }
+    @isTest
+    static void queryExecuterControllerTest_testTotalFields_getFieldsCount()
+    {
+        QueryExecuterController queryExecuter = new QueryExecuterController();
+        Boolean foundErrorMessage = false;
+        queryExecuter.setqueryString('SELECT Id, Name FROM Account');
+        queryExecuter.lstFlds.size();
+        System.assertEquals(2, queryExecuter.lstFlds.size());
     }
     @isTest
     static void queryExecuterControllerTest_zeroRecords_getErrorMessage()
     {
         QueryExecuterController queryExecuter = new QueryExecuterController();
+        Boolean foundErrorMessage = false;
         queryExecuter.setqueryString('SELECT Id, Name FROM Contact');
         // Query output page block should get invisible
         System.assertEquals(false, queryExecuter.renderPB);
         // Get error message
         List<Apexpages.Message> msgs = ApexPages.getMessages();
-        boolean foundErrorMessage = false;
         for(Apexpages.Message msg:msgs)
         {
             if (msg.getDetail().contains('No records found')) 
                 foundErrorMessage = true;
         }
+        System.assert(foundErrorMessage);
     }
     @isTest
     static void queryExecuterControllerTest_queryOutput_getRecords()
@@ -68,7 +79,7 @@ public class QueryExecuterControllerTest
         queryExecuter.sortExpression = 'Name';
         queryExecuter.setqueryString('SELECT Name FROM Account');
         queryOutput = (List<Account>)queryExecuter.lstObjs;
-        // 10 records are fetched at a time and 9 wull be at top
+        // 10 records are fetched at a time and Test Account 9 will be at top
         System.assertEquals('Test Account 9', queryOutput[0].Name);
     }
     @isTest

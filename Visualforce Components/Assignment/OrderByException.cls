@@ -1,0 +1,1 @@
+public class OrderByException extends Exception {}

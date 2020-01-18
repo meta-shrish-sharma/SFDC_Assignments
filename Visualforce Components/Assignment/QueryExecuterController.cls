@@ -16,6 +16,7 @@ public class QueryExecuterController
     public Integer pageBlockSize{get;set;}
     public Integer pageNumber{get;set;}
     public Integer inputPageNumber{get;set;}
+    private String queryLowerCase;
     public String queryString;
     public String sortExpression 
     {
@@ -35,7 +36,7 @@ public class QueryExecuterController
     }
     public void setqueryString(String inputValue) 
     {
-        queryString = inputValue;
+        queryString = inputValue.toLowerCase();
         renderPB = true;
         pageBlockSize = 10;
         if(pageNumber == null)
@@ -44,6 +45,14 @@ public class QueryExecuterController
         }
         try
         {
+            if(queryString.contains('limit'))
+            {
+                throw new LimitException('Limit exist');
+            }
+            if(queryString.contains('order'))
+            {
+                throw new OrderByException('Order by exist');
+            }
             countLstObjs = Database.query(queryString);
             totalRecs = countLstObjs.size();
             if(totalRecs <= 0)
@@ -51,29 +60,46 @@ public class QueryExecuterController
                 renderPB = false;
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'No records found'));
             }
-            lstFlds = new List<String>();
-            if(sortExp != null && sortDirection != null)
-            {
-                sortFullExp = sortExp  + ' ' + sortDirection;
-                queryString = queryString + ' ORDER BY ' + sortFullExp + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
-                lstObjs = Database.query(queryString);
-            }
             else
             {
-                queryString = queryString + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
-                lstObjs = Database.query(queryString);    
+                lstFlds = new List<String>();
+                if(sortExp != null && sortDirection != null)
+                {
+                    sortFullExp = sortExp  + ' ' + sortDirection;
+                    queryString = queryString + ' ORDER BY ' + sortFullExp + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
+                    lstObjs = Database.query(queryString);
+                }
+                else
+                {
+                    queryString = queryString + ' LIMIT ' + pageBlockSize + ' OFFSET ' + index;
+                    lstObjs = Database.query(queryString);    
+                }
+                lstObjs = Database.query(queryString);
+                fieldsName = queryString.substring(7, queryString.indexOf(' from'));
+                fieldsName = fieldsName.remove(' ');
+                lstFlds = fieldsName.split(',');
             }
-            lstObjs = Database.query(queryString);
-            fieldsName = queryString.substring(7, queryString.indexOf(' FROM'));
-            fieldsName = fieldsName.remove(' ');
-            lstFlds = fieldsName.split(',');
         }
-        catch(Exception e)
+        catch(QueryException e)
         {
             renderPB = false;
             pageNumber = 1;
             index = 0;
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Please enter the correct query'));
+        }
+        catch(LimitException e)
+        {
+            renderPB = false;
+            pageNumber = 1;
+            index = 0;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Limit functionality does not exist'));
+        }
+        catch(OrderByException e)
+        {
+            renderPB = false;
+            pageNumber = 1;
+            index = 0;
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Order By functionality does not exist'));
         }
     }
     public String getqueryString() 
