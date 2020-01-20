@@ -1,7 +1,7 @@
 public class ShoppingCartController 
 {
     /* This variable is used for searching product. Value is taken from search box labeled product name.
-	The value is further appended with SOQL query with where condition to search the products */
+The value is further appended with SOQL query with where condition to search the products */
     public String searchProduct{get;set;}
     // List of all the products needs to be displayed in pageBlockTable in beginning with searching
     private List<Product2> prdList;
@@ -209,7 +209,7 @@ public class ShoppingCartController
                 setShowCartList(true);
                 prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
                 /*  verify that product is avilable in cart or not
-                    if avilalable then increment the available number of product in cart*/   
+if avilalable then increment the available number of product in cart*/   
                 if(selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id) != null)
                 {
                     selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id).prdCount++;
@@ -226,11 +226,13 @@ public class ShoppingCartController
     {
         if(selectedProducts.get(cartSelectPrdId) != null)
         {
-            if(selectedProducts.get(cartSelectPrdId).prdCount > 0)
+            if(prdListTable.get(cartSelectPrdId) != null)
             {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c + selectedProducts.get(cartSelectPrdId).prdCount;
+                if(selectedProducts.get(cartSelectPrdId).prdCount > 0)
+                {
+                    prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c + selectedProducts.get(cartSelectPrdId).prdCount;
+                }
             }
-            prdListTable.remove(cartSelectPrdId);
             selectedProducts.remove(cartSelectPrdId);
             if(selectedProducts.size() == 0)
             {
@@ -272,11 +274,17 @@ public class ShoppingCartController
             // Updating the product detail table
             if(checkoutDisable == false)
             {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount - selectedProducts.get(cartSelectPrdId).prdCount + 1;
+                if(prdListTable.get(cartSelectPrdId) != null)
+                {
+                    prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount - selectedProducts.get(cartSelectPrdId).prdCount + 1;
+                }
             }
             else
             {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount;
+                if(prdListTable.get(cartSelectPrdId) != null)
+                {
+                    prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount;
+                }
             }
         }
         return null;
