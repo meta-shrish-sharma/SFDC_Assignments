@@ -362,8 +362,7 @@ else
         <masterLabel>Student Details</masterLabel>
         <openType>onClickJavaScript</openType>
         <protected>false</protected>
-        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/25.0/connection.js&quot;)} 
-var ID = &quot;{!Student__c.Id}&quot;; 
-window.open(&quot;/apex/StudentDetails?id=&quot;+ID);</url>
+        <url>var ID = &quot;{!Student__c.Id}&quot;; 
+window.open(&quot;/apex/StudentDetails?id=&quot;+ID, &quot;Popup&quot;, &quot;height=400,width=1000,left=100,top=100,scrollbars=yes,toolbar=no,status=no&quot;);</url>
     </webLinks>
 </CustomObject>
