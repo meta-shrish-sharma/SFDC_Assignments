@@ -13,12 +13,12 @@ public class EmailServiceLoadXMLToContact implements Messaging.InboundEmailHandl
                 fileXMLString = bAttachment.body.toString();
             }
         }
-        Dom.Document doc=new Dom.Document();
-        doc.load(fileXMLString);
-        //Retrieve the root element for this document.
-        Dom.XMLNode address = doc.getRootElement();
         try
         {
+            Dom.Document doc=new Dom.Document();
+            doc.load(fileXMLString);
+            //Retrieve the root element for this document.
+            Dom.XMLNode address = doc.getRootElement();
             for(Dom.XMLNode allContacts: address.getChildElements()) 
             {
                 Contact ct = new Contact();
