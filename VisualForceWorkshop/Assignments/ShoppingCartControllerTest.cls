@@ -11,7 +11,7 @@ public class ShoppingCartControllerTest
         }
         insert purchaseOrderList;
         List<Product2> prdList = new List<Product2>();
-        for(Integer prdCount = 0; prdCount < 20; prdCount++)
+        for(Integer prdCount = 0; prdCount < 40; prdCount++)
         {
             prdList.add(new Product2 (Name = 'Test Product ' + prdCount, QuantityAvilable__c = prdCount, ProductPrice__c = 100 * prdCount));
         }
@@ -86,16 +86,16 @@ public class ShoppingCartControllerTest
         ShoppingCartController cartController = new ShoppingCartController();
         cartController.setHideshow(true);
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        System.assertEquals(20, cartController.totalRecs);
+        System.assertEquals(40, cartController.totalRecs);
     }
     @isTest
     static void testShoppingCartControllerTest_searchProducts_getSearchedProducts()
     {
         ShoppingCartController cartController = new ShoppingCartController();
-        cartController.searchProduct = '2';
+        cartController.searchProduct = '22';
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        // Product with name Test Product 2 and Test Product 12
-        System.assertEquals(2, cartController.totalRecs);
+        // Product with name Test Product 22
+        System.assertEquals(1, cartController.totalRecs);
     }
     @isTest
     static void testShoppingCartControllerTest_productsPagination_runPagination()
@@ -113,7 +113,7 @@ public class ShoppingCartControllerTest
         System.assertEquals(1, cartController.pageNumber);
         // Go to end page
         cartController.end();
-        System.assertEquals(2, cartController.pageNumber);
+        System.assertEquals(4, cartController.pageNumber);
         // Test has previous
         System.assertEquals(false, cartController.getprev());
         // Test has next
@@ -163,8 +163,16 @@ public class ShoppingCartControllerTest
     {
         ShoppingCartController cartController = new ShoppingCartController();
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        Id prd1Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 2'].Id;
-        Id prd2Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 3'].Id;
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
         Integer totalProducts;
         prdMap.get(prd1Id).isSelected = true;
         prdMap.get(prd2Id).isSelected = true;
@@ -180,12 +188,20 @@ public class ShoppingCartControllerTest
         System.assertEquals(false, cartController.getShowCartList());
     }
     @isTest
-    static void testShoppingCartControllerTest_validateCartProducts_getErrorMessage()
+    static void testShoppingCartControllerTest_validateNegativeCartProducts_getErrorMessage()
     {
         ShoppingCartController cartController = new ShoppingCartController();
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        Id prd1Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 2'].Id;
-        Id prd2Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 3'].Id;
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
         Integer totalProducts;
         prdMap.get(prd1Id).isSelected = true;
         prdMap.get(prd2Id).isSelected = true;
@@ -203,39 +219,97 @@ public class ShoppingCartControllerTest
             if (msg.getDetail().contains('Qty cannot be negative')) 
                 foundErrorMessage = true;
         }
-        system.assert(foundErrorMessage);
+        system.assert(foundErrorMessage, 'Expected was the error message should appears, but it dosent appears');
         // Checkout button will remain disable
-        System.assert(cartController.checkoutDisable);
+        System.assert(cartController.checkoutDisable, 'Expected was the checkbox should remain disabled, but it get enabled');
+    }
+    @isTest
+    static void testShoppingCartControllerTest_validateZeroCartProducts_getErrorMessage()
+    {
+        ShoppingCartController cartController = new ShoppingCartController();
+        Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
+        Integer totalProducts;
+        prdMap.get(prd1Id).isSelected = true;
+        prdMap.get(prd2Id).isSelected = true;
+        // Add Products to cart
+        cartController.addToCart();
+        // Set Id to for change in product count
+        cartController.cartSelectPrdId = prd1Id;
         // Test with zero value
         cartController.selectedProducts.get(prd1Id).prdCount = 0;
         cartController.handleUpdateChange();
-        msgs = ApexPages.getMessages();
-        foundErrorMessage = false;
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        boolean foundErrorMessage = false;
         for(Apexpages.Message msg:msgs)
         {
             if (msg.getDetail().contains('Qty cannot be Zero')) 
                 foundErrorMessage = true;
         }
-        system.assert(foundErrorMessage);
+        system.assert(foundErrorMessage, 'Expected was the error message should appears, but it dosent appears');
+        // Checkout button will remain disable
+        System.assert(cartController.checkoutDisable, 'Expected was the checkbox should remain disabled, but it get enabled');
+    }
+    @isTest
+    static void testShoppingCartControllerTest_validateAboveLimitCartProducts_getErrorMessage()
+    {
+        ShoppingCartController cartController = new ShoppingCartController();
+        Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
+        Integer totalProducts;
+        prdMap.get(prd1Id).isSelected = true;
+        prdMap.get(prd2Id).isSelected = true;
+        // Add Products to cart
+        cartController.addToCart();
+        // Set Id to for change in product count
+        cartController.cartSelectPrdId = prd1Id;
         // Test with more then available value
         cartController.selectedProducts.get(prd1Id).prdCount = 3;
         cartController.handleUpdateChange();
-        msgs = ApexPages.getMessages();
-        foundErrorMessage = false;
+     	List<Apexpages.Message> msgs = ApexPages.getMessages();
+        boolean foundErrorMessage = false;
         for(Apexpages.Message msg:msgs)
         {
             if (msg.getDetail().contains('Qty cannot be more then 2')) 
                 foundErrorMessage = true;
         }
-        system.assert(foundErrorMessage);
+        system.assert(foundErrorMessage, 'Expected was the error message should appears, but it dosent appears');
+        // Checkout button will remain disable
+        System.assert(cartController.checkoutDisable, 'Expected was the checkbox should remain disabled, but it get enabled');
     }
     @isTest
     static void testShoppingCartControllerTest_updateCart_updateProductCount()
     {
         ShoppingCartController cartController = new ShoppingCartController();
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        Id prd1Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 2'].Id;
-        Id prd2Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 3'].Id;
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
         Integer totalProducts;
         prdMap.get(prd1Id).isSelected = true;
         prdMap.get(prd2Id).isSelected = true;
@@ -252,15 +326,23 @@ public class ShoppingCartControllerTest
         // Product table should get updates
         System.assertEquals(0, prdMap.get(prd1Id).cProduct.QuantityAvilable__c);
         // Checkout button will become enable
-        System.assert(!cartController.checkoutDisable);
+        System.assert(!cartController.checkoutDisable, 'Expected was the checkbox should remain disabled, but it get enabled');
     }
     @isTest
     static void testShoppingCartControllerTest_checkoutCart_successfulCheckoutProductCart()
     {
         ShoppingCartController cartController = new ShoppingCartController();
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        Id prd1Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 2'].Id;
-        Id prd2Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 3'].Id;
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
         Integer totalProducts;
         prdMap.get(prd1Id).isSelected = true;
         prdMap.get(prd2Id).isSelected = true;
@@ -275,8 +357,16 @@ public class ShoppingCartControllerTest
     {
         ShoppingCartController cartController = new ShoppingCartController();
         Map<Id, Product2WrapperCls> prdMap = cartController.getAllProducts();
-        Id prd1Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 2'].Id;
-        Id prd2Id = [SELECT Id FROM Product2 WHERE Name = 'Test Product 3'].Id;
+        List<Product2> prdList = [SELECT Id, Name FROM Product2 WHERE Name = 'Test Product 2' OR Name = 'Test Product 3'];
+        Id prd1Id;
+        Id prd2Id;
+        for(Product2 prd: prdList)
+        {
+            if(prd.Name == 'Test Product 2')
+                prd1Id = prd.Id;
+            if(prd.Name == 'Test Product 3')
+                prd2Id = prd.Id;
+        }
         Integer totalProducts;
         prdMap.get(prd1Id).isSelected = true;
         prdMap.get(prd2Id).isSelected = true;
