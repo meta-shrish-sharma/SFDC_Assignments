@@ -307,7 +307,8 @@
         <openType>onClickJavaScript</openType>
         <protected>false</protected>
         <requireRowSelection>true</requireRowSelection>
-        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/9.0/connection.js&quot;)} 
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
 
 var records = {!GETRECORDIDS( $ObjectType.Student__c )}; 
 if (records[0] == null) 
@@ -318,34 +319,15 @@ else
 {
 	if(confirm(&quot;Are you sure to delete the records. Total Records: &quot; + records.length))
 	{
-		var errors = []; 
-		var result = sforce.connection.deleteIds(records); 
-		if (result &amp;&amp; result.length)
-		{ 
-			var numFailed = 0; 
-			var numSucceeded = 0; 
-			for (var i = 0; i &lt; result.length; i++)
-			{ 
-				var res = result[i]; 
-				if (res &amp;&amp; res.success == &apos;true&apos;)
-				{ 
-					numSucceeded++; 
-				}
-				else 
-				{ 
-					var es = res.getArray(&quot;errors&quot;); 
-					if (es.length &gt; 0) 
-					{ 
-						errors.push(es[0].message); 
-					} 
-					numFailed++; 
-				} 
-			} 
-			if (numFailed &gt; 0)
-			{ 
-				alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;)); 
-			}
-		} 
+		var result = sforce.apex.execute(&quot;DeleteCheckedStudents&quot;,&quot;deleteStudents&quot;,{stId:records});
+		if(result = &quot;Success&quot;)
+		{
+			alert(&quot;Students deleted successfully&quot;);
+		}
+		else
+		{
+			alert(&quot;Failed to delete students&quot;);
+		}
 		window.location.reload(); 
 	}
 }
