@@ -10,11 +10,11 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class createContactRecord extends LightningElement {
 
-    @track firstname = FIRSTNAME_FIELD;
-    @track lastname = LASTNAME_FIELD;
-    @track phone = PHONE_FIELD;
-    @track email = EMAIL_FIELD;
-    @track fax = FAX_FIELD;
+    firstname = FIRSTNAME_FIELD;
+    lastname = LASTNAME_FIELD;
+    phone = PHONE_FIELD;
+    email = EMAIL_FIELD;
+    fax = FAX_FIELD;
     rec = {
         FirstName : this.firstname,
         LastName : this.LastName,
@@ -39,6 +39,20 @@ export default class createContactRecord extends LightningElement {
     }
     handleEmailChange(event) {
         this.rec.Email = event.target.value;
+
+    }
+    validateEmailChange(event) {
+        var regExpEmailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!event.target.value.match(regExpEmailformat)){
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Invalid Mail',
+                    message: 'Please enter a valid email address',
+                    variant: 'error',
+                }),
+            );               
+        }
+        
     }
     handleFaxChange(event) {
         this.rec.Fax = event.target.value;
