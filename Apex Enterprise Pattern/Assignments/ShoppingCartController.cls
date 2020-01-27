@@ -56,6 +56,8 @@ public class ShoppingCartController
     private Integer blockSize = 10;
     public Integer pageBlockSize{get;set;}
     public Integer pageNumber{get;set;}
+    // Enterprise pattern implementation
+    ShoppingCartServices shoppingCartServices = new ShoppingCartServices();
     public ShoppingCartController()
     {
         pageBlockSize = 10;
@@ -65,7 +67,7 @@ public class ShoppingCartController
         checkoutDisable = true;
         renderOrderDetails = false;
         randomOrderNumber = Integer.valueof((Math.random() * 1000000));
-        totalRecs = [SELECT COUNT() FROM Product2];
+        totalRecs = new ProductSelector().getAllProducts().size();
         totalRecsWithoutSearch = totalRecs;
     }
     // Below code is for Purchase History detail
@@ -85,14 +87,12 @@ public class ShoppingCartController
                 String ordSearchQuery;
                 if(sortExp == null)
                 {
-                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c WHERE User__c = \'' + UserInfo.getUserId() + '\'';  
+                    ordrList = new PurchaseOrdersSelector().getAllPurchaseOrders();
                 }
                 else
                 {
-                    String sortFullExp = sortExp  + ' ' + sortDirection;
-                    ordSearchQuery = 'SELECT Id, OrderPrice__c, Orderstatus__c FROM Purchaseorder__c ' + 'WHERE User__c = \'' + UserInfo.getUserId() + '\' ORDER BY ' + sortFullExp;  
+                    ordrList = new PurchaseOrdersSelector().getAllPurchaseOrdersSorted(sortExp, sortDirection);
                 }
-                ordrList = Database.query(ordSearchQuery);
                 setOrder = new ApexPages.StandardSetController(ordrList);
                 orderPagesize = 10;
                 setOrder.setPageSize(orderPagesize);
@@ -125,28 +125,15 @@ public class ShoppingCartController
         prdListTable = new Map<Id, Product2WrapperCls>();
         if(String.isBlank(searchProduct))// If serching is not yet applied it will take all the products by default
         {
-            searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 LIMIT ' + pageBlockSize + ' OFFSET ' + index;
-            prdList = Database.query(searchQuery);
+            prdList = new ProductSelector().selectProductForPagination(pageBlockSize, index);
             totalRecs = totalRecsWithoutSearch; // Updating total records after search operation
         }
         else 
         {
-            searchQuery='SELECT Id, Name, ProductCode, Description, ProductPrice__c, QuantityAvilable__c FROM Product2 WHERE Name LIKE \'%' + searchProduct + '%\' ORDER BY Name LIMIT ' + pageBlockSize + ' OFFSET ' + index;
-            prdList = Database.query(searchQuery);
+            prdList = new ProductSelector().selectProductForPaginationWithSerch(pageBlockSize, index, searchProduct);
             totalRecs = prdList.size(); // Updation required after search operation
         }
-        for(Product2 prd: prdList)
-        {	
-            if(selectedProducts.get(prd.Id) != null)
-            {
-                if(selectedProducts.get(prd.Id).prdCount > 0)
-                {
-                    prd.QuantityAvilable__c = prd.QuantityAvilable__c - selectedProducts.get(prd.Id).prdCount;
-                }
-            }
-            prdListTable.put(prd.Id, new Product2WrapperCls(prd));
-        }
-        return prdListTable;
+        return ShoppingCartServices.loadProductTable(selectedProducts, prdList, prdListTable);
     }
     public void beginning() 
     {  
@@ -198,8 +185,6 @@ public class ShoppingCartController
     // This section is for Cart detail 
     public pageReference addToCart() // To add the products in cart table
     {	
-        Integer selected = 0;
-        Integer notselected = 0;
         for(Id cWrapper: prdListTable.keySet())
         {
             if((prdListTable.get(cWrapper).isSelected == true) && (prdListTable.get(cWrapper).cProduct.QuantityAvilable__c > 0))
@@ -210,14 +195,7 @@ public class ShoppingCartController
                 prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
                 /*  verify that product is avilable in cart or not
                     if avilalable then increment the available number of product in cart*/   
-                if(selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id) != null)
-                {
-                    selectedProducts.get(prdListTable.get(cWrapper).cProduct.Id).prdCount++;
-                }
-                else
-                {
-                    selectedProducts.put(prdListTable.get(cWrapper).cProduct.Id, new CartWrapperCls(prdListTable.get(cWrapper).cProduct, 1));
-                }
+                selectedProducts = ShoppingCartServices.addProductToCart(prdListTable, selectedProducts, cWrapper);
             }
         }// All selected products are added in map
         return null;
@@ -226,12 +204,9 @@ public class ShoppingCartController
     {
         if(selectedProducts.get(cartSelectPrdId) != null)
         {
-            if(selectedProducts.get(cartSelectPrdId).prdCount > 0)
-            {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c + selectedProducts.get(cartSelectPrdId).prdCount;
-            }
-            prdListTable.remove(cartSelectPrdId);
-            selectedProducts.remove(cartSelectPrdId);
+            prdListTable = ShoppingCartServices.updatePrdListAfterDelete(prdListTable, selectedProducts, cartSelectPrdId);
+            prdListTable = ShoppingCartServices.deleteFromProductList(prdListTable, cartSelectPrdId);
+            selectedProducts = ShoppingCartServices.deleteFromCartList(selectedProducts, cartSelectPrdId);
             if(selectedProducts.size() == 0)
             {
                 setShowCartList(false);  
@@ -250,7 +225,9 @@ public class ShoppingCartController
     // Below code section is to validate Cart Items 
     public Pagereference handleUpdateChange()
     {
-        Decimal maxPrdCount = [SELECT QuantityAvilable__c FROM Product2 WHERE Id = :cartSelectPrdId][0].QuantityAvilable__c;
+        Set<Id> prdIds = new Set<Id>();
+        prdIds.add(cartSelectPrdId);
+        Decimal maxPrdCount = new ProductSelector().selectProductById(prdIds)[0].QuantityAvilable__c;
         checkoutDisable = false;
         if(selectedProducts.get(cartSelectPrdId) != null)
         {
@@ -269,50 +246,20 @@ public class ShoppingCartController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Qty cannot be Zero for ' + selectedProducts.get(cartSelectPrdId).cProduct.Name ));
                 checkoutDisable = true;	
             }
-            // Updating the product detail table
-            if(checkoutDisable == false)
-            {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount - selectedProducts.get(cartSelectPrdId).prdCount + 1;
-            }
-            else
-            {
-                prdListTable.get(cartSelectPrdId).cProduct.QuantityAvilable__c = maxPrdCount;
-            }
+            prdListTable = ShoppingCartServices.updatePrdListAfterUpdate(prdListTable, selectedProducts, cartSelectPrdId, maxPrdCount, checkoutDisable);
         }
         return null;
     }
     public pageReference checkout()
     {	
-        Decimal totalSum = 0;
-        for(Id cartProducts: selectedProducts.keySet())
-        {
-            if(selectedProducts.get(cartProducts) != null)
-                totalSum = totalSum + (selectedProducts.get(cartProducts).cProduct.ProductPrice__c * selectedProducts.get(cartProducts).prdCount);
-        }
-        orderTotal = totalSum;
+        orderTotal = ShoppingCartServices.cartProductOrderTotal(selectedProducts);
         renderOrderDetails = true;
         return null;
     }
     public pageReference placeOrder()
     {	
-        Purchaseorder__c ord = new Purchaseorder__c();
-        ord.OrderNumber__c = randomOrderNumber;
-        ord.OrderPlaceTime__c = System.Now();
-        ord.OrderPrice__c = orderTotal;
-        ord.OrderStatus__c = 'Pending';
-        ord.User__c = UserInfo.getUserId();
-        upsert ord;
-        List<PurchaseOrderLineItems__c> orderLineList = new  List<PurchaseOrderLineItems__c>();
-        for(Id cartProducts: selectedProducts.keySet())
-        {
-            PurchaseOrderLineItems__c POL = new PurchaseOrderLineItems__c();
-            POL.Product__c = selectedProducts.get(cartProducts).cProduct.Id;
-            POL.ProductQuantity__c = selectedProducts.get(cartProducts).prdCount;
-            POL.PurchaseOrder__c = ord.Id;
-            POL.Name = selectedProducts.get(cartProducts).cProduct.Name + ' Order';
-            orderLineList.add(POL);
-        }
-        upsert orderLineList;
+        Purchaseorder__c ord = ShoppingCartServices.createPurchaseOrder(orderTotal, randomOrderNumber);
+        ShoppingCartServices.createPurchaseOrderLineItems(selectedProducts, ord);
         PageReference currentPage = new pageReference('/apex/OrderHistory');
         currentPage.setRedirect(true);
         return currentPage;
