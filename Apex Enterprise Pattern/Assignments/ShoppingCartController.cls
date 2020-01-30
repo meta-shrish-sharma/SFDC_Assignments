@@ -56,8 +56,6 @@ public class ShoppingCartController
     private Integer blockSize = 10;
     public Integer pageBlockSize{get;set;}
     public Integer pageNumber{get;set;}
-    // Enterprise pattern implementation
-    ShoppingCartServices shoppingCartServices = new ShoppingCartServices();
     public ShoppingCartController()
     {
         pageBlockSize = 10;
@@ -133,7 +131,7 @@ public class ShoppingCartController
             prdList = new ProductSelector().selectProductForPaginationWithSerch(pageBlockSize, index, searchProduct);
             totalRecs = prdList.size(); // Updation required after search operation
         }
-        return ShoppingCartServices.loadProductTable(selectedProducts, prdList, prdListTable);
+        return ShoppingCartService.loadProductTable(selectedProducts, prdList, prdListTable);
     }
     public void beginning() 
     {  
@@ -195,7 +193,7 @@ public class ShoppingCartController
                 prdListTable.get(cWrapper).cProduct.QuantityAvilable__c--; 
                 /*  verify that product is avilable in cart or not
                     if avilalable then increment the available number of product in cart*/   
-                selectedProducts = ShoppingCartServices.addProductToCart(prdListTable, selectedProducts, cWrapper);
+                selectedProducts = ShoppingCartService.addProductToCart(prdListTable, selectedProducts, cWrapper);
             }
         }// All selected products are added in map
         return null;
@@ -204,9 +202,9 @@ public class ShoppingCartController
     {
         if(selectedProducts.get(cartSelectPrdId) != null)
         {
-            prdListTable = ShoppingCartServices.updatePrdListAfterDelete(prdListTable, selectedProducts, cartSelectPrdId);
-            prdListTable = ShoppingCartServices.deleteFromProductList(prdListTable, cartSelectPrdId);
-            selectedProducts = ShoppingCartServices.deleteFromCartList(selectedProducts, cartSelectPrdId);
+            prdListTable = ShoppingCartService.updatePrdListAfterDelete(prdListTable, selectedProducts, cartSelectPrdId);
+            prdListTable = ShoppingCartService.deleteFromProductList(prdListTable, cartSelectPrdId);
+            selectedProducts = ShoppingCartService.deleteFromCartList(selectedProducts, cartSelectPrdId);
             if(selectedProducts.size() == 0)
             {
                 setShowCartList(false);  
@@ -246,20 +244,20 @@ public class ShoppingCartController
                 ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'Qty cannot be Zero for ' + selectedProducts.get(cartSelectPrdId).cProduct.Name ));
                 checkoutDisable = true;	
             }
-            prdListTable = ShoppingCartServices.updatePrdListAfterUpdate(prdListTable, selectedProducts, cartSelectPrdId, maxPrdCount, checkoutDisable);
+            prdListTable = ShoppingCartService.updatePrdListAfterUpdate(prdListTable, selectedProducts, cartSelectPrdId, maxPrdCount, checkoutDisable);
         }
         return null;
     }
     public pageReference checkout()
     {	
-        orderTotal = ShoppingCartServices.cartProductOrderTotal(selectedProducts);
+        orderTotal = ShoppingCartService.cartProductOrderTotal(selectedProducts);
         renderOrderDetails = true;
         return null;
     }
     public pageReference placeOrder()
     {	
-        Purchaseorder__c ord = ShoppingCartServices.createPurchaseOrder(orderTotal, randomOrderNumber);
-        ShoppingCartServices.createPurchaseOrderLineItems(selectedProducts, ord);
+        Purchaseorder__c ord = ShoppingCartService.createPurchaseOrder(orderTotal, randomOrderNumber);
+        ShoppingCartService.createPurchaseOrderLineItems(selectedProducts, ord);
         PageReference currentPage = new pageReference('/apex/OrderHistory');
         currentPage.setRedirect(true);
         return currentPage;
