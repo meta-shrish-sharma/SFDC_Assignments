@@ -1,0 +1,154 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-size_1-of-1">
+            <div class="slds-box slds-box_x-small slds-m-horizontal_x-small slds-theme_shade">
+                <div class="slds-text-heading_medium slds-text-align_left">This is the Heading</div>
+                <div class="slds-text_medium slds-text-align_left">This is the text below heading</div>
+            </div>
+        </div>
+        <div class="slds-size_1-of-1">
+            <div class="slds-box slds-box_x-small slds-m-horizontal_x-small slds-m-bottom_x-small slds-theme_default">
+                <div class="slds-text-heading_medium slds-text-align_left">Wholesale Application Form</div>
+                <div class="slds-grid slds-wrap slds-m-vertical_medium">
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label" for="text-input-id-1">
+                                <abbr class="slds-required" title="required">* </abbr>Bussiness Name</label>
+                                <div class="slds-form-element__control">
+                                <input type="text" id="text-input-id-1" required="" class="slds-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label" for="text-input-id-1">
+                                <abbr class="slds-required" title="required">* </abbr>A.B.N.</label>
+                                <div class="slds-form-element__control">
+                                <input type="text" id="text-input-id-2" required="" class="slds-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label" for="text-input-id-1">
+                                <abbr class="slds-required" title="required">* </abbr>E-Mail</label>
+                                <div class="slds-form-element__control">
+                                <input type="text" id="text-input-id-3" required="" class="slds-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label" for="text-input-id-1">
+                                <abbr class="slds-required" title="required">* </abbr>Website</label>
+                                <div class="slds-form-element__control">
+                                <input type="text" id="text-input-id-4" required="" class="slds-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label">Phone Number</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-size_5-of-12">
+                                            <div class="slds-m-right_x-small">
+                                                <label class="slds-form-element__label">Area Code</label>
+                                                <input type="text" id="text-input-id-5" required="" class="slds-input" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_7-of-12">
+                                            <label class="slds-form-element__label">Number</label>
+                                            <input type="text" id="text-input-id-6" required="" class="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-around_x-small">
+                            <div class="slds-form-element slds-m-around_x-small">
+                                <label class="slds-form-element__label">Billing Address</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-size_5-of-12">
+                                            <div class="slds-m-right_x-small">
+                                                <label class="slds-form-element__label">Adderss</label>
+                                                <input type="text" id="text-input-id-7" required="" class="slds-input" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_7-of-12">
+                                            <label class="slds-form-element__label">Pin Code</label>
+                                            <input type="text" id="text-input-id-8" required="" class="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size_3-of-12">
+                        <div class="slds-m-vertical_medium">
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-unique-id-72" value="checkbox-unique-id-72" checked="" />
+                                        <label class="slds-checkbox__label" for="checkbox-unique-id-72">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">Do you own multiple Bussinesses?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid_align-end">
+                    <div class="slds-col">
+                        <button class="slds-button slds-button_neutral">Cancle</button>
+                        <button class="slds-button slds-button_brand">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-size_1-of-2">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-1
+            </div>
+        </div>
+        <div class="slds-size_1-of-2">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-1
+            </div>
+        </div>
+        <div class="slds-size_1-of-1">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-1
+            </div>
+        </div>
+        <div class="slds-size_1-of-3">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-3
+            </div>
+        </div>
+        <div class="slds-size_1-of-3">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-3
+            </div>
+        </div>
+        <div class="slds-size_1-of-3">
+            <div class="slds-box slds-box_x-small slds-m-around_x-small">
+                .slds-size_1-of-3
+            </div>
+        </div>
+    </div>
+</template>
